@@ -32,7 +32,7 @@ function CtaLink({ cta }: { cta: CtaButton }) {
   return (
     <a
       href={cta.url}
-      className={`inline-block px-8 py-3 rounded-sm font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest transition-colors ${
+      className={`inline-block px-8 py-3 rounded-sm font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-widest transition-colors ${
         isPrimary
           ? "bg-white text-black hover:bg-bms-grey-200"
           : "border border-white text-white hover:bg-white hover:text-black"
@@ -231,7 +231,7 @@ function HomeStudiosOverview({ s, studios }: { s: Section; studios: any[] }) {
         <div className="text-center mt-12">
           <a
             href="/studios"
-            className="inline-block px-8 py-3 rounded-sm border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+            className="inline-block px-8 py-3 rounded-sm border border-white text-white font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
           >
             Explore All Studios
           </a>

@@ -129,7 +129,7 @@ function ServicesCta({ s }: { s: Section }) {
                 <a
                   key={btn._key}
                   href={btn.url || "/contact"}
-                  className={`inline-block px-10 py-4 rounded-sm font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest transition-colors ${
+                  className={`inline-block px-10 py-4 rounded-sm font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-widest transition-colors ${
                     isPrimary
                       ? "bg-white text-black hover:bg-bms-grey-200"
                       : "border border-white text-white hover:bg-white hover:text-black"
@@ -143,7 +143,7 @@ function ServicesCta({ s }: { s: Section }) {
         ) : (
           <a
             href="/contact"
-            className="inline-block px-10 py-4 rounded-sm border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+            className="inline-block px-10 py-4 rounded-sm border border-white text-white font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
           >
             Get In Touch
           </a>
