@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+/* Breeze Motion Studio — Design System Tokens */
+
+@theme inline {
+  /* Core Monochrome */
+  --color-bms-black: #000000;
+  --color-bms-white: #ffffff;
+  --color-bms-grey-100: #e6e6e6;
+  --color-bms-grey-200: #cccccc;
+  --color-bms-grey-300: #b3b3b3;
+  --color-bms-grey-400: #999999;
+
+  /* Accent */
+  --color-bms-accent: #535d66;
+
+  /* Dark Tones */
+  --color-bms-dark-100: #4b4b4b;
+  --color-bms-dark-200: #444e57;
+  --color-bms-dark-300: #3f3f3f;
+  --color-bms-dark-400: #363f47;
+  --color-bms-dark-500: #333333;
+
+  /* Typography */
+  --font-brand: "Cormorant SC", "Cormorant", serif;
+  --font-functional: Arial, Helvetica, sans-serif;
+  --font-body: Calibri, "Carlito", sans-serif;
+}
+
+body {
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+h4, h5, h6 {
+  font-family: var(--font-functional);
+}
