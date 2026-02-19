@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, defineArrayMember} from 'sanity'
 import {EnvelopeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
@@ -8,42 +8,74 @@ export const contactPage = defineType({
   type: 'document',
   icon: EnvelopeIcon,
   groups: [
-    {name: 'content', title: 'Content', default: true},
+    {name: 'sections', title: 'Sections', default: true},
     {name: 'seo', title: 'SEO'},
   ],
   fields: [
     defineField({
-      name: 'heading',
-      title: 'Page Heading',
-      type: 'string',
-      group: 'content',
-      validation: (rule) => rule.required(),
+      name: 'sections',
+      title: 'Page Sections',
+      type: 'array',
+      group: 'sections',
+      description: 'Drag to reorder sections. Click + to add a new section.',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'contactHero',
+          title: 'Hero',
+          fields: [
+            defineField({
+              name: 'heading',
+              title: 'Heading',
+              type: 'string',
+              validation: (r) => r.required(),
+            }),
+          ],
+          preview: {
+            select: {title: 'heading'},
+            prepare({title}) {
+              return {title: 'Hero', subtitle: title}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'contactIntro',
+          title: 'Intro Text',
+          fields: [
+            defineField({name: 'content', title: 'Content', type: 'blockContent'}),
+          ],
+          preview: {
+            prepare() {
+              return {title: 'Intro Text'}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'contactDetails',
+          title: 'Contact Details & Form',
+          fields: [
+            defineField({
+              name: 'email',
+              title: 'Email',
+              type: 'string',
+              validation: (r) => r.required().email(),
+            }),
+            defineField({name: 'phone', title: 'Phone / WhatsApp', type: 'string'}),
+            defineField({name: 'formHeading', title: 'Form Heading', type: 'string'}),
+          ],
+          preview: {
+            prepare() {
+              return {title: 'Contact Details & Form'}
+            },
+          },
+        }),
+      ],
     }),
-    defineField({
-      name: 'introText',
-      title: 'Introductory Copy',
-      type: 'blockContent',
-      group: 'content',
-    }),
-    defineField({
-      name: 'email',
-      title: 'Display Email',
-      type: 'string',
-      group: 'content',
-      validation: (rule) => rule.required().email(),
-    }),
-    defineField({
-      name: 'phone',
-      title: 'Phone / WhatsApp',
-      type: 'string',
-      group: 'content',
-    }),
-    defineField({
-      name: 'formHeading',
-      title: 'Form Section Heading',
-      type: 'string',
-      group: 'content',
-    }),
+
     ...seoFields,
   ],
   preview: {

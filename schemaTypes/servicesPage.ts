@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, defineArrayMember} from 'sanity'
 import {BulbOutlineIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
@@ -8,50 +8,84 @@ export const servicesPage = defineType({
   type: 'document',
   icon: BulbOutlineIcon,
   groups: [
-    {name: 'content', title: 'Content', default: true},
-    {name: 'cta', title: 'Call to Action'},
+    {name: 'sections', title: 'Sections', default: true},
     {name: 'seo', title: 'SEO'},
   ],
   fields: [
     defineField({
-      name: 'heading',
-      title: 'Page Heading',
-      type: 'string',
-      group: 'content',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'introText',
-      title: 'Intro Text',
-      type: 'text',
-      rows: 3,
-      group: 'content',
-      description: 'Brief intro shown beneath the page heading',
+      name: 'sections',
+      title: 'Page Sections',
+      type: 'array',
+      group: 'sections',
+      description: 'Drag to reorder sections. Click + to add a new section.',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'servicesHero',
+          title: 'Hero',
+          fields: [
+            defineField({
+              name: 'heading',
+              title: 'Heading',
+              type: 'string',
+              validation: (r) => r.required(),
+            }),
+          ],
+          preview: {
+            select: {title: 'heading'},
+            prepare({title}) {
+              return {title: 'Hero', subtitle: title}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'servicesIntro',
+          title: 'Intro Text',
+          fields: [
+            defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+          ],
+          preview: {
+            prepare() {
+              return {title: 'Intro Text'}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'servicesCategories',
+          title: 'Service Categories',
+          fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+          ],
+          preview: {
+            prepare() {
+              return {title: 'Service Categories'}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'servicesCta',
+          title: 'Call to Action',
+          fields: [
+            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'text', title: 'Supporting Text', type: 'text', rows: 2}),
+            defineField({name: 'button', title: 'Button', type: 'ctaButton'}),
+          ],
+          preview: {
+            select: {title: 'heading'},
+            prepare({title}) {
+              return {title: 'Call to Action', subtitle: title}
+            },
+          },
+        }),
+      ],
     }),
 
-    // — Call to Action —
-    defineField({
-      name: 'ctaHeading',
-      title: 'CTA Heading',
-      type: 'string',
-      group: 'cta',
-      description: 'e.g. "Ready to work together?"',
-    }),
-    defineField({
-      name: 'ctaText',
-      title: 'CTA Supporting Text',
-      type: 'text',
-      rows: 2,
-      group: 'cta',
-    }),
-    defineField({
-      name: 'ctaButton',
-      title: 'CTA Button',
-      type: 'ctaButton',
-      group: 'cta',
-    }),
-
-    // — SEO —
     ...seoFields,
   ],
   preview: {

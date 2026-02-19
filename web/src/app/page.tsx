@@ -6,23 +6,9 @@ import {
   TESTIMONIALS_QUERY,
 } from "@/lib/sanity/queries";
 
-type CtaButton = {
-  label?: string;
-  url?: string;
-  style?: string;
-};
-
-type BgImage = {
-  asset?: { url: string; metadata?: { lqip?: string } };
-  alt?: string;
-};
-
-type ProcessStep = {
-  _key?: string;
-  stepNumber?: string;
-  title?: string;
-  description?: string;
-};
+type CtaButton = { label?: string; url?: string; style?: string };
+type BgImage = { asset?: { url: string }; alt?: string };
+type Section = Record<string, any> & { _type: string; _key: string };
 
 function CtaLink({ cta }: { cta: CtaButton }) {
   if (!cta?.label || !cta?.url) return null;
@@ -41,7 +27,6 @@ function CtaLink({ cta }: { cta: CtaButton }) {
   );
 }
 
-// Renders a full-cover background video or image + dark overlay
 function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) {
   if (videoUrl) {
     return (
@@ -73,6 +58,224 @@ function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) 
   return null;
 }
 
+function HomeHero({ s }: { s: Section }) {
+  return (
+    <section className="relative flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
+      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
+      {(s.title || s.primaryCta || s.secondaryCta) && (
+        <div className="relative z-10 text-center max-w-4xl px-6">
+          {s.title && (
+            <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
+              {s.title}
+            </h1>
+          )}
+          {s.subtitle && (
+            <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+              {s.subtitle}
+            </p>
+          )}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {s.primaryCta && <CtaLink cta={s.primaryCta} />}
+            {s.secondaryCta && <CtaLink cta={s.secondaryCta} />}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
+  const hasMedia = !!(s.videoUrl || s.bgImage?.asset?.url);
+  return (
+    <section className="bg-black text-white">
+      {s.videoUrl && (
+        <video
+          className="w-full aspect-video object-cover"
+          src={s.videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      )}
+      {!s.videoUrl && s.bgImage?.asset?.url && (
+        <img
+          className="w-full aspect-video object-cover"
+          src={s.bgImage.asset.url}
+          alt={s.bgImage.alt || ""}
+        />
+      )}
+      {projects && projects.length > 0 && (
+        <div className={`max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
+            Featured Work
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((project: any) => (
+              <a
+                key={project._id}
+                href={`/studios/${project.studio?.slug?.current}`}
+                className="group block"
+              >
+                <div className="aspect-[4/3] bg-bms-dark-500 mb-4 overflow-hidden">
+                  {project.coverImage?.asset?.url && (
+                    <img
+                      src={project.coverImage.asset.url}
+                      alt={project.coverImage.alt || project.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
+                </div>
+                <h3 className="text-lg font-[family-name:var(--font-functional)] font-bold text-white">
+                  {project.title}
+                </h3>
+                <p className="text-sm text-bms-grey-400">
+                  {project.client?.name}{" "}
+                  {project.studio?.title && `— ${project.studio.title}`}
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function HomeStudiosOverview({ s, studios }: { s: Section; studios: any[] }) {
+  return (
+    <section className="relative overflow-hidden bg-bms-dark-500 text-white py-24">
+      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        {s.heading && (
+          <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">{s.heading}</h2>
+        )}
+        {studios && studios.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {studios.map((studio: any) => (
+              <a
+                key={studio._id}
+                href={`/studios/${studio.slug?.current}`}
+                className="group border border-bms-accent p-6 hover:bg-bms-accent transition-colors"
+              >
+                <h3 className="text-xl font-[family-name:var(--font-brand)] uppercase tracking-wide mb-3">
+                  {studio.title}
+                </h3>
+                <p className="text-sm text-bms-grey-300 group-hover:text-white transition-colors">
+                  {studio.purpose}
+                </p>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-bms-grey-400">
+            Studios will appear here once added in the CMS.
+          </p>
+        )}
+        <div className="text-center mt-12">
+          <a
+            href="/studios"
+            className="inline-block px-8 py-3 border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+          >
+            Explore All Studios
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeHowWeWork({ s }: { s: Section }) {
+  const hasBg = !!(s.bgVideoUrl || s.bgImage?.asset?.url);
+  return (
+    <section
+      className={`relative overflow-hidden py-24 ${hasBg ? "bg-black text-white" : "bg-white text-black"}`}
+    >
+      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        {s.heading && (
+          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">{s.heading}</h2>
+        )}
+        {s.steps && s.steps.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {s.steps.map((step: any, i: number) => (
+              <div key={step._key || i} className="text-center">
+                {step.stepNumber && (
+                  <div className="text-4xl font-[family-name:var(--font-brand)] text-bms-accent mb-4">
+                    {step.stepNumber}
+                  </div>
+                )}
+                {step.title && (
+                  <h3 className="text-lg font-[family-name:var(--font-functional)] font-bold mb-2 uppercase tracking-wide">
+                    {step.title}
+                  </h3>
+                )}
+                {step.description && (
+                  <p
+                    className={`text-sm font-[family-name:var(--font-body)] ${hasBg ? "text-bms-grey-300" : "text-bms-grey-400"}`}
+                  >
+                    {step.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function HomeTestimonials({ s, testimonials }: { s: Section; testimonials: any[] }) {
+  if (!testimonials || testimonials.length === 0) return null;
+  return (
+    <section className="relative overflow-hidden bg-black text-white py-24">
+      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
+      <div className="relative z-10 max-w-4xl mx-auto px-6">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
+          What Our Clients Say
+        </h2>
+        <div className="space-y-12">
+          {testimonials.map((t: any) => (
+            <blockquote key={t._id} className="text-center">
+              <p className="text-lg md:text-xl italic text-bms-grey-200 mb-4 font-[family-name:var(--font-body)]">
+                &ldquo;{t.quote}&rdquo;
+              </p>
+              <footer className="text-sm text-bms-grey-400">
+                &mdash; {t.attribution}
+                {t.role && `, ${t.role}`}
+                {t.client?.name && ` | ${t.client.name}`}
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeCta({ s }: { s: Section }) {
+  return (
+    <section className="relative overflow-hidden bg-bms-dark-400 text-white py-24">
+      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
+      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+        {s.heading && (
+          <h2 className="text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
+        )}
+        {s.text && (
+          <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+            {s.text}
+          </p>
+        )}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {s.primaryCta && <CtaLink cta={s.primaryCta} />}
+          {s.secondaryCta && <CtaLink cta={s.secondaryCta} />}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export const revalidate = 0;
 
 export default async function HomePage() {
@@ -83,260 +286,49 @@ export default async function HomePage() {
     client.fetch(TESTIMONIALS_QUERY).catch(() => []),
   ]);
 
-  if (!page) {
+  if (!page?.sections?.length) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white">
         <div className="text-center max-w-2xl px-6">
-          <h1 className="text-5xl md:text-7xl font-semibold tracking-wide mb-6">
+          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
             Breeze Motion Studio
           </h1>
           <p className="text-lg text-bms-grey-400 mb-4">
             Homepage content has not been published yet.
           </p>
           <p className="text-sm text-bms-grey-400">
-            Open Sanity Studio at{" "}
-            <a href="http://localhost:3333" className="underline text-white">
-              localhost:3333
-            </a>
-            , click <strong>Home Page</strong>, fill in the fields, and hit{" "}
-            <strong>Publish</strong>.
+            Open <strong>Sanity Studio → Website Pages → Home Page</strong>, add sections, and
+            publish.
           </p>
         </div>
       </div>
     );
   }
 
-  const hasHowWeWorkBg = !!(page.howWeWorkBgVideoUrl || page.howWeWorkBgImage?.asset?.url);
-  const hasFeaturedWorkBg = !!(page.featuredWorkBgVideoUrl || page.featuredWorkBgImage?.asset?.url);
-
   return (
     <div>
-      {/* ── Hero 1: Visual / Media ── */}
-      <section className="relative flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
-        <SectionBg videoUrl={page.heroVideoUrl} image={page.heroImage} />
-        {(page.heroTitle || page.heroPrimaryCta || page.heroSecondaryCta) && (
-          <div className="relative z-10 text-center max-w-4xl px-6">
-            {page.heroTitle && (
-              <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
-                {page.heroTitle}
-              </h1>
-            )}
-            {page.heroSubtitle && (
-              <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
-                {page.heroSubtitle}
-              </p>
-            )}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {page.heroPrimaryCta && <CtaLink cta={page.heroPrimaryCta} />}
-              {page.heroSecondaryCta && <CtaLink cta={page.heroSecondaryCta} />}
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* ── Hero 2: Content Hero ── */}
-      {(page.hero2Title || page.hero2VideoUrl || page.hero2Image?.asset?.url || page.hero2PrimaryCta || page.hero2SecondaryCta) && (
-        <section className="relative flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
-          <SectionBg videoUrl={page.hero2VideoUrl} image={page.hero2Image} />
-          <div className="relative z-10 text-center max-w-4xl px-6">
-            {page.hero2Title && (
-              <h2 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
-                {page.hero2Title}
-              </h2>
-            )}
-            {page.hero2Subtitle && (
-              <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
-                {page.hero2Subtitle}
-              </p>
-            )}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {page.hero2PrimaryCta && <CtaLink cta={page.hero2PrimaryCta} />}
-              {page.hero2SecondaryCta && <CtaLink cta={page.hero2SecondaryCta} />}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Featured Work ── */}
-      {featuredProjects && featuredProjects.length > 0 && (
-        <section
-          className={`relative overflow-hidden py-24 ${
-            hasFeaturedWorkBg ? "bg-black text-white" : "bg-white text-black"
-          }`}
-        >
-          <SectionBg videoUrl={page.featuredWorkBgVideoUrl} image={page.featuredWorkBgImage} />
-          <div className="relative z-10 max-w-6xl mx-auto px-6">
-            <h2
-              className={`text-3xl md:text-4xl font-semibold mb-12 text-center ${
-                hasFeaturedWorkBg ? "text-white" : "text-black"
-              }`}
-            >
-              Featured Work
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project: any) => (
-                <a
-                  key={project._id}
-                  href={`/studios/${project.studio?.slug?.current}`}
-                  className="group block"
-                >
-                  <div className="aspect-[4/3] bg-bms-dark-500 mb-4 overflow-hidden">
-                    {project.coverImage?.asset?.url && (
-                      <img
-                        src={project.coverImage.asset.url}
-                        alt={project.coverImage.alt || project.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    )}
-                  </div>
-                  <h3
-                    className={`text-lg font-[family-name:var(--font-functional)] font-bold ${
-                      hasFeaturedWorkBg ? "text-white" : "text-black"
-                    }`}
-                  >
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-bms-grey-400">
-                    {project.client?.name} {project.studio?.title && `— ${project.studio.title}`}
-                  </p>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Studios Overview ── */}
-      {page.studiosHeading && (
-        <section className="relative overflow-hidden bg-bms-dark-500 text-white py-24">
-          <SectionBg videoUrl={page.studiosBgVideoUrl} image={page.studiosBgImage} />
-          <div className="relative z-10 max-w-6xl mx-auto px-6">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
-              {page.studiosHeading}
-            </h2>
-            {studios && studios.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {studios.map((s: any) => (
-                  <a
-                    key={s._id}
-                    href={`/studios/${s.slug?.current}`}
-                    className="group border border-bms-accent p-6 hover:bg-bms-accent transition-colors"
-                  >
-                    <h3 className="text-xl font-[family-name:var(--font-brand)] uppercase tracking-wide mb-3">
-                      {s.title}
-                    </h3>
-                    <p className="text-sm text-bms-grey-300 group-hover:text-white transition-colors">
-                      {s.purpose}
-                    </p>
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <p className="text-center text-bms-grey-400">
-                Studios will appear here once added in the CMS.
-              </p>
-            )}
-            <div className="text-center mt-12">
-              <a
-                href="/studios"
-                className="inline-block px-8 py-3 border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
-              >
-                Explore All Studios
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── How We Work ── */}
-      {page.howWeWorkHeading && (
-        <section
-          className={`relative overflow-hidden py-24 ${
-            hasHowWeWorkBg ? "bg-black text-white" : "bg-white text-black"
-          }`}
-        >
-          <SectionBg videoUrl={page.howWeWorkBgVideoUrl} image={page.howWeWorkBgImage} />
-          <div className="relative z-10 max-w-5xl mx-auto px-6">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
-              {page.howWeWorkHeading}
-            </h2>
-            {page.processSteps && page.processSteps.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {page.processSteps.map((step: ProcessStep, index: number) => (
-                  <div key={step._key || index} className="text-center">
-                    {step.stepNumber && (
-                      <div className="text-4xl font-[family-name:var(--font-brand)] text-bms-accent mb-4">
-                        {step.stepNumber}
-                      </div>
-                    )}
-                    {step.title && (
-                      <h3 className="text-lg font-[family-name:var(--font-functional)] font-bold mb-2 uppercase tracking-wide">
-                        {step.title}
-                      </h3>
-                    )}
-                    {step.description && (
-                      <p
-                        className={`text-sm font-[family-name:var(--font-body)] ${
-                          hasHowWeWorkBg ? "text-bms-grey-300" : "text-bms-grey-400"
-                        }`}
-                      >
-                        {step.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* ── Testimonials ── */}
-      {testimonials && testimonials.length > 0 && (
-        <section className="relative overflow-hidden bg-black text-white py-24">
-          <SectionBg videoUrl={page.testimonialsBgVideoUrl} image={page.testimonialsBgImage} />
-          <div className="relative z-10 max-w-4xl mx-auto px-6">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
-              What Our Clients Say
-            </h2>
-            <div className="space-y-12">
-              {testimonials.map((t: any) => (
-                <blockquote key={t._id} className="text-center">
-                  <p className="text-lg md:text-xl italic text-bms-grey-200 mb-4 font-[family-name:var(--font-body)]">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                  <footer className="text-sm text-bms-grey-400">
-                    &mdash; {t.attribution}
-                    {t.role && `, ${t.role}`}
-                    {t.client?.name && ` | ${t.client.name}`}
-                  </footer>
-                </blockquote>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Final CTA ── */}
-      {page.finalCtaHeading && (
-        <section className="relative overflow-hidden bg-bms-dark-400 text-white py-24">
-          <SectionBg videoUrl={page.finalCtaBgVideoUrl} image={page.finalCtaBgImage} />
-          <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-6">
-              {page.finalCtaHeading}
-            </h2>
-            {page.finalCtaText && (
-              <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
-                {page.finalCtaText}
-              </p>
-            )}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {page.finalCtaPrimaryCta && <CtaLink cta={page.finalCtaPrimaryCta} />}
-              {page.finalCtaSecondaryCta && <CtaLink cta={page.finalCtaSecondaryCta} />}
-            </div>
-          </div>
-        </section>
-      )}
+      {page.sections.map((section: Section) => {
+        switch (section._type) {
+          case "homeHero":
+            return <HomeHero key={section._key} s={section} />;
+          case "homeFeaturedWork":
+            return (
+              <HomeFeaturedWork key={section._key} s={section} projects={featuredProjects} />
+            );
+          case "homeStudiosOverview":
+            return <HomeStudiosOverview key={section._key} s={section} studios={studios} />;
+          case "homeHowWeWork":
+            return <HomeHowWeWork key={section._key} s={section} />;
+          case "homeTestimonials":
+            return (
+              <HomeTestimonials key={section._key} s={section} testimonials={testimonials} />
+            );
+          case "homeCta":
+            return <HomeCta key={section._key} s={section} />;
+          default:
+            return null;
+        }
+      })}
     </div>
   );
 }

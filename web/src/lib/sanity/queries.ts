@@ -4,46 +4,48 @@ import { defineQuery } from "next-sanity";
 
 export const HOME_PAGE_QUERY = defineQuery(
   `*[_type == "homePage"][0]{
-    heroTitle,
-    heroSubtitle,
-    heroVideoUrl,
-    heroImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    heroPrimaryCta,
-    heroSecondaryCta,
-    hero2Title,
-    hero2Subtitle,
-    hero2VideoUrl,
-    hero2Image{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    hero2PrimaryCta,
-    hero2SecondaryCta,
-    featuredWorkBgVideoUrl,
-    featuredWorkBgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    studiosHeading,
-    studiosText,
-    studiosBgVideoUrl,
-    studiosBgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    whatWeDoHeading,
-    whatWeDoText,
-    howWeWorkHeading,
-    howWeWorkText,
-    processSteps,
-    howWeWorkBgVideoUrl,
-    howWeWorkBgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    testimonialsBgVideoUrl,
-    testimonialsBgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    finalCtaHeading,
-    finalCtaText,
-    finalCtaPrimaryCta,
-    finalCtaSecondaryCta,
-    finalCtaBgVideoUrl,
-    finalCtaBgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt}
+    sections[]{
+      ...,
+      bgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+      steps[]{_key, stepNumber, title, description},
+    },
+    seoTitle,
+    seoDescription
+  }`
+);
+
+export const ABOUT_PAGE_QUERY = defineQuery(
+  `*[_type == "aboutPage"][0]{
+    sections[]{
+      ...,
+      image{asset->{url}, alt},
+      values[]{_key, title, description},
+      steps[]{_key, title, description},
+    },
+    seoTitle,
+    seoDescription
+  }`
+);
+
+export const CONTACT_PAGE_QUERY = defineQuery(
+  `*[_type == "contactPage"][0]{
+    sections[]{...},
+    seoTitle,
+    seoDescription
+  }`
+);
+
+export const SERVICES_PAGE_QUERY = defineQuery(
+  `*[_type == "servicesPage"][0]{
+    sections[]{...},
+    seoTitle,
+    seoDescription
   }`
 );
 
 export const STUDIOS_PAGE_QUERY = defineQuery(
   `*[_type == "studiosPage"][0]{
-    heading,
-    introText,
+    sections[]{...},
     seoTitle,
     seoDescription
   }`
@@ -51,8 +53,7 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
 
 export const CASE_STUDIES_PAGE_QUERY = defineQuery(
   `*[_type == "caseStudiesPage"][0]{
-    heading,
-    introText,
+    sections[]{...},
     seoTitle,
     seoDescription
   }`
@@ -77,47 +78,6 @@ export const SITE_SETTINGS_QUERY = defineQuery(
   }`
 );
 
-export const ABOUT_PAGE_QUERY = defineQuery(
-  `*[_type == "aboutPage"][0]{
-    heading,
-    introText,
-    studioOverview,
-    mission,
-    values[]{title, description},
-    founderName,
-    founderBio,
-    founderImage{asset->{url}, alt},
-    servicesIntro,
-    howWeWorkIntro,
-    howWeWorkSteps[]{title, description},
-    seoTitle,
-    seoDescription
-  }`
-);
-
-export const CONTACT_PAGE_QUERY = defineQuery(
-  `*[_type == "contactPage"][0]{
-    heading,
-    introText,
-    email,
-    phone,
-    formHeading,
-    seoTitle,
-    seoDescription
-  }`
-);
-
-export const SERVICES_PAGE_QUERY = defineQuery(
-  `*[_type == "servicesPage"][0]{
-    heading,
-    introText,
-    ctaHeading,
-    ctaText,
-    ctaButton,
-    seoTitle,
-    seoDescription
-  }`
-);
 
 // — Studios —
 
