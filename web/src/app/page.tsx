@@ -118,7 +118,7 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
     <section className="bg-black text-white">
       {s.videoUrl && (
         ytEmbed ? (
-          <div className="w-full aspect-video">
+          <div className="w-full aspect-video relative">
             <iframe
               className="w-full h-full"
               style={{ border: 0 }}
@@ -126,6 +126,8 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
             />
+            {/* Covers YouTube's top bar (title, copy link, playlist) — no embed param can hide these */}
+            <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: 62 }} />
           </div>
         ) : (
           <video
