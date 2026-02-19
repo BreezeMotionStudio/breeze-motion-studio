@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
+import PortableTextContent from "@/components/ui/PortableTextContent";
 
 export const revalidate = 0;
 
@@ -34,9 +35,10 @@ export default async function ContactPage() {
             {heading}
           </h1>
           {page?.introText && (
-            <p className="text-lg text-bms-grey-300 max-w-xl font-[family-name:var(--font-body)] leading-relaxed">
-              {page.introText}
-            </p>
+            <PortableTextContent
+              value={page.introText}
+              className="text-bms-grey-300 max-w-xl [&_p]:text-bms-grey-300 [&_p]:text-lg [&_p]:leading-relaxed"
+            />
           )}
         </div>
       </section>
