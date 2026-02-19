@@ -12,6 +12,11 @@ type CtaButton = {
   style?: string;
 };
 
+type BgImage = {
+  asset?: { url: string; metadata?: { lqip?: string } };
+  alt?: string;
+};
+
 type ProcessStep = {
   _key?: string;
   stepNumber?: string;
@@ -36,6 +41,38 @@ function CtaLink({ cta }: { cta: CtaButton }) {
   );
 }
 
+// Renders a full-cover background video or image + dark overlay
+function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) {
+  if (videoUrl) {
+    return (
+      <>
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-black/55" />
+      </>
+    );
+  }
+  if (image?.asset?.url) {
+    return (
+      <>
+        <img
+          className="absolute inset-0 w-full h-full object-cover"
+          src={image.asset.url}
+          alt={image.alt || ""}
+        />
+        <div className="absolute inset-0 bg-black/55" />
+      </>
+    );
+  }
+  return null;
+}
+
 export const revalidate = 0;
 
 export default async function HomePage() {
@@ -46,7 +83,6 @@ export default async function HomePage() {
     client.fetch(TESTIMONIALS_QUERY).catch(() => []),
   ]);
 
-  // No CMS content yet — show setup message
   if (!page) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white">
@@ -70,64 +106,111 @@ export default async function HomePage() {
     );
   }
 
+  const hasHowWeWorkBg = !!(page.howWeWorkBgVideoUrl || page.howWeWorkBgImage?.asset?.url);
+  const hasFeaturedWorkBg = !!(page.featuredWorkBgVideoUrl || page.featuredWorkBgImage?.asset?.url);
+
   return (
     <div>
-      {/* Hero Section */}
-      <section className="flex items-center justify-center min-h-screen bg-black text-white">
-        <div className="text-center max-w-4xl px-6">
-          <h1 className="text-5xl md:text-7xl font-semibold tracking-wide mb-6">
-            {page.heroTitle}
-          </h1>
-          {page.heroSubtitle && (
-            <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
-              {page.heroSubtitle}
-            </p>
-          )}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {page.heroPrimaryCta && <CtaLink cta={page.heroPrimaryCta} />}
-            {page.heroSecondaryCta && <CtaLink cta={page.heroSecondaryCta} />}
+      {/* ── Hero 1: Visual / Media ── */}
+      <section className="relative flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
+        <SectionBg videoUrl={page.heroVideoUrl} image={page.heroImage} />
+        {(page.heroTitle || page.heroPrimaryCta || page.heroSecondaryCta) && (
+          <div className="relative z-10 text-center max-w-4xl px-6">
+            {page.heroTitle && (
+              <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
+                {page.heroTitle}
+              </h1>
+            )}
+            {page.heroSubtitle && (
+              <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+                {page.heroSubtitle}
+              </p>
+            )}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {page.heroPrimaryCta && <CtaLink cta={page.heroPrimaryCta} />}
+              {page.heroSecondaryCta && <CtaLink cta={page.heroSecondaryCta} />}
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
-      {/* Featured Work */}
-      {featuredProjects && featuredProjects.length > 0 && (
-        <section className="max-w-6xl mx-auto px-6 py-24">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
-            Featured Work
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProjects.map((project: any) => (
-              <a
-                key={project._id}
-                href={`/studios/${project.studio?.slug?.current}`}
-                className="group block"
-              >
-                <div className="aspect-[4/3] bg-bms-dark-500 mb-4 overflow-hidden">
-                  {project.coverImage?.asset?.url && (
-                    <img
-                      src={project.coverImage.asset.url}
-                      alt={project.coverImage.alt || project.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  )}
-                </div>
-                <h3 className="text-lg font-[family-name:var(--font-functional)] font-bold">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-bms-grey-400">
-                  {project.client?.name} {project.studio?.title && `— ${project.studio.title}`}
-                </p>
-              </a>
-            ))}
+      {/* ── Hero 2: Content Hero ── */}
+      {(page.hero2Title || page.hero2VideoUrl || page.hero2Image?.asset?.url || page.hero2PrimaryCta || page.hero2SecondaryCta) && (
+        <section className="relative flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
+          <SectionBg videoUrl={page.hero2VideoUrl} image={page.hero2Image} />
+          <div className="relative z-10 text-center max-w-4xl px-6">
+            {page.hero2Title && (
+              <h2 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
+                {page.hero2Title}
+              </h2>
+            )}
+            {page.hero2Subtitle && (
+              <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+                {page.hero2Subtitle}
+              </p>
+            )}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {page.hero2PrimaryCta && <CtaLink cta={page.hero2PrimaryCta} />}
+              {page.hero2SecondaryCta && <CtaLink cta={page.hero2SecondaryCta} />}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Studios Overview */}
+      {/* ── Featured Work ── */}
+      {featuredProjects && featuredProjects.length > 0 && (
+        <section
+          className={`relative overflow-hidden py-24 ${
+            hasFeaturedWorkBg ? "bg-black text-white" : "bg-white text-black"
+          }`}
+        >
+          <SectionBg videoUrl={page.featuredWorkBgVideoUrl} image={page.featuredWorkBgImage} />
+          <div className="relative z-10 max-w-6xl mx-auto px-6">
+            <h2
+              className={`text-3xl md:text-4xl font-semibold mb-12 text-center ${
+                hasFeaturedWorkBg ? "text-white" : "text-black"
+              }`}
+            >
+              Featured Work
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProjects.map((project: any) => (
+                <a
+                  key={project._id}
+                  href={`/studios/${project.studio?.slug?.current}`}
+                  className="group block"
+                >
+                  <div className="aspect-[4/3] bg-bms-dark-500 mb-4 overflow-hidden">
+                    {project.coverImage?.asset?.url && (
+                      <img
+                        src={project.coverImage.asset.url}
+                        alt={project.coverImage.alt || project.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    )}
+                  </div>
+                  <h3
+                    className={`text-lg font-[family-name:var(--font-functional)] font-bold ${
+                      hasFeaturedWorkBg ? "text-white" : "text-black"
+                    }`}
+                  >
+                    {project.title}
+                  </h3>
+                  <p className="text-sm text-bms-grey-400">
+                    {project.client?.name} {project.studio?.title && `— ${project.studio.title}`}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Studios Overview ── */}
       {page.studiosHeading && (
-        <section className="bg-bms-dark-500 text-white py-24">
-          <div className="max-w-6xl mx-auto px-6">
+        <section className="relative overflow-hidden bg-bms-dark-500 text-white py-24">
+          <SectionBg videoUrl={page.studiosBgVideoUrl} image={page.studiosBgImage} />
+          <div className="relative z-10 max-w-6xl mx-auto px-6">
             <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
               {page.studiosHeading}
             </h2>
@@ -165,10 +248,15 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* How We Work */}
+      {/* ── How We Work ── */}
       {page.howWeWorkHeading && (
-        <section className="bg-white text-black py-24">
-          <div className="max-w-5xl mx-auto px-6">
+        <section
+          className={`relative overflow-hidden py-24 ${
+            hasHowWeWorkBg ? "bg-black text-white" : "bg-white text-black"
+          }`}
+        >
+          <SectionBg videoUrl={page.howWeWorkBgVideoUrl} image={page.howWeWorkBgImage} />
+          <div className="relative z-10 max-w-5xl mx-auto px-6">
             <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
               {page.howWeWorkHeading}
             </h2>
@@ -187,7 +275,11 @@ export default async function HomePage() {
                       </h3>
                     )}
                     {step.description && (
-                      <p className="text-sm text-bms-grey-400 font-[family-name:var(--font-body)]">
+                      <p
+                        className={`text-sm font-[family-name:var(--font-body)] ${
+                          hasHowWeWorkBg ? "text-bms-grey-300" : "text-bms-grey-400"
+                        }`}
+                      >
                         {step.description}
                       </p>
                     )}
@@ -199,10 +291,11 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Testimonials */}
+      {/* ── Testimonials ── */}
       {testimonials && testimonials.length > 0 && (
-        <section className="bg-black text-white py-24">
-          <div className="max-w-4xl mx-auto px-6">
+        <section className="relative overflow-hidden bg-black text-white py-24">
+          <SectionBg videoUrl={page.testimonialsBgVideoUrl} image={page.testimonialsBgImage} />
+          <div className="relative z-10 max-w-4xl mx-auto px-6">
             <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
               What Our Clients Say
             </h2>
@@ -224,10 +317,11 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Final CTA */}
+      {/* ── Final CTA ── */}
       {page.finalCtaHeading && (
-        <section className="bg-bms-dark-400 text-white py-24">
-          <div className="max-w-3xl mx-auto px-6 text-center">
+        <section className="relative overflow-hidden bg-bms-dark-400 text-white py-24">
+          <SectionBg videoUrl={page.finalCtaBgVideoUrl} image={page.finalCtaBgImage} />
+          <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-semibold mb-6">
               {page.finalCtaHeading}
             </h2>

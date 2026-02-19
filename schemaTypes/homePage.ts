@@ -9,60 +9,135 @@ export const homePage = defineType({
   icon: HomeIcon,
   groups: [
     {name: 'hero', title: 'Hero Section', default: true},
+    {name: 'featuredWork', title: 'Featured Work'},
     {name: 'studios', title: 'Studios Overview'},
     {name: 'services', title: 'What We Do'},
     {name: 'process', title: 'How We Work'},
+    {name: 'testimonials', title: 'Testimonials'},
     {name: 'cta', title: 'Final CTA'},
     {name: 'seo', title: 'SEO'},
   ],
   fields: [
-    // — Hero Section —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // — Hero 1: Visual / Media (top) —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     defineField({
       name: 'heroTitle',
-      title: 'Hero Title',
+      title: 'Hero 1 — Title',
       type: 'string',
       group: 'hero',
-      validation: (rule) => rule.required(),
+      description: 'Leave blank to show only the background media with no overlay text',
     }),
     defineField({
       name: 'heroSubtitle',
-      title: 'Hero Subtitle',
+      title: 'Hero 1 — Subtitle',
       type: 'text',
       rows: 2,
       group: 'hero',
     }),
     defineField({
       name: 'heroVideoUrl',
-      title: 'Hero Video URL',
+      title: 'Hero 1 — Background Video URL',
       type: 'url',
       group: 'hero',
-      description: 'Background or showcase video for the hero section',
+      description: 'Full-screen background video. Takes priority over the image if both are set.',
     }),
     defineField({
       name: 'heroImage',
-      title: 'Hero Image (Fallback)',
+      title: 'Hero 1 — Background Image (Fallback)',
       type: 'image',
       options: {hotspot: true},
       group: 'hero',
-      description: 'Used when no video is provided or as a poster frame',
+      description: 'Used when no video is provided, or as the video poster frame.',
       fields: [
         defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
       ],
     }),
     defineField({
       name: 'heroPrimaryCta',
-      title: 'Primary CTA',
+      title: 'Hero 1 — Primary CTA',
       type: 'ctaButton',
       group: 'hero',
     }),
     defineField({
       name: 'heroSecondaryCta',
-      title: 'Secondary CTA',
+      title: 'Hero 1 — Secondary CTA',
       type: 'ctaButton',
       group: 'hero',
     }),
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // — Hero 2: Content Hero (below) —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    defineField({
+      name: 'hero2Title',
+      title: 'Hero 2 — Title',
+      type: 'string',
+      group: 'hero',
+      description: 'Main heading for the content hero section directly below the media hero',
+    }),
+    defineField({
+      name: 'hero2Subtitle',
+      title: 'Hero 2 — Subtitle',
+      type: 'text',
+      rows: 2,
+      group: 'hero',
+    }),
+    defineField({
+      name: 'hero2VideoUrl',
+      title: 'Hero 2 — Background Video URL',
+      type: 'url',
+      group: 'hero',
+      description: 'Background video for the content hero section.',
+    }),
+    defineField({
+      name: 'hero2Image',
+      title: 'Hero 2 — Background Image (Fallback)',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'hero',
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+      ],
+    }),
+    defineField({
+      name: 'hero2PrimaryCta',
+      title: 'Hero 2 — Primary CTA',
+      type: 'ctaButton',
+      group: 'hero',
+    }),
+    defineField({
+      name: 'hero2SecondaryCta',
+      title: 'Hero 2 — Secondary CTA',
+      type: 'ctaButton',
+      group: 'hero',
+    }),
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // — Featured Work Section —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    defineField({
+      name: 'featuredWorkBgVideoUrl',
+      title: 'Featured Work — Background Video URL',
+      type: 'url',
+      group: 'featuredWork',
+      description: 'Background video behind the Featured Work section',
+    }),
+    defineField({
+      name: 'featuredWorkBgImage',
+      title: 'Featured Work — Background Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'featuredWork',
+      description: 'Background image behind the Featured Work section (used when no video is set)',
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+      ],
+    }),
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // — Studios Overview Section —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     defineField({
       name: 'studiosHeading',
       title: 'Studios Section Heading',
@@ -75,8 +150,28 @@ export const homePage = defineType({
       type: 'blockContent',
       group: 'studios',
     }),
+    defineField({
+      name: 'studiosBgVideoUrl',
+      title: 'Studios Section — Background Video URL',
+      type: 'url',
+      group: 'studios',
+      description: 'Background video behind the Studios section',
+    }),
+    defineField({
+      name: 'studiosBgImage',
+      title: 'Studios Section — Background Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'studios',
+      description: 'Background image behind the Studios section (used when no video is set)',
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+      ],
+    }),
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // — What We Do Section —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     defineField({
       name: 'whatWeDoHeading',
       title: 'What We Do Heading',
@@ -90,7 +185,9 @@ export const homePage = defineType({
       group: 'services',
     }),
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // — How We Work Section —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     defineField({
       name: 'howWeWorkHeading',
       title: 'How We Work Heading',
@@ -139,8 +236,50 @@ export const homePage = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'howWeWorkBgVideoUrl',
+      title: 'How We Work — Background Video URL',
+      type: 'url',
+      group: 'process',
+      description: 'Background video behind the How We Work section',
+    }),
+    defineField({
+      name: 'howWeWorkBgImage',
+      title: 'How We Work — Background Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'process',
+      description: 'Background image behind the How We Work section (used when no video is set)',
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+      ],
+    }),
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // — Testimonials Section —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    defineField({
+      name: 'testimonialsBgVideoUrl',
+      title: 'Testimonials — Background Video URL',
+      type: 'url',
+      group: 'testimonials',
+      description: 'Background video behind the Testimonials section',
+    }),
+    defineField({
+      name: 'testimonialsBgImage',
+      title: 'Testimonials — Background Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'testimonials',
+      description: 'Background image behind the Testimonials section (used when no video is set)',
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+      ],
+    }),
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // — Final CTA —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     defineField({
       name: 'finalCtaHeading',
       title: 'Final CTA Heading',
@@ -166,8 +305,28 @@ export const homePage = defineType({
       type: 'ctaButton',
       group: 'cta',
     }),
+    defineField({
+      name: 'finalCtaBgVideoUrl',
+      title: 'Final CTA — Background Video URL',
+      type: 'url',
+      group: 'cta',
+      description: 'Background video behind the Final CTA section',
+    }),
+    defineField({
+      name: 'finalCtaBgImage',
+      title: 'Final CTA — Background Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'cta',
+      description: 'Background image behind the Final CTA section (used when no video is set)',
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+      ],
+    }),
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // — SEO —
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     ...seoFields,
   ],
   preview: {
