@@ -1,6 +1,6 @@
 # Architecture — Breeze Motion Studio Website
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-19 (Session 3)
 
 ## System Overview
 
@@ -100,15 +100,43 @@
 **Rationale:**
 - Enables drag-to-reorder sections directly in Sanity Studio UI — no code changes needed
 - Frontend maps through `sections` array and renders based on `_type` (switch/case)
-- Adding or hiding sections is done entirely from the CMS
+- Adding, removing, hiding, or reordering sections is done entirely from the CMS
 - Consistent pattern across all 6 page singletons
 - Section types are page-prefixed (e.g., `homeHero`, `aboutHero`) to avoid global name conflicts
 
 **Implementation:**
 - Each page schema defines a `sections` array with typed `of:` members
-- GROQ queries fetch `sections[]{...}` with explicit projections for image fields
+- Each section type includes a `disabled` boolean field ("Hide this section") — see Decision 8
+- GROQ queries fetch `sections[disabled != true]{...}` — disabled sections are excluded at the query level
 - Frontend `switch(section._type)` maps each type to its React component
 - Existing content was migrated from flat fields to sections arrays via a one-time Node.js script
+
+### 8. Section Disable/Enable Toggle
+
+**Decision:** Each section has a `disabled` boolean field. Hidden sections are filtered at GROQ query time, not on the frontend.
+
+**Rationale:**
+- Allows hiding a section without deleting it — content is preserved, just not served
+- Filtering at the query level (`sections[disabled != true]`) means zero frontend changes required; the section simply isn't in the response
+- GROQ null semantics: `null != true` evaluates to `true`, so sections without the field (created before the toggle existed) default to visible — fully backward-compatible
+- The `[HIDDEN]` prefix in the Studio preview makes the disabled state immediately visible in the section list
+
+**Implementation:**
+- `disabled` boolean field with `initialValue: false` added to every section type across all 6 page schemas
+- `prepare()` functions updated to return `[HIDDEN] SectionName` as the title when disabled
+- All 6 GROQ page queries use `sections[disabled != true]` as the array filter
+
+### 9. Dynamic CTA Buttons Array
+
+**Decision:** CTA fields in page sections use a `buttons[]` array of `ctaButton` objects, not fixed `primaryCta`/`secondaryCta` object fields.
+
+**Rationale:**
+- Native Sanity array UI gives editors add, remove, and drag-reorder without any code changes
+- Removes the artificial two-button limit — any number of buttons can be configured
+- `ctaButton` shared type carries `label`, `url`, and `style` (primary/secondary) — styling is data-driven, not position-driven
+- Consistent with the rest of the page builder philosophy: structure from content, not code
+
+**Applies to:** `homeHero`, `homeCta` (homePage), `servicesCta` (servicesPage)
 
 ---
 
@@ -257,3 +285,5 @@ src/
 5. **Error Handling:** Graceful fallbacks when CMS content is not yet published
 6. **Image Fields:** All images include hotspot support and required alt text
 7. **Singleton IDs:** Used `createOrReplace()` via Node.js scripts for documents requiring exact IDs
+8. **Section Visibility:** `disabled` boolean on each section, filtered at GROQ level — no frontend change needed to hide a section
+9. **CTA Buttons:** `buttons[]` array replaces fixed primaryCta/secondaryCta — add/remove/reorder from Studio with no code changes

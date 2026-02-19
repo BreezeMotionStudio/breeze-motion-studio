@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-02-19
+**Last Updated:** 2026-02-19 (Session 3)
 
 ---
 
@@ -34,6 +34,27 @@
 ---
 
 ## Development Log
+
+### 2026-02-19 (Session 3) — Section Disable/Enable Toggle
+- ✅ Added `disabled` boolean field ("Hide this section") to **every** section type across all 6 page schemas (24 sections total)
+- ✅ When ticked, the section is excluded at the GROQ query level (`sections[disabled != true]`) — never reaches the frontend
+- ✅ Disabled sections show a `[HIDDEN]` prefix in the Studio section list for immediate visual clarity
+- ✅ Defaults to `false` (visible) — all existing sections unaffected with no migration needed
+- ✅ Schema deployed, committed
+
+### 2026-02-19 (Session 3) — Dynamic CTA Buttons Array
+- ✅ Replaced fixed `primaryCta` / `secondaryCta` fields with a `buttons[]` array in `homeHero` and `homeCta` (homePage)
+- ✅ Replaced single `button` field with `buttons[]` array in `servicesCta` (servicesPage)
+- ✅ Editors can now add, remove, and drag-reorder any number of CTA buttons directly in Sanity — no code changes required
+- ✅ Migrated existing `primaryCta`/`secondaryCta` data from homePage to the new `buttons[]` format via MCP patch
+- ✅ Frontend renders `s.buttons.map(...)` — primary/secondary styling is preserved via the `style` field on each button
+
+### 2026-02-19 (Session 3) — Icon-Only Logo Option
+- ✅ Added `iconLogo` object field to siteSettings (Header & Navigation group)
+- ✅ Three sub-fields: `enabled` (boolean), `sizePreset` (small/medium/large), `customSize` (number override)
+- ✅ Nav.tsx renders `/web/public/logo-icon.png` when `iconLogo.enabled` is true — the icon without the Breeze Motion Studio wordmark
+- ✅ `SITE_SETTINGS_QUERY` updated; layout.tsx passes `iconLogo` prop to Nav
+- **To activate:** place logo icon file at `/web/public/logo-icon.png`, then toggle on in Site Settings → Header & Navigation → Icon Only — No Wordmark
 
 ### 2026-02-19 — YouTube Embed Support
 - ✅ Fixed Featured Work video field not displaying YouTube URLs

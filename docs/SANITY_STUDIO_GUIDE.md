@@ -71,6 +71,15 @@ All website pages use a **sections array** instead of fixed tabs. Each section a
 4. Click a section card to expand it and edit its fields
 5. Click **Publish** — the new order is immediately live on the website
 
+**Hiding a section (without deleting it):**
+1. Click the section card to expand it
+2. Scroll to the bottom of the section's fields
+3. Toggle on **"Hide this section"**
+4. Click Publish — the section disappears from the website; all content inside is preserved
+5. To bring it back: toggle "Hide this section" off → Publish
+
+When a section is hidden, it shows a **[HIDDEN]** prefix in the section list so you can see its state at a glance.
+
 **Page sections reference:**
 
 | Page | Sections available |
@@ -172,6 +181,27 @@ All website pages use a **sections array** instead of fixed tabs. Each section a
 6. The website now shows sections in the new order
 ```
 
+### **Managing CTA Buttons (Home Page, Services Page)**
+```
+The Hero and Call to Action sections use a dynamic buttons array — you can
+add, remove, and reorder buttons freely without any code changes.
+
+To add a button:
+1. Open the section (e.g., homeHero or homeCta)
+2. Find the "Buttons" field → click "+ Add item"
+3. Fill in: Label (button text), URL Path (e.g. /contact), Style (primary or secondary)
+4. Click Publish
+
+To remove a button:
+1. Open the section → find the button in the Buttons list
+2. Click the three-dot menu (•••) on the button item → Delete
+3. Click Publish
+
+To reorder buttons:
+1. Drag button items up or down within the Buttons list
+2. Click Publish
+```
+
 ### **Adding a Client (Before Adding Projects)**
 ```
 1. Left sidebar → click "Clients" (arrow)
@@ -205,18 +235,30 @@ All website pages use a **sections array** instead of fixed tabs. Each section a
 ### **Setting Up Site Settings (Do This First)**
 ```
 1. Left sidebar → click "Site Settings"
-2. Fill in:
+2. General tab:
    ✓ Site Title: "Breeze Motion Studio"
    - Tagline (optional)
-   ✓ Default Meta Description (for SEO)
+   ✓ Default Meta Description (for SEO, max 160 chars)
    - Logo (upload your logo)
    - Logo Light Version (for dark backgrounds)
+3. Header & Navigation tab:
+   - Navigation Links (add label + path for each nav item)
+   - Navigation CTA Button (optional — e.g., "Get In Touch" → /contact)
+   - Plain Logo: enabled by default, choose size preset or custom px
+   - Round Crop Logo: toggle on if you want a circular logo crop
+   - Icon Only — No Wordmark: toggle on to show icon only (place file at /web/public/logo-icon.png)
+4. Footer tab:
+   - Footer logo display options (plain or round)
+   - Footer Tagline
+   - Footer Quick Links
+   - Copyright Notice
+5. Contact tab:
    ✓ Contact Email: info@breezemotionstudio.com
    - Phone/WhatsApp (optional)
-   - Social Links (add platform + URL for each)
-   - Footer Copyright Text
-3. Click "Publish"
-4. These settings appear across entire website
+6. Social Media tab:
+   - Add platform + URL for each social account
+7. Click "Publish"
+8. These settings appear across the entire website
 ```
 
 ---

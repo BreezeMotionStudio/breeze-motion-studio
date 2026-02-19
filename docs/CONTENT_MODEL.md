@@ -4,7 +4,7 @@
 
 This document defines the Sanity schema structure for Breeze Motion Studio. All document types, fields, and relationships are documented here as a reference for the implemented schemas in `/schemaTypes`.
 
-**Status:** ✅ Implemented and deployed (as of 2026-02-19)
+**Status:** ✅ Implemented and deployed (as of 2026-02-19, Session 3)
 
 ---
 
@@ -18,6 +18,8 @@ There are **12 document types** total: 6 page singletons, 4 content collection t
 
 All 6 page singletons share a common architecture: a **`sections[]` array** as the primary content field, plus top-level `seoTitle` and `seoDescription` fields. Sections can be drag-reordered in Sanity Studio and the frontend renders them in that order.
 
+**Universal section fields:** Every section type includes a `disabled` boolean field ("Hide this section"). When ticked, the section is excluded from the GROQ query (`sections[disabled != true]`) and does not appear on the website. Content is preserved. Defaults to `false` (visible).
+
 ---
 
 ### 1. `homePage` — Homepage (Singleton)
@@ -28,17 +30,18 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 
 | Section Type | Fields |
 |-------------|--------|
-| `homeHero` | title, subtitle, bgVideoUrl, bgImage{alt}, primaryCta, secondaryCta |
+| `homeHero` | title, subtitle, bgVideoUrl, bgImage{alt}, buttons[]{label, url, style} |
 | `homeFeaturedWork` | videoUrl *(YouTube or direct file — main featured video)*, bgImage{alt} |
 | `homeStudiosOverview` | heading, bgVideoUrl, bgImage{alt} |
 | `homeHowWeWork` | heading, steps[]{stepNumber, title, description}, bgVideoUrl, bgImage{alt} |
 | `homeTestimonials` | bgVideoUrl, bgImage{alt} |
-| `homeCta` | heading, text, primaryCta, secondaryCta, bgVideoUrl, bgImage{alt} |
+| `homeCta` | heading, text, buttons[]{label, url, style}, bgVideoUrl, bgImage{alt} |
 
 **Notes:**
 - `homeFeaturedWork.videoUrl` is the featured/showcase video (YouTube or direct file URL — auto-detected on frontend)
 - `bgVideoUrl` on all sections is for background decoration; takes priority over `bgImage` if both set
 - All bg media fields are optional; sections render without them
+- `buttons[]` is a draggable array of `ctaButton` objects — editors can add/remove/reorder buttons freely
 
 ---
 
@@ -78,7 +81,7 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 | `servicesHero` | heading |
 | `servicesIntro` | text |
 | `servicesCategories` | *(no fields — automatically pulls all published serviceCategory documents)* |
-| `servicesCta` | heading, text, button *(ctaButton)* |
+| `servicesCta` | heading, text, buttons[]{label, url, style} |
 
 ---
 
@@ -225,18 +228,50 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 
 ### 13. `siteSettings` — Global Settings (Singleton)
 
+**Groups:** General, Header & Navigation, Footer, Contact, Social Media
+
+**General:**
+
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | siteTitle | string | Yes | Site-wide title |
 | tagline | string | No | Global tagline |
-| description | text | Yes | Default meta description |
-| logo | image | Yes | Site logo |
-| logoLight | image | No | Light version of logo |
-| socialLinks | array of object | No | Social media URLs |
-| footerText | string | No | Footer copyright text |
+| description | text | Yes | Default meta description (max 160 chars) |
+| logo | image | No | Primary site logo |
+| logoLight | image | No | Logo for dark backgrounds |
+
+**Header & Navigation:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| navLinks | array of {label, href} | Navigation bar links |
+| navCta | {label, href} | Optional CTA button in nav (right side) |
+| plainLogo | {enabled, sizePreset, customSize} | Unaltered logo in nav; enabled by default |
+| roundLogo | {enabled, sizePreset, customSize} | Logo in circular crop; disabled by default |
+| iconLogo | {enabled, sizePreset, customSize} | Icon-only logo (no wordmark); reads from `/public/logo-icon.png`; disabled by default |
+
+**Footer:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| footerPlainLogo | {enabled, sizePreset, customSize} | Plain logo in footer brand column |
+| footerRoundLogo | {enabled, sizePreset, customSize} | Round crop logo in footer |
+| footerTagline | string | Short tagline under footer logo |
+| footerLinks | array of {label, href} | Footer navigation column links |
+| footerText | string | Copyright notice (e.g., © 2025 Breeze Motion Studio) |
+
+**Contact:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
 | contactEmail | string | Yes | Primary contact email |
-| contactPhone | string | No | Phone number |
-| googleAnalyticsId | string | No | GA tracking ID |
+| contactPhone | string | No | Phone / WhatsApp number |
+
+**Social Media:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| socialLinks | array of {platform, url} | Social media platform links |
 
 ---
 
