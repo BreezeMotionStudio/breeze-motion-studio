@@ -26,6 +26,10 @@
 # Misc
 .DS_Store
 *.pem
+sync.ffs_db
+
+# Claude Code local settings
+.claude/settings.local.json
 
 # Typescript
 *.tsbuildinfo
