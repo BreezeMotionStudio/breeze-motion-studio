@@ -1,5 +1,15 @@
 # Breeze Motion Studio - Website
 
+## Standing Rules (Always Apply)
+
+1. **CMS–Frontend synchronization is mandatory.** Any change to the frontend that introduces new editable content (new fields, new sections, new text) must be reflected in Sanity immediately — schema deployed, field populated with appropriate content, document published. No hardcoded text on the frontend if the content can reasonably be managed in Sanity. No empty fields left unpopulated after a change session.
+
+2. **Schema changes require deployment.** After any edit to `schemaTypes/`, always run `npx sanity@latest schema deploy` before ending a work session. Never leave undeployed schema changes.
+
+3. **No orphan drafts.** After creating or migrating content in Sanity, always publish the document. Never leave relevant content as an unpublished draft unless explicitly instructed otherwise.
+
+---
+
 ## Project Overview
 
 Breeze Motion Studio is a fully remote, founder-led multi-media production and digital systems studio. This repository contains both the **Sanity CMS Studio** (content management) and the **Next.js frontend website** (public-facing portfolio).

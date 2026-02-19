@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { client } from "@/lib/sanity/client";
-import { CASE_STUDIES_QUERY } from "@/lib/sanity/queries";
+import { CASE_STUDIES_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 
 export const revalidate = 0;
 
@@ -22,7 +22,10 @@ type CaseStudy = {
 };
 
 export default async function CaseStudiesPage() {
-  const caseStudies = await client.fetch(CASE_STUDIES_QUERY).catch(() => []);
+  const [caseStudies, settings] = await Promise.all([
+    client.fetch(CASE_STUDIES_QUERY).catch(() => []),
+    client.fetch(SITE_SETTINGS_QUERY).catch(() => null),
+  ]);
 
   return (
     <div>
@@ -34,6 +37,17 @@ export default async function CaseStudiesPage() {
           </h1>
         </div>
       </section>
+
+      {/* Intro text */}
+      {settings?.caseStudiesPageIntro && (
+        <section className="bg-white border-b border-[#E6E6E6]">
+          <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+            <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+              {settings.caseStudiesPageIntro}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Listings */}
       <section className="bg-white text-black py-20">

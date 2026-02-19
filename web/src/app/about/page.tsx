@@ -40,6 +40,17 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      {/* Intro text */}
+      {page.introText && (
+        <section className="bg-white border-b border-[#E6E6E6]">
+          <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+            <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+              {page.introText}
+            </p>
+          </div>
+        </section>
+      )}
+
       {/* Studio Overview + Mission */}
       {(page.studioOverview || page.mission) && (
         <section className="bg-white text-black py-20">

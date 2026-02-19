@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { client } from "@/lib/sanity/client";
-import { STUDIOS_QUERY } from "@/lib/sanity/queries";
+import { STUDIOS_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 
 export const revalidate = 0;
 
@@ -20,7 +20,10 @@ type Studio = {
 };
 
 export default async function StudiosPage() {
-  const studios = await client.fetch(STUDIOS_QUERY).catch(() => []);
+  const [studios, settings] = await Promise.all([
+    client.fetch(STUDIOS_QUERY).catch(() => []),
+    client.fetch(SITE_SETTINGS_QUERY).catch(() => null),
+  ]);
 
   return (
     <div>
@@ -32,6 +35,17 @@ export default async function StudiosPage() {
           </h1>
         </div>
       </section>
+
+      {/* Intro text */}
+      {settings?.studiosPageIntro && (
+        <section className="bg-white border-b border-[#E6E6E6]">
+          <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+            <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+              {settings.studiosPageIntro}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Studios grid */}
       <section className="bg-white text-black py-20">

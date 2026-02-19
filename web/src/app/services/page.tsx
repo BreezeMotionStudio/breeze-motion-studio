@@ -41,16 +41,22 @@ export default async function ServicesPage() {
       {/* — Hero — */}
       <section className="bg-black text-white py-24 md:py-32">
         <div className="max-w-5xl mx-auto px-6">
-          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-8">
+          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
             {page?.heading || "Services"}
           </h1>
-          {page?.introText && (
-            <p className="text-lg md:text-xl text-bms-grey-300 max-w-2xl font-[family-name:var(--font-body)] leading-relaxed">
-              {page.introText}
-            </p>
-          )}
         </div>
       </section>
+
+      {/* — Intro text — */}
+      {page?.introText && (
+        <section className="bg-white border-b border-[#E6E6E6]">
+          <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+            <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+              {page.introText}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* — Service Categories — */}
       {categories && categories.length > 0 ? (

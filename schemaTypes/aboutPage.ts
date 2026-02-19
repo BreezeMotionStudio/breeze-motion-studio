@@ -23,6 +23,14 @@ export const aboutPage = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'introText',
+      title: 'Page Intro',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+      description: 'Brief intro shown on white below the hero heading, before the main content',
+    }),
+    defineField({
       name: 'studioOverview',
       title: 'Studio Overview',
       type: 'blockContent',

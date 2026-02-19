@@ -28,6 +28,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(
   `*[_type == "siteSettings"][0]{
     siteTitle,
     tagline,
+    studiosPageIntro,
+    caseStudiesPageIntro,
     navLinks[]{label, href},
     navCta{label, href},
     plainLogo{enabled, sizePreset, customSize},
@@ -46,6 +48,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(
 export const ABOUT_PAGE_QUERY = defineQuery(
   `*[_type == "aboutPage"][0]{
     heading,
+    introText,
     studioOverview,
     mission,
     values[]{title, description},

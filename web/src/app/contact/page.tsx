@@ -31,17 +31,23 @@ export default async function ContactPage() {
       {/* Hero */}
       <section className="bg-black text-white py-24 md:py-32">
         <div className="max-w-5xl mx-auto px-6">
-          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
+          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
             {heading}
           </h1>
-          {page?.introText && (
-            <PortableTextContent
-              value={page.introText}
-              className="text-bms-grey-300 max-w-xl [&_p]:text-bms-grey-300 [&_p]:text-lg [&_p]:leading-relaxed"
-            />
-          )}
         </div>
       </section>
+
+      {/* Intro text */}
+      {page?.introText && (
+        <section className="bg-white border-b border-[#E6E6E6]">
+          <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+            <PortableTextContent
+              value={page.introText}
+              className="text-[#4B4B4B] max-w-2xl [&_p]:text-[#4B4B4B] [&_p]:text-lg [&_p]:leading-relaxed"
+            />
+          </div>
+        </section>
+      )}
 
       {/* Contact body */}
       <section className="bg-white text-black py-20">

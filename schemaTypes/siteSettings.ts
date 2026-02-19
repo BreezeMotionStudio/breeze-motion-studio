@@ -8,6 +8,7 @@ export const siteSettings = defineType({
   icon: CogIcon,
   groups: [
     {name: 'general', title: 'General', default: true},
+    {name: 'pages', title: 'Page Intros'},
     {name: 'header', title: 'Header & Navigation'},
     {name: 'footer', title: 'Footer'},
     {name: 'contact', title: 'Contact'},
@@ -48,6 +49,24 @@ export const siteSettings = defineType({
       type: 'image',
       group: 'general',
       description: 'For use on dark backgrounds',
+    }),
+
+    // — Page Intros —
+    defineField({
+      name: 'studiosPageIntro',
+      title: 'Studios Listing Page Intro',
+      type: 'text',
+      rows: 3,
+      group: 'pages',
+      description: 'Brief intro shown on white below the heading on the Studios listing page',
+    }),
+    defineField({
+      name: 'caseStudiesPageIntro',
+      title: 'Case Studies Listing Page Intro',
+      type: 'text',
+      rows: 3,
+      group: 'pages',
+      description: 'Brief intro shown on white below the heading on the Case Studies listing page',
     }),
 
     // — Header & Navigation —
