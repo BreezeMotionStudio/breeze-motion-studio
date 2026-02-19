@@ -10,7 +10,7 @@ type CtaButton = { label?: string; url?: string; style?: string };
 type BgImage = { asset?: { url: string }; alt?: string };
 type Section = Record<string, any> & { _type: string; _key: string };
 
-function getYouTubeEmbedUrl(url: string, mode: "showcase" | "background" = "showcase"): string | null {
+function getYouTubeEmbedUrl(url: string): string | null {
   try {
     const u = new URL(url);
     let id: string | null = null;
@@ -20,13 +20,7 @@ function getYouTubeEmbedUrl(url: string, mode: "showcase" | "background" = "show
       id = u.searchParams.get("v") || u.pathname.split("/").pop() || null;
     }
     if (!id) return null;
-    // Common: no related videos, no info cards/annotations, minimal branding
-    const common = `rel=0&iv_load_policy=3&modestbranding=1`;
-    if (mode === "background") {
-      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1&${common}`;
-    }
-    // Showcase: max quality hints, controls on for play/pause, no autoplay
-    return `https://www.youtube.com/embed/${id}?${common}&vq=hd2160&hd=1&controls=1&playsinline=1`;
+    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1&rel=0&iv_load_policy=3`;
   } catch {
     return null;
   }
@@ -51,7 +45,7 @@ function CtaLink({ cta }: { cta: CtaButton }) {
 
 function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) {
   if (videoUrl) {
-    const ytEmbed = getYouTubeEmbedUrl(videoUrl, "background");
+    const ytEmbed = getYouTubeEmbedUrl(videoUrl);
     return (
       <>
         {ytEmbed ? (
@@ -119,7 +113,7 @@ function HomeHero({ s }: { s: Section }) {
 
 function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
   const hasMedia = !!(s.videoUrl || s.bgImage?.asset?.url);
-  const ytEmbed = s.videoUrl ? getYouTubeEmbedUrl(s.videoUrl, "showcase") : null;
+  const ytEmbed = s.videoUrl ? getYouTubeEmbedUrl(s.videoUrl) : null;
   return (
     <section className="bg-black text-white">
       {s.videoUrl && (
