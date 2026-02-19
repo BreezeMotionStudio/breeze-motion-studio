@@ -18,6 +18,7 @@ type NavProps = {
   navCta?: NavCta;
   plainLogo?: LogoSettings;
   roundLogo?: LogoSettings;
+  iconLogo?: LogoSettings;
 };
 
 const defaultLinks: NavLink[] = [
@@ -31,6 +32,7 @@ const defaultLinks: NavLink[] = [
 
 const PLAIN_PRESETS = { small: 28, medium: 44, large: 56 };
 const ROUND_PRESETS = { small: 28, medium: 36, large: 48 };
+const ICON_PRESETS = { small: 28, medium: 36, large: 48 };
 
 function resolveSize(
   settings: LogoSettings | undefined,
@@ -42,7 +44,7 @@ function resolveSize(
   return fallback;
 }
 
-export default function Nav({ navLinks, navCta, plainLogo, roundLogo }: NavProps) {
+export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo }: NavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -51,9 +53,11 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo }: NavProps
   // Logo visibility — plain logo shows by default if no settings configured
   const showPlain = plainLogo ? plainLogo.enabled !== false : true;
   const showRound = roundLogo?.enabled === true;
+  const showIcon = iconLogo?.enabled === true;
 
   const plainSize = resolveSize(plainLogo, PLAIN_PRESETS, 56);
   const roundSize = resolveSize(roundLogo, ROUND_PRESETS, 36);
+  const iconSize = resolveSize(iconLogo, ICON_PRESETS, 36);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-[#1a1a1a]">
@@ -92,6 +96,19 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo }: NavProps
                 priority
               />
             </div>
+          )}
+
+          {/* Icon only — no wordmark */}
+          {showIcon && (
+            <Image
+              src="/logo-icon.png"
+              alt="Breeze Motion Studio"
+              width={iconSize}
+              height={iconSize}
+              style={{ height: iconSize, width: "auto" }}
+              className="shrink-0"
+              priority
+            />
           )}
 
           <span className="font-[family-name:var(--font-brand)] text-white uppercase tracking-widest text-sm">

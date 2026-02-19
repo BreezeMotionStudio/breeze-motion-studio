@@ -171,6 +171,45 @@ export const siteSettings = defineType({
       ],
     }),
 
+    // — Logo: Icon Only —
+    defineField({
+      name: 'iconLogo',
+      title: 'Icon Only — No Wordmark',
+      type: 'object',
+      group: 'header',
+      description: 'Logo icon displayed in the navigation bar without the Breeze Motion Studio wordmark text. Place your icon file at /web/public/logo-icon.png',
+      fields: [
+        defineField({
+          name: 'enabled',
+          title: 'Show Icon Only Logo',
+          type: 'boolean',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'sizePreset',
+          title: 'Size Preset',
+          type: 'string',
+          options: {
+            list: [
+              {title: 'Small — 28px', value: 'small'},
+              {title: 'Medium — 36px', value: 'medium'},
+              {title: 'Large — 48px', value: 'large'},
+            ],
+            layout: 'radio',
+            direction: 'horizontal',
+          },
+          initialValue: 'medium',
+        }),
+        defineField({
+          name: 'customSize',
+          title: 'Custom Size (px)',
+          type: 'number',
+          description: 'Enter a pixel value to override the preset above. Leave blank to use the preset.',
+          validation: (rule) => rule.min(16).max(120),
+        }),
+      ],
+    }),
+
     // — Footer —
 
     // — Footer Logo: Plain —

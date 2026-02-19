@@ -5,6 +5,7 @@ import { SERVICES_PAGE_QUERY, SERVICE_CATEGORIES_QUERY } from "@/lib/sanity/quer
 export const revalidate = 0;
 
 type Section = Record<string, any> & { _type: string; _key: string };
+type CtaButton = { _key?: string; label?: string; url?: string; style?: string };
 type ServiceCategory = {
   _id: string;
   title: string;
@@ -120,12 +121,33 @@ function ServicesCta({ s }: { s: Section }) {
             {s.text}
           </p>
         )}
-        <a
-          href={s.button?.url || "/contact"}
-          className="inline-block px-10 py-4 border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
-        >
-          {s.button?.label || "Get In Touch"}
-        </a>
+        {s.buttons && s.buttons.length > 0 ? (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {s.buttons.map((btn: CtaButton) => {
+              const isPrimary = btn.style === "primary";
+              return (
+                <a
+                  key={btn._key}
+                  href={btn.url || "/contact"}
+                  className={`inline-block px-10 py-4 font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest transition-colors ${
+                    isPrimary
+                      ? "bg-white text-black hover:bg-bms-grey-200"
+                      : "border border-white text-white hover:bg-white hover:text-black"
+                  }`}
+                >
+                  {btn.label}
+                </a>
+              );
+            })}
+          </div>
+        ) : (
+          <a
+            href="/contact"
+            className="inline-block px-10 py-4 border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+          >
+            Get In Touch
+          </a>
+        )}
       </div>
     </section>
   );

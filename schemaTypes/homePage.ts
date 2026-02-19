@@ -34,8 +34,13 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
-            defineField({name: 'primaryCta', title: 'Primary Button', type: 'ctaButton'}),
-            defineField({name: 'secondaryCta', title: 'Secondary Button', type: 'ctaButton'}),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
           ],
           preview: {
             select: {title: 'title'},
@@ -166,8 +171,13 @@ export const homePage = defineType({
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
             defineField({name: 'text', title: 'Supporting Text', type: 'text', rows: 2}),
-            defineField({name: 'primaryCta', title: 'Primary Button', type: 'ctaButton'}),
-            defineField({name: 'secondaryCta', title: 'Secondary Button', type: 'ctaButton'}),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',

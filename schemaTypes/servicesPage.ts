@@ -74,7 +74,13 @@ export const servicesPage = defineType({
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
             defineField({name: 'text', title: 'Supporting Text', type: 'text', rows: 2}),
-            defineField({name: 'button', title: 'Button', type: 'ctaButton'}),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
           ],
           preview: {
             select: {title: 'heading'},

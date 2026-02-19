@@ -6,7 +6,7 @@ import {
   TESTIMONIALS_QUERY,
 } from "@/lib/sanity/queries";
 
-type CtaButton = { label?: string; url?: string; style?: string };
+type CtaButton = { _key?: string; label?: string; url?: string; style?: string };
 type BgImage = { asset?: { url: string }; alt?: string };
 type Section = Record<string, any> & { _type: string; _key: string };
 
@@ -110,7 +110,7 @@ function HomeHero({ s }: { s: Section }) {
   return (
     <section className="relative z-10 flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
-      {(s.title || s.primaryCta || s.secondaryCta) && (
+      {(s.title || s.subtitle || s.buttons?.length > 0) && (
         <div className="relative z-10 text-center max-w-4xl px-6">
           {s.title && (
             <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
@@ -122,10 +122,13 @@ function HomeHero({ s }: { s: Section }) {
               {s.subtitle}
             </p>
           )}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {s.primaryCta && <CtaLink cta={s.primaryCta} />}
-            {s.secondaryCta && <CtaLink cta={s.secondaryCta} />}
-          </div>
+          {s.buttons && s.buttons.length > 0 && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {s.buttons.map((btn: CtaButton) => (
+                <CtaLink key={btn._key} cta={btn} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </section>
@@ -320,10 +323,13 @@ function HomeCta({ s }: { s: Section }) {
             {s.text}
           </p>
         )}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {s.primaryCta && <CtaLink cta={s.primaryCta} />}
-          {s.secondaryCta && <CtaLink cta={s.secondaryCta} />}
-        </div>
+        {s.buttons && s.buttons.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {s.buttons.map((btn: CtaButton) => (
+              <CtaLink key={btn._key} cta={btn} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

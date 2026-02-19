@@ -31,6 +31,7 @@ export default async function RootLayout({
           navCta={settings?.navCta}
           plainLogo={settings?.plainLogo}
           roundLogo={settings?.roundLogo}
+          iconLogo={settings?.iconLogo}
         />
         <main className="pt-16">{children}</main>
         <Footer

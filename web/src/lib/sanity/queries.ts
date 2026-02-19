@@ -67,6 +67,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     navCta{label, href},
     plainLogo{enabled, sizePreset, customSize},
     roundLogo{enabled, sizePreset, customSize},
+    iconLogo{enabled, sizePreset, customSize},
     footerPlainLogo{enabled, sizePreset, customSize},
     footerRoundLogo{enabled, sizePreset, customSize},
     footerTagline,
