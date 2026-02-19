@@ -135,7 +135,7 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo }
           {navCta?.label && navCta?.href && (
             <Link
               href={navCta.href}
-              className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest border border-[#535D66] text-white px-4 py-2 hover:bg-[#535D66] transition-colors"
+              className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest rounded-sm border border-[#535D66] text-white px-4 py-2 hover:bg-[#535D66] transition-colors"
             >
               {navCta.label}
             </Link>
@@ -176,7 +176,7 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo }
             <Link
               href={navCta.href}
               onClick={() => setOpen(false)}
-              className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest text-white border border-[#535D66] px-4 py-3 text-center hover:bg-[#535D66] transition-colors"
+              className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest rounded-sm text-white border border-[#535D66] px-4 py-3 text-center hover:bg-[#535D66] transition-colors"
             >
               {navCta.label}
             </Link>
