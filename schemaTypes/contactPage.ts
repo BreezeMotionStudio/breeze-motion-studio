@@ -2,6 +2,14 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {EnvelopeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
+const disabledField = defineField({
+  name: 'disabled',
+  title: 'Hide this section',
+  type: 'boolean',
+  description: 'When ticked, this section will not appear on the website.',
+  initialValue: false,
+})
+
 export const contactPage = defineType({
   name: 'contactPage',
   title: 'Contact Page',
@@ -30,11 +38,12 @@ export const contactPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Hero', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
             },
           },
         }),
@@ -45,10 +54,12 @@ export const contactPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'content', title: 'Content', type: 'blockContent'}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Intro Text'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Intro Text' : 'Intro Text'}
             },
           },
         }),
@@ -66,10 +77,12 @@ export const contactPage = defineType({
             }),
             defineField({name: 'phone', title: 'Phone / WhatsApp', type: 'string'}),
             defineField({name: 'formHeading', title: 'Form Heading', type: 'string'}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Contact Details & Form'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Contact Details & Form' : 'Contact Details & Form'}
             },
           },
         }),

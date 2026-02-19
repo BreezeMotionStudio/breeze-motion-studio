@@ -2,6 +2,14 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {BulbOutlineIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
+const disabledField = defineField({
+  name: 'disabled',
+  title: 'Hide this section',
+  type: 'boolean',
+  description: 'When ticked, this section will not appear on the website.',
+  initialValue: false,
+})
+
 export const servicesPage = defineType({
   name: 'servicesPage',
   title: 'Services Page',
@@ -30,11 +38,12 @@ export const servicesPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Hero', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
             },
           },
         }),
@@ -45,10 +54,12 @@ export const servicesPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Intro Text'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Intro Text' : 'Intro Text'}
             },
           },
         }),
@@ -59,10 +70,12 @@ export const servicesPage = defineType({
           title: 'Service Categories',
           fields: [
             defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Service Categories'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Service Categories' : 'Service Categories'}
             },
           },
         }),
@@ -81,11 +94,12 @@ export const servicesPage = defineType({
               description: 'Add, remove, or reorder CTA buttons.',
               of: [defineArrayMember({type: 'ctaButton'})],
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Call to Action', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
             },
           },
         }),

@@ -2,6 +2,14 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
+const disabledField = defineField({
+  name: 'disabled',
+  title: 'Hide this section',
+  type: 'boolean',
+  description: 'When ticked, this section will not appear on the website.',
+  initialValue: false,
+})
+
 export const homePage = defineType({
   name: 'homePage',
   title: 'Home Page',
@@ -41,11 +49,12 @@ export const homePage = defineType({
               description: 'Add, remove, or reorder CTA buttons.',
               of: [defineArrayMember({type: 'ctaButton'})],
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'title'},
-            prepare({title}) {
-              return {title: 'Hero', subtitle: title}
+            select: {title: 'title', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
             },
           },
         }),
@@ -63,10 +72,12 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Featured Work'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Featured Work' : 'Featured Work'}
             },
           },
         }),
@@ -85,11 +96,12 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Studios Overview', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Studios Overview' : 'Studios Overview', subtitle: title}
             },
           },
         }),
@@ -134,11 +146,12 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'How We Work', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] How We Work' : 'How We Work', subtitle: title}
             },
           },
         }),
@@ -156,10 +169,12 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Testimonials'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Testimonials' : 'Testimonials'}
             },
           },
         }),
@@ -186,11 +201,12 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Call to Action', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
             },
           },
         }),

@@ -2,6 +2,14 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {UserIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
+const disabledField = defineField({
+  name: 'disabled',
+  title: 'Hide this section',
+  type: 'boolean',
+  description: 'When ticked, this section will not appear on the website.',
+  initialValue: false,
+})
+
 export const aboutPage = defineType({
   name: 'aboutPage',
   title: 'About Page',
@@ -30,11 +38,12 @@ export const aboutPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Hero', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
             },
           },
         }),
@@ -45,10 +54,12 @@ export const aboutPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Intro Text'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Intro Text' : 'Intro Text'}
             },
           },
         }),
@@ -60,10 +71,12 @@ export const aboutPage = defineType({
           fields: [
             defineField({name: 'overview', title: 'Studio Overview', type: 'blockContent'}),
             defineField({name: 'mission', title: 'Mission', type: 'blockContent'}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Studio Overview & Mission'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Studio Overview & Mission' : 'Studio Overview & Mission'}
             },
           },
         }),
@@ -87,11 +100,12 @@ export const aboutPage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'name'},
-            prepare({title}) {
-              return {title: 'Founder', subtitle: title}
+            select: {title: 'name', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Founder' : 'Founder', subtitle: title}
             },
           },
         }),
@@ -121,10 +135,12 @@ export const aboutPage = defineType({
                 }),
               ],
             }),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Core Values'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Core Values' : 'Core Values'}
             },
           },
         }),
@@ -155,10 +171,12 @@ export const aboutPage = defineType({
                 }),
               ],
             }),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'How We Work'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] How We Work' : 'How We Work'}
             },
           },
         }),

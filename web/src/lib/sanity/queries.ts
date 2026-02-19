@@ -4,7 +4,7 @@ import { defineQuery } from "next-sanity";
 
 export const HOME_PAGE_QUERY = defineQuery(
   `*[_type == "homePage"][0]{
-    sections[]{
+    sections[disabled != true]{
       ...,
       bgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
       steps[]{_key, stepNumber, title, description},
@@ -16,7 +16,7 @@ export const HOME_PAGE_QUERY = defineQuery(
 
 export const ABOUT_PAGE_QUERY = defineQuery(
   `*[_type == "aboutPage"][0]{
-    sections[]{
+    sections[disabled != true]{
       ...,
       image{asset->{url}, alt},
       values[]{_key, title, description},
@@ -29,7 +29,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(
 
 export const CONTACT_PAGE_QUERY = defineQuery(
   `*[_type == "contactPage"][0]{
-    sections[]{...},
+    sections[disabled != true]{...},
     seoTitle,
     seoDescription
   }`
@@ -37,7 +37,7 @@ export const CONTACT_PAGE_QUERY = defineQuery(
 
 export const SERVICES_PAGE_QUERY = defineQuery(
   `*[_type == "servicesPage"][0]{
-    sections[]{...},
+    sections[disabled != true]{...},
     seoTitle,
     seoDescription
   }`
@@ -45,7 +45,7 @@ export const SERVICES_PAGE_QUERY = defineQuery(
 
 export const STUDIOS_PAGE_QUERY = defineQuery(
   `*[_type == "studiosPage"][0]{
-    sections[]{...},
+    sections[disabled != true]{...},
     seoTitle,
     seoDescription
   }`
@@ -53,7 +53,7 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
 
 export const CASE_STUDIES_PAGE_QUERY = defineQuery(
   `*[_type == "caseStudiesPage"][0]{
-    sections[]{...},
+    sections[disabled != true]{...},
     seoTitle,
     seoDescription
   }`

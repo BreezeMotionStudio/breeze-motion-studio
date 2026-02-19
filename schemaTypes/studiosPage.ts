@@ -2,6 +2,14 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ComponentIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
+const disabledField = defineField({
+  name: 'disabled',
+  title: 'Hide this section',
+  type: 'boolean',
+  description: 'When ticked, this section will not appear on the website.',
+  initialValue: false,
+})
+
 export const studiosPage = defineType({
   name: 'studiosPage',
   title: 'Studio Page',
@@ -30,11 +38,12 @@ export const studiosPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            disabledField,
           ],
           preview: {
-            select: {title: 'heading'},
-            prepare({title}) {
-              return {title: 'Hero', subtitle: title}
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
             },
           },
         }),
@@ -45,10 +54,12 @@ export const studiosPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Intro Text'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Intro Text' : 'Intro Text'}
             },
           },
         }),
@@ -59,10 +70,12 @@ export const studiosPage = defineType({
           title: 'Studios Grid',
           fields: [
             defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+            disabledField,
           ],
           preview: {
-            prepare() {
-              return {title: 'Studios Grid'}
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Studios Grid' : 'Studios Grid'}
             },
           },
         }),
