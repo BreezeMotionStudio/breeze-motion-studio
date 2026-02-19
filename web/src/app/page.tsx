@@ -43,6 +43,27 @@ function CtaLink({ cta }: { cta: CtaButton }) {
   );
 }
 
+/**
+ * RULE: Use this component for every main/featured YouTube video on the site.
+ * The iframe is shifted up 62px and the container clips it with overflow-hidden,
+ * so YouTube's title bar (title, copy-link, playlist) is never visible.
+ * The section above should have relative z-10 and the section containing this
+ * should have -mt-[62px] so the transition is seamless.
+ */
+function YouTubeShowcase({ src }: { src: string }) {
+  return (
+    <div className="w-full aspect-video relative overflow-hidden">
+      <iframe
+        className="absolute left-0 w-full"
+        style={{ border: 0, display: "block", outline: "none", top: "-62px", height: "calc(100% + 62px)" }}
+        src={src}
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  );
+}
+
 function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) {
   if (videoUrl) {
     const ytEmbed = getYouTubeEmbedUrl(videoUrl);
@@ -118,17 +139,7 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
     <section className="bg-black text-white -mt-[62px]">
       {s.videoUrl && (
         ytEmbed ? (
-          <div className="w-full aspect-video relative overflow-hidden">
-            <iframe
-              className="w-full h-full"
-              style={{ border: 0, display: "block", outline: "none" }}
-              src={ytEmbed}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-            />
-            {/* Covers YouTube's top bar — also sits behind the hero on initial load */}
-            <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: 62 }} />
-          </div>
+          <YouTubeShowcase src={ytEmbed} />
         ) : (
           <video
             className="w-full aspect-video object-cover"
