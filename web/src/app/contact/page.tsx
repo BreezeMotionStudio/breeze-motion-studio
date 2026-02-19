@@ -118,7 +118,7 @@ function ContactDetailsForm({
             <div>
               <button
                 type="submit"
-                className="px-10 py-4 rounded-sm bg-black text-white font-[family-name:var(--font-functional)] font-semibold text-sm uppercase tracking-widest hover:bg-bms-accent transition-colors"
+                className="px-10 py-4 rounded-sm bg-black text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-bms-accent transition-colors"
               >
                 Send Message
               </button>
