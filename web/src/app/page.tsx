@@ -10,6 +10,22 @@ type CtaButton = { label?: string; url?: string; style?: string };
 type BgImage = { asset?: { url: string }; alt?: string };
 type Section = Record<string, any> & { _type: string; _key: string };
 
+function getYouTubeEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    let id: string | null = null;
+    if (u.hostname === "youtu.be") {
+      id = u.pathname.slice(1);
+    } else if (u.hostname.includes("youtube.com")) {
+      id = u.searchParams.get("v") || u.pathname.split("/").pop() || null;
+    }
+    if (!id) return null;
+    return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&playsinline=1`;
+  } catch {
+    return null;
+  }
+}
+
 function CtaLink({ cta }: { cta: CtaButton }) {
   if (!cta?.label || !cta?.url) return null;
   const isPrimary = cta.style === "primary";
@@ -29,16 +45,27 @@ function CtaLink({ cta }: { cta: CtaButton }) {
 
 function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) {
   if (videoUrl) {
+    const ytEmbed = getYouTubeEmbedUrl(videoUrl);
     return (
       <>
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src={videoUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+        {ytEmbed ? (
+          <iframe
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{ border: 0, transform: "scale(1.5)", transformOrigin: "center" }}
+            src={ytEmbed}
+            allow="autoplay; encrypted-media"
+            allowFullScreen={false}
+          />
+        ) : (
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            src={videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        )}
         <div className="absolute inset-0 bg-black/55" />
       </>
     );
@@ -86,17 +113,30 @@ function HomeHero({ s }: { s: Section }) {
 
 function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
   const hasMedia = !!(s.videoUrl || s.bgImage?.asset?.url);
+  const ytEmbed = s.videoUrl ? getYouTubeEmbedUrl(s.videoUrl) : null;
   return (
     <section className="bg-black text-white">
       {s.videoUrl && (
-        <video
-          className="w-full aspect-video object-cover"
-          src={s.videoUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
+        ytEmbed ? (
+          <div className="w-full aspect-video">
+            <iframe
+              className="w-full h-full"
+              style={{ border: 0 }}
+              src={ytEmbed}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        ) : (
+          <video
+            className="w-full aspect-video object-cover"
+            src={s.videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        )
       )}
       {!s.videoUrl && s.bgImage?.asset?.url && (
         <img
