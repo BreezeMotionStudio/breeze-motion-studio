@@ -87,7 +87,7 @@ function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) 
 
 function HomeHero({ s }: { s: Section }) {
   return (
-    <section className="relative flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
+    <section className="relative z-10 flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       {(s.title || s.primaryCta || s.secondaryCta) && (
         <div className="relative z-10 text-center max-w-4xl px-6">
@@ -115,18 +115,18 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
   const hasMedia = !!(s.videoUrl || s.bgImage?.asset?.url);
   const ytEmbed = s.videoUrl ? getYouTubeEmbedUrl(s.videoUrl) : null;
   return (
-    <section className="bg-black text-white">
+    <section className="bg-black text-white -mt-[62px]">
       {s.videoUrl && (
         ytEmbed ? (
-          <div className="w-full aspect-video relative">
+          <div className="w-full aspect-video relative overflow-hidden">
             <iframe
               className="w-full h-full"
-              style={{ border: 0 }}
+              style={{ border: 0, display: "block", outline: "none" }}
               src={ytEmbed}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
             />
-            {/* Covers YouTube's top bar (title, copy link, playlist) — no embed param can hide these */}
+            {/* Covers YouTube's top bar — also sits behind the hero on initial load */}
             <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: 62 }} />
           </div>
         ) : (
