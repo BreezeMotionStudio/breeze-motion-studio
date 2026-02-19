@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { client } from "@/lib/sanity/client";
-import { CASE_STUDIES_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
+import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY } from "@/lib/sanity/queries";
 
 export const revalidate = 0;
-
-export const metadata: Metadata = {
-  title: "Case Studies",
-  description: "Curated, narrative-driven deep dives into selected projects and client relationships.",
-};
 
 type CaseStudy = {
   _id: string;
@@ -21,10 +16,20 @@ type CaseStudy = {
   studio?: { title: string; slug: { current: string } };
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await client.fetch(CASE_STUDIES_PAGE_QUERY).catch(() => null);
+  return {
+    title: page?.seoTitle || "Case Studies",
+    description:
+      page?.seoDescription ||
+      "Curated, narrative-driven deep dives into selected projects and client relationships.",
+  };
+}
+
 export default async function CaseStudiesPage() {
-  const [caseStudies, settings] = await Promise.all([
+  const [caseStudies, page] = await Promise.all([
     client.fetch(CASE_STUDIES_QUERY).catch(() => []),
-    client.fetch(SITE_SETTINGS_QUERY).catch(() => null),
+    client.fetch(CASE_STUDIES_PAGE_QUERY).catch(() => null),
   ]);
 
   return (
@@ -33,17 +38,17 @@ export default async function CaseStudiesPage() {
       <section className="bg-black text-white py-24 md:py-32">
         <div className="max-w-5xl mx-auto px-6">
           <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
-            Case Studies
+            {page?.heading || "Case Studies"}
           </h1>
         </div>
       </section>
 
       {/* Intro text */}
-      {settings?.caseStudiesPageIntro && (
+      {page?.introText && (
         <section className="bg-white border-b border-[#E6E6E6]">
           <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
             <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
-              {settings.caseStudiesPageIntro}
+              {page.introText}
             </p>
           </div>
         </section>
@@ -108,7 +113,7 @@ export default async function CaseStudiesPage() {
           ) : (
             <p className="text-bms-grey-400 font-[family-name:var(--font-body)]">
               Case studies will appear here once added in{" "}
-              <strong>Sanity Studio → Website Pages → Case Studies</strong>.
+              <strong>Sanity Studio → Content Library → Case Studies</strong>.
             </p>
           )}
         </div>

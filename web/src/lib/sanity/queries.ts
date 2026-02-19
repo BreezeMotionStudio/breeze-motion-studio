@@ -24,12 +24,28 @@ export const HOME_PAGE_QUERY = defineQuery(
   }`
 );
 
+export const STUDIOS_PAGE_QUERY = defineQuery(
+  `*[_type == "studiosPage"][0]{
+    heading,
+    introText,
+    seoTitle,
+    seoDescription
+  }`
+);
+
+export const CASE_STUDIES_PAGE_QUERY = defineQuery(
+  `*[_type == "caseStudiesPage"][0]{
+    heading,
+    introText,
+    seoTitle,
+    seoDescription
+  }`
+);
+
 export const SITE_SETTINGS_QUERY = defineQuery(
   `*[_type == "siteSettings"][0]{
     siteTitle,
     tagline,
-    studiosPageIntro,
-    caseStudiesPageIntro,
     navLinks[]{label, href},
     navCta{label, href},
     plainLogo{enabled, sizePreset, customSize},

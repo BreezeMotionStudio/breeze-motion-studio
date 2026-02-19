@@ -16,7 +16,15 @@ import {
 } from '@sanity/icons'
 
 // Singleton document types (excluded from generic lists)
-const SINGLETONS = ['siteSettings', 'homePage', 'aboutPage', 'contactPage', 'servicesPage']
+const SINGLETONS = [
+  'siteSettings',
+  'homePage',
+  'aboutPage',
+  'contactPage',
+  'servicesPage',
+  'studiosPage',
+  'caseStudiesPage',
+]
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -65,14 +73,24 @@ export const structure: StructureResolver = (S) =>
                 ),
 
               S.listItem()
-                .title('Studios')
+                .title('Studio Page')
                 .icon(ComponentIcon)
-                .child(S.documentTypeList('studio').title('Studios')),
+                .child(
+                  S.document()
+                    .schemaType('studiosPage')
+                    .documentId('studiosPage')
+                    .title('Studio Page'),
+                ),
 
               S.listItem()
-                .title('Case Studies')
+                .title('Case Studies Page')
                 .icon(DocumentTextIcon)
-                .child(S.documentTypeList('caseStudy').title('Case Studies')),
+                .child(
+                  S.document()
+                    .schemaType('caseStudiesPage')
+                    .documentId('caseStudiesPage')
+                    .title('Case Studies Page'),
+                ),
             ]),
         ),
 
@@ -86,6 +104,16 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('Content Library')
             .items([
+              S.listItem()
+                .title('Studios')
+                .icon(ComponentIcon)
+                .child(S.documentTypeList('studio').title('Studios')),
+
+              S.listItem()
+                .title('Case Studies')
+                .icon(DocumentTextIcon)
+                .child(S.documentTypeList('caseStudy').title('Case Studies')),
+
               S.listItem()
                 .title('Projects')
                 .icon(ImageIcon)
