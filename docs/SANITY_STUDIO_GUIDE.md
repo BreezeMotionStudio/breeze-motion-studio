@@ -23,21 +23,22 @@ This is your **content structure** - organized by the custom `structure.ts` file
 ### **Top Section — Site Configuration**
 - **⚙️ Site Settings** — Global settings (logo, contact info, social links, footer text)
 
-### **Second Section — Singleton Pages**
-These are **single documents** (only one exists):
-- **🏠 Home Page** — Controls homepage content (hero, featured work, CTAs)
-- **👤 About Page** — Founder bio, mission, how we work
+### **Second Section — Website Pages**
+These are **singleton documents** (only one of each exists):
+- **🏠 Home Page** — Hero, featured work, studios overview, how we work, testimonials, CTA
+- **👤 About Page** — Founder bio, mission, values, how we work
 - **✉️ Contact Page** — Contact form intro, display email
+- **💼 Services Page** — Services intro and CTA
+- **🎬 Studio Page** — Studio master page intro (the grid pulls automatically from Studios)
+- **📄 Case Studies Page** — Case studies page intro (the listing pulls automatically)
 
-These control the content for their respective pages on your website.
+Each page is built from **draggable sections** — see "Reordering Sections" below.
 
-### **Third Section — Portfolio Content**
+### **Third Section — Content Library**
 These are **collections** (you can create many of each):
 - **🎨 Studios** — Your 4 studio definitions (Machine, Commercial, Creative, Media Systems)
 - **🖼️ Projects** — Individual portfolio projects (the main content of your site)
 - **📄 Case Studies** — In-depth project write-ups
-
-### **Fourth Section — Supporting Content**
 - **👥 Clients** — Client profiles (companies you've worked with)
 - **💬 Testimonials** — Client quotes and reviews
 - **💡 Service Categories** — Service groupings (e.g., "Video & Motion Graphics")
@@ -59,27 +60,29 @@ This is where you edit the actual content. The interface changes based on what d
 - 🟢 **Published + ⚪ Draft** = You have unpublished changes (draft differs from live)
 - ⚪ **Draft only** = Never been published yet (not visible on live site)
 
-### **Field Groups (Tabs)**
+### **Sections Array — Drag to Reorder**
 
-Fields are organized into logical sections to make editing easier.
+All website pages use a **sections array** instead of fixed tabs. Each section appears as a card that you can drag up or down to change the order on the page.
 
-**Example: Home Page has these tabs:**
+**How to use:**
+1. Open any page (e.g., Home Page, About Page)
+2. You'll see a list of section cards (Hero, Featured Work, Studios Overview, etc.)
+3. **Drag any card** up or down to reorder it
+4. Click a section card to expand it and edit its fields
+5. Click **Publish** — the new order is immediately live on the website
 
-| Tab | What's Inside |
-|-----|---------------|
-| **All fields** | Shows every field on the page (can be overwhelming - usually skip this) |
-| **Hero Section** ⭐ | Hero title, subtitle, video, image, CTA buttons |
-| **Studios Overview** | Studios section heading and intro text |
-| **What We Do** | Services section content |
-| **How We Work** | Process section with steps |
-| **Final CTA** | Bottom call-to-action section |
-| **SEO** | Meta title, description, OG image |
+**Page sections reference:**
 
-**How to use tabs:**
-- Click a tab to see only those fields
-- Changes are saved across all tabs
-- Focus on one section at a time
-- All tabs are published together when you hit "Publish"
+| Page | Sections available |
+|------|--------------------|
+| **Home Page** | homeHero, homeFeaturedWork, homeStudiosOverview, homeHowWeWork, homeTestimonials, homeCta |
+| **About Page** | aboutHero, aboutIntro, aboutOverview, aboutFounder, aboutValues, aboutHowWeWork |
+| **Contact Page** | contactHero, contactIntro, contactDetails |
+| **Services Page** | servicesHero, servicesIntro, servicesCategories, servicesCta |
+| **Studio Page** | studiosHero, studiosIntro, studiosGrid |
+| **Case Studies Page** | caseStudiesHero, caseStudiesIntro |
+
+**SEO fields** (title, description) are separate from sections — they appear below the sections array on each page.
 
 ### **Field Types You'll Encounter**
 
@@ -148,15 +151,25 @@ Fields are organized into logical sections to make editing easier.
 7. Verify at localhost:3000
 ```
 
-### **Editing Homepage Content**
+### **Editing a Page (Any Page)**
 ```
-1. Left sidebar → click "Home Page"
-2. Use tabs to navigate sections (Hero, Studios, What We Do, etc.)
-3. Edit fields in that section
-4. Move to next tab if needed
+1. Left sidebar → Website Pages → click the page you want (e.g., "Home Page")
+2. You'll see a list of section cards
+3. Click any section card to expand it and edit its fields
+4. Drag section cards to reorder them (the website reflects the new order)
 5. Auto-saves as draft continuously
 6. Click "Publish" when ready to make live
 7. Check localhost:3000 to preview
+```
+
+### **Reordering Page Sections**
+```
+1. Open any page (Home Page, About Page, etc.)
+2. Hover over a section card — a drag handle appears on the left
+3. Click and drag the card to a new position
+4. Release to drop
+5. Click "Publish"
+6. The website now shows sections in the new order
 ```
 
 ### **Adding a Client (Before Adding Projects)**
@@ -212,13 +225,14 @@ Fields are organized into logical sections to make editing easier.
 
 ### **Singletons vs Collections**
 
-**Singletons** (🏠 Home Page, 👤 About Page, ⚙️ Site Settings):
+**Singletons** (⚙️ Site Settings, and all Website Pages):
 - Only ONE document exists
 - Clicking in sidebar opens the document directly
 - Used for unique pages and global settings
 - Can't create more than one
+- All page singletons use the sections array — drag to reorder content
 
-**Collections** (📦 Projects, 👥 Clients, 🎨 Studios):
+**Collections** (Content Library — 📦 Projects, 👥 Clients, 🎨 Studios, etc.):
 - MANY documents can exist
 - Clicking in sidebar shows a list of all documents
 - Click a specific document to edit it
@@ -480,35 +494,26 @@ Click the **three dots (•••)** in the top right of any document for:
 
 ---
 
-## 📊 Current Content Status (as of 2026-02-18 Night)
+## 📊 Current Content Status (as of 2026-02-19)
 
-**🎉 All foundational content PUBLISHED and LIVE (75 documents total):**
+**🎉 All foundational content PUBLISHED and LIVE:**
 
-**✅ Singleton Pages (Published):**
-- **Site Settings (1)** — Fully configured with contact info, tagline, meta description
-- **Home Page (1)** — Hero, studios overview, what we do, how we work, final CTA sections
-- **About Page (1)** — Studio overview, mission, values, founder bio, services intro, process steps
-- **Contact Page (1)** — Heading, intro text, contact email, form heading
+**✅ Website Pages (Singletons — all published with sections):**
+- **Site Settings (1)** — Contact info, tagline, meta description
+- **Home Page (1)** — Hero, featured work, studios overview, how we work, testimonials, CTA
+- **About Page (1)** — Hero, intro, overview, founder, values, how we work
+- **Contact Page (1)** — Hero, intro, contact details
+- **Services Page (1)** — Hero, intro, categories, CTA
+- **Studio Page (1)** — Hero, intro, studios grid
+- **Case Studies Page (1)** — Hero, intro
 
-**✅ Content Collections (Published):**
-- **Studios (4)** — Machine, Commercial, Creative, Media Systems — all with full descriptions
-- **Service Categories (10)** — All categories with concise, bullet-pointed descriptions and services lists
-- **Clients (33)** — All approved clients published with industry classifications
-  - Original 12: ROVD Group, SAR Electronics SA, Trihedron, Symec Digital, IDD, SOGA Organic, Cressi, Emily May Aesthetics, Bend Wellness, Equinox Consulting, Death By Coffee Roastery, Raylene Pilates
-  - Additional 21: AE Manufacturing, Bennie Bekker, Daniel Meu Amor, Ecliptic Estate Management, Erin Smith, Gourmet Gecko, GuwasVisuals, Jame Fletcher, Tinaire Van De Merwe, MAVTECH Automation, Rooftop, Sebastian Geel, Shannon Lilley, AI Apparel Solutions, Burnera Collective, CORMA, Frankie & The Misfits, Hinterveld, S4 Integration, Volkswagen Eastern Cape, DRILLX
-- **Testimonials (12)** — All client quotes published and linked to clients
-- **Case Studies (12)** — All narrative deep-dives published with comprehensive content:
-  - ROVD Group, SAR Electronics SA, Trihedron, Symec Digital, IDD (Machine Studio)
-  - Cressi, Emily May Aesthetics, Bend Wellness, Equinox, Death By Coffee, Raylene, SOGA Organic (Commercial Studio)
-  - Each with Challenge → Solution → Deliverables → Outcome structure
-  - All linked to clients, studios, and testimonials
-  - SEO fields populated
-  - **Need images:** Cover images and gallery images for all case studies
+**✅ Content Library (Published):**
+- **Studios (4)** — Machine, Commercial, Creative, Media Systems
+- **Service Categories (10)** — All with descriptions and services lists
+- **Clients (33)** — All approved clients published
+- **Testimonials (12)** — All linked to clients
+- **Case Studies (12)** — Machine Studio (5) + Commercial Studio (7) — need images
 
 **⏳ Still to Create:**
-- **Projects** — Actual portfolio work (requires real project data and assets) — deferred by user
-
-**Next Steps:**
-1. Add images to all 12 case studies (cover + gallery images)
-2. Create actual portfolio projects as work is completed
-3. All content is LIVE and ready for Next.js frontend consumption
+- **Projects** — Actual portfolio work (deferred — requires real project assets)
+- **Case study images** — Cover + gallery images for all 12 case studies

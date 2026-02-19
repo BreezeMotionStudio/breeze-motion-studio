@@ -4,15 +4,114 @@
 
 This document defines the Sanity schema structure for Breeze Motion Studio. All document types, fields, and relationships are documented here as a reference for the implemented schemas in `/schemaTypes`.
 
-**Status:** ✅ Implemented — All schemas complete (as of 2026-02-18)
+**Status:** ✅ Implemented and deployed (as of 2026-02-19)
 
 ---
 
 ## Document Types
 
-### 1. `studio` — Sub-Studio Definitions
+There are **12 document types** total: 6 page singletons, 4 content collection types, 1 supporting content type, and 1 global settings singleton.
 
-Defines each studio under the Breeze Motion Studio parent.
+---
+
+### Page Singletons
+
+All 6 page singletons share a common architecture: a **`sections[]` array** as the primary content field, plus top-level `seoTitle` and `seoDescription` fields. Sections can be drag-reordered in Sanity Studio and the frontend renders them in that order.
+
+---
+
+### 1. `homePage` — Homepage (Singleton)
+
+**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+
+**Section types in `sections[]`:**
+
+| Section Type | Fields |
+|-------------|--------|
+| `homeHero` | title, subtitle, bgVideoUrl, bgImage{alt}, primaryCta, secondaryCta |
+| `homeFeaturedWork` | videoUrl *(YouTube or direct file — main featured video)*, bgImage{alt} |
+| `homeStudiosOverview` | heading, bgVideoUrl, bgImage{alt} |
+| `homeHowWeWork` | heading, steps[]{stepNumber, title, description}, bgVideoUrl, bgImage{alt} |
+| `homeTestimonials` | bgVideoUrl, bgImage{alt} |
+| `homeCta` | heading, text, primaryCta, secondaryCta, bgVideoUrl, bgImage{alt} |
+
+**Notes:**
+- `homeFeaturedWork.videoUrl` is the featured/showcase video (YouTube or direct file URL — auto-detected on frontend)
+- `bgVideoUrl` on all sections is for background decoration; takes priority over `bgImage` if both set
+- All bg media fields are optional; sections render without them
+
+---
+
+### 2. `aboutPage` — About Page (Singleton)
+
+**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+
+| Section Type | Fields |
+|-------------|--------|
+| `aboutHero` | heading |
+| `aboutIntro` | text *(plain string — shown on white below hero)* |
+| `aboutOverview` | overview *(blockContent)*, mission *(blockContent)* |
+| `aboutFounder` | name, bio *(blockContent)*, image{alt} |
+| `aboutValues` | values[]{title, description} |
+| `aboutHowWeWork` | intro *(blockContent)*, steps[]{title, description} |
+
+---
+
+### 3. `contactPage` — Contact Page (Singleton)
+
+**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+
+| Section Type | Fields |
+|-------------|--------|
+| `contactHero` | heading |
+| `contactIntro` | content *(blockContent)* |
+| `contactDetails` | email, phone, formHeading |
+
+---
+
+### 4. `servicesPage` — Services Page (Singleton)
+
+**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+
+| Section Type | Fields |
+|-------------|--------|
+| `servicesHero` | heading |
+| `servicesIntro` | text |
+| `servicesCategories` | *(no fields — automatically pulls all published serviceCategory documents)* |
+| `servicesCta` | heading, text, button *(ctaButton)* |
+
+---
+
+### 5. `studiosPage` — Studios Master Page (Singleton)
+
+**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+
+| Section Type | Fields |
+|-------------|--------|
+| `studiosHero` | heading |
+| `studiosIntro` | text |
+| `studiosGrid` | *(no fields — automatically pulls all published studio documents)* |
+
+---
+
+### 6. `caseStudiesPage` — Case Studies Page (Singleton)
+
+**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+
+| Section Type | Fields |
+|-------------|--------|
+| `caseStudiesHero` | heading |
+| `caseStudiesIntro` | text |
+
+**Note:** The case studies listing is always rendered after the sections (not a removable section).
+
+---
+
+### Content Collection Types
+
+---
+
+### 7. `studio` — Sub-Studio Definitions
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -24,18 +123,15 @@ Defines each studio under the Breeze Motion Studio parent.
 | industriesServed | array of string | Yes | Industries this studio serves |
 | whatWeDoNot | array of string | No | Explicit exclusions |
 | heroImage | image | No | Large hero image for studio page |
-| heroVideo | file/url | No | Showcase video for studio page |
 | displayOrder | number | Yes | Sort order on studios page |
 | seoTitle | string | No | SEO override title |
 | seoDescription | text | No | SEO meta description |
 
-**Planned entries:** Machine Studio, Commercial Studio, Creative Studio, Media Systems & Brand Optimization
+**Entries:** Machine Studio, Commercial Studio, Creative Studio, Media Systems & Brand Optimization
 
 ---
 
-### 2. `project` — Portfolio Entries
-
-Individual project/work entries displayed within studio pages.
+### 8. `project` — Portfolio Entries
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -48,8 +144,8 @@ Individual project/work entries displayed within studio pages.
 | description | blockContent | No | Detailed project description |
 | coverImage | image | Yes | Primary project image |
 | gallery | array of image | No | Additional project images |
-| videoUrl | url | No | Video showcase URL |
-| year | string | No | Project year (e.g., "2024") |
+| videoUrl | url | No | Video showcase URL (YouTube or direct file) |
+| year | string | No | Project year |
 | featured | boolean | No | Show on homepage featured section |
 | featuredOrder | number | No | Sort order for featured display |
 | displayOrder | number | No | Sort order within studio page |
@@ -58,9 +154,7 @@ Individual project/work entries displayed within studio pages.
 
 ---
 
-### 3. `caseStudy` — Narrative Project Deep-Dives
-
-Detailed, editorial case studies for selected projects.
+### 9. `caseStudy` — Narrative Project Deep-Dives
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -82,7 +176,7 @@ Detailed, editorial case studies for selected projects.
 
 ---
 
-### 4. `client` — Client Profiles
+### 10. `client` — Client Profiles
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -98,11 +192,11 @@ Detailed, editorial case studies for selected projects.
 | approved | boolean | Yes | Approved for public display |
 | displayOrder | number | No | Sort order for client displays |
 
-**Pre-approved clients:** ROVD Group, SAR Electronics SA, Trihedron, Symec Digital, IDD, SOGA Organic, Cressi, Emily May Aesthetics, Bend Wellness, Equinox Consulting, Death By Coffee Roastery, Raylene Pilates
+**Published clients:** ROVD Group, SAR Electronics SA, Trihedron, Symec Digital, IDD, SOGA Organic, Cressi, Emily May Aesthetics, Bend Wellness, Equinox Consulting, Death By Coffee Roastery, Raylene Pilates + 21 additional
 
 ---
 
-### 5. `testimonial` — Client Testimonials
+### 11. `testimonial` — Client Testimonials
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -115,78 +209,21 @@ Detailed, editorial case studies for selected projects.
 
 ---
 
-### 6. `serviceCategory` — Service Groupings
+### 12. `serviceCategory` — Service Groupings
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| title | string | Yes | Category name (e.g., "Video & Motion Graphics") |
+| title | string | Yes | Category name |
 | slug | slug | Yes | URL slug |
 | shortDescription | text | Yes | One-line description |
 | services | array of string | Yes | Individual services within category |
 | displayOrder | number | Yes | Sort order on services section |
-| icon | string | No | Icon identifier |
 
-**Categories:** Branding & Identity, Video & Motion Graphics, 3D Design & Industrial Video, Photography, Graphics & Visual Content, Print & Physical Brand Assets, Audio & Sound, Website Design & Setup, Social Media Content & Page Management, System Optimisation & Workflow Architecture, Ongoing Digital Support & Maintenance
-
----
-
-### 7. `homePage` — Homepage Content (Singleton)
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| heroTitle | string | Yes | Hero section headline |
-| heroSubtitle | text | No | Hero section subtext |
-| heroVideo | file/url | No | Hero background video |
-| heroPrimaryCta | object {label, url} | Yes | Primary CTA button |
-| heroSecondaryCta | object {label, url} | No | Secondary CTA button |
-| featuredWorkHeading | string | No | Featured section heading |
-| studiosOverviewHeading | string | No | Studios section heading |
-| studiosOverviewText | blockContent | No | Studios intro text |
-| whatWeDoHeading | string | No | Services snapshot heading |
-| whatWeDoText | blockContent | No | Services snapshot content |
-| howWeWorkHeading | string | No | Process section heading |
-| howWeWorkText | blockContent | No | Process section content |
-| finalCtaHeading | string | No | Final CTA heading |
-| finalCtaText | text | No | Final CTA supporting text |
-| seoTitle | string | No | SEO title |
-| seoDescription | text | No | SEO meta description |
+**Categories (10):** Branding & Identity, Video & Motion Graphics, 3D Design & Industrial Video, Photography, Graphics & Visual Content, Print & Physical Brand Assets, Audio & Sound, Platform Design & Digital Presence Systems, System Optimisation & Workflow Architecture, Ongoing Digital Support & Maintenance
 
 ---
 
-### 8. `aboutPage` — About Page Content (Singleton)
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| heading | string | Yes | Page heading |
-| studioOverview | blockContent | Yes | What We Do summary |
-| founderName | string | Yes | Founder name |
-| founderBio | blockContent | Yes | Founder biography |
-| founderImage | image | Yes | Round-cropped profile photo |
-| mission | blockContent | No | Mission / philosophy |
-| values | array of object | No | Core values list |
-| servicesIntro | blockContent | No | Services section intro |
-| howWeWorkIntro | blockContent | No | How We Work section intro |
-| howWeWorkSteps | array of object | No | Process steps |
-| seoTitle | string | No | SEO title |
-| seoDescription | text | No | SEO meta description |
-
----
-
-### 9. `contactPage` — Contact Page Content (Singleton)
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| heading | string | Yes | Page heading |
-| introText | blockContent | No | Introductory copy |
-| email | string | Yes | Display email |
-| phone | string | No | Phone/WhatsApp |
-| formHeading | string | No | Form section heading |
-| seoTitle | string | No | SEO title |
-| seoDescription | text | No | SEO meta description |
-
----
-
-### 10. `siteSettings` — Global Settings (Singleton)
+### 13. `siteSettings` — Global Settings (Singleton)
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -228,7 +265,16 @@ Standard Portable Text configuration supporting:
 
 ```
 homePage (singleton)
-    └── references featured projects + studios
+    └── references studios (auto) + testimonials (auto)
+
+studiosPage (singleton)
+    └── references studio documents (auto via studiosGrid section)
+
+caseStudiesPage (singleton)
+    └── references caseStudy documents (auto, listing always shown)
+
+servicesPage (singleton)
+    └── references serviceCategory documents (auto via servicesCategories section)
 
 studio
     ├── has many → project
@@ -256,34 +302,20 @@ testimonial
 serviceCategory (standalone)
 
 siteSettings (singleton)
-aboutPage (singleton)
-contactPage (singleton)
 ```
 
 ---
 
 ## Implementation Notes
 
-### Completed (2026-02-18)
+### Page Builder Pattern (as of 2026-02-19)
 
-All schemas have been successfully implemented in `/schemaTypes` with the following structure:
+All 6 page singletons use a `sections[]` array instead of flat top-level fields. This enables:
+- **Drag-to-reorder** in Sanity Studio (native array UI)
+- **Section-level control** — add, remove, or reorder any section from the CMS
+- **Consistent frontend pattern** — all pages use the same `section._type` switch/case renderer
 
-- **Document types:** 10 total (studio, project, caseStudy, client, testimonial, serviceCategory, homePage, aboutPage, contactPage, siteSettings)
-- **Shared types:** 3 total (ctaButton, blockContent, seoFields)
-- **Organization:** Schemas use field groups for better editor UX (content, media, details, SEO)
-- **Validation:** Required fields enforced, character limits on text fields, email validation
-- **Previews:** Custom preview configurations for all document types
-- **Studio structure:** Custom `structure.ts` organizes sidebar with singletons at top, content grouped logically
-
-### Enhancements Beyond Original Plan
-
-1. **Field Groups:** All major document types use groups (content, media, details, seo) for better editor organization
-2. **SEO Fields:** Extracted to shared `seoFields.ts` for consistency across pages and content
-3. **Process Steps:** Added to `homePage` schema as a flexible array of objects (stepNumber, title, description)
-4. **Hero Image Fallback:** Added `heroImage` to `homePage` for use when video is not provided or as a poster frame
-5. **Conditional Fields:** Some fields (like `featuredOrder`) are hidden when not relevant
-6. **Custom Orderings:** Added sorting options (by display order, by year) to relevant document types
-7. **Alt Text Validation:** Image fields include required alt text for accessibility
+Section type names are page-prefixed (e.g., `homeHero` not `hero`) to avoid potential Sanity global schema conflicts.
 
 ### File Locations
 
@@ -291,9 +323,12 @@ All schemas have been successfully implemented in `/schemaTypes` with the follow
 schemaTypes/
 ├── index.ts                 # Schema exports
 ├── siteSettings.ts
-├── homePage.ts
-├── aboutPage.ts
-├── contactPage.ts
+├── homePage.ts              # sections array: homeHero, homeFeaturedWork, homeStudiosOverview, homeHowWeWork, homeTestimonials, homeCta
+├── aboutPage.ts             # sections array: aboutHero, aboutIntro, aboutOverview, aboutFounder, aboutValues, aboutHowWeWork
+├── contactPage.ts           # sections array: contactHero, contactIntro, contactDetails
+├── servicesPage.ts          # sections array: servicesHero, servicesIntro, servicesCategories, servicesCta
+├── studiosPage.ts           # sections array: studiosHero, studiosIntro, studiosGrid
+├── caseStudiesPage.ts       # sections array: caseStudiesHero, caseStudiesIntro
 ├── studio.ts
 ├── project.ts
 ├── caseStudy.ts
@@ -306,44 +341,22 @@ schemaTypes/
     └── seoFields.ts
 ```
 
-### Ready for Content
+### Content Population Status (as of 2026-02-19)
 
-All schemas are now deployed and ready for content entry via Sanity Studio at `localhost:3333` or the deployed Studio URL.
+**✅ PUBLISHED — All Content Live:**
+- **siteSettings (1)** — Contact info, tagline, meta description
+- **homePage (1)** — Hero, featured work, studios overview, how we work, testimonials, CTA
+- **aboutPage (1)** — Hero, intro, overview, founder, values, how we work
+- **contactPage (1)** — Hero, intro, contact details
+- **servicesPage (1)** — Hero, intro, categories section, CTA
+- **studiosPage (1)** — Hero, intro, studios grid
+- **caseStudiesPage (1)** — Hero, intro
+- **studio (4)** — Machine, Commercial, Creative, Media Systems
+- **serviceCategory (10)** — All categories published with descriptions and services lists
+- **client (33)** — All approved clients
+- **testimonial (12)** — All linked to clients
+- **caseStudy (12)** — All with rich narrative content, linked to clients/studios/testimonials
 
-### Content Population Progress (as of 2026-02-18 Night)
-
-**✅ PUBLISHED — All Content Live (75 documents total):**
-- ✅ **siteSettings (1)** — Fully populated with tagline, contact info, meta description
-- ✅ **homePage (1)** — Homepage content blocks populated (hero, studios overview, what we do, how we work, final CTA)
-- ✅ **aboutPage (1)** — Studio overview, mission, values, founder bio, services intro, process steps
-- ✅ **contactPage (1)** — Heading, intro text, contact email, form heading
-- ✅ **studio (4)** — All 4 studios created with full descriptions:
-  - Machine Studio (with 5 detailed specialization areas)
-  - Commercial Studio
-  - Creative Studio (updated with latest company profile)
-  - Media Systems & Brand Optimization
-- ✅ **serviceCategory (10)** — 10 service categories with concise, bullet-pointed content:
-  - Each with short description, detailed description (bullet format), and services list
-  - PRIMARY services (7): Branding & Identity, Video & Motion Graphics, 3D Design & Industrial Video, Photography, Graphics & Visual Content, Print & Physical Brand Assets, Audio & Sound
-  - SECONDARY services (3): Platform Design & Digital Presence Systems, System Optimisation & Workflow Architecture, Ongoing Digital Support & Maintenance
-- ✅ **client (33)** — 33 approved clients created with industry classifications:
-  - Original 12: ROVD Group, SAR Electronics SA, Trihedron, Symec Digital, IDD, SOGA Organic, Cressi, Emily May Aesthetics, Bend Wellness, Equinox Consulting, Death By Coffee Roastery, Raylene Pilates
-  - Additional 21: AE Manufacturing, Bennie Bekker, Daniel Meu Amor, Ecliptic Estate Management, Erin Smith, Gourmet Gecko, GuwasVisuals, Jame Fletcher, Tinaire Van De Merwe, MAVTECH Automation, Rooftop, Sebastian Geel, Shannon Lilley, AI Apparel Solutions, Burnera Collective, CORMA, Frankie & The Misfits, Hinterveld, S4 Integration, Volkswagen Eastern Cape, DRILLX
-- ✅ **testimonial (12)** — 12 client testimonials created:
-  - All linked to respective clients
-  - Featured status and display order configured
-  - All published and live
-- ✅ **caseStudy (12)** — 12 comprehensive case studies created:
-  - All with rich narrative body content (Challenge → Solution → Deliverables → Outcome structure)
-  - All with required references: client, studio, testimonial
-  - SEO fields populated
-  - Services provided lists included
-  - Cover image and gallery placeholders ready for actual images
-  - Studio assignments: Machine Studio (5), Commercial Studio (7)
-  - **All published and live**
-
-**Pending:**
-- ⏳ **project** — Portfolio projects (requires actual project data and assets) — deferred by user
-- ⏳ **Case study images** — Need to upload cover images and gallery images for all 12 case studies
-
-**Note:** All foundational content (75 documents) is now PUBLISHED and LIVE in the production dataset, ready for consumption by the Next.js frontend. The main remaining tasks are adding real images to case studies and creating actual portfolio projects when ready.
+**⏳ Pending:**
+- **project** — Portfolio projects (requires real project data and assets)
+- **Case study images** — Cover images and gallery images for all 12 case studies
