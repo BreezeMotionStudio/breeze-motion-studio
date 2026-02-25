@@ -7,7 +7,18 @@ export const HOME_PAGE_QUERY = defineQuery(
     sections[disabled != true]{
       ...,
       bgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+      imageLeft{asset->{url}, alt},
+      imageRight{asset->{url}, alt},
+      sectionImage{asset->{url}, alt},
+      aboutLogo{asset->{url}},
       steps[]{_key, stepNumber, title, description},
+      studioCards[]{
+        _key,
+        "studioId": studio._ref,
+        cardImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+        cardVideoUrl
+      },
+      clientLogos[disabled != true]{_key, client->{name, logo{asset->{url}, alt}}, logoOverride{asset->{url}, alt}}
     },
     seoTitle,
     seoDescription
@@ -65,9 +76,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     tagline,
     navLinks[]{label, href},
     navCta{label, href},
-    plainLogo{enabled, sizePreset, customSize},
-    roundLogo{enabled, sizePreset, customSize},
-    iconLogo{enabled, sizePreset, customSize},
+    plainLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
+    roundLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
+    iconLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
     footerPlainLogo{enabled, sizePreset, customSize},
     footerRoundLogo{enabled, sizePreset, customSize},
     footerTagline,
@@ -75,7 +86,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     footerText,
     contactEmail,
     contactPhone,
-    socialLinks[]{platform, url}
+    socialLinks[]{platform, url},
+    splashAccentsEnabled
   }`
 );
 
@@ -90,6 +102,7 @@ export const STUDIOS_QUERY = defineQuery(
     tagline,
     purpose,
     heroImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+    heroVideoUrl,
     displayOrder
   }`
 );
@@ -144,7 +157,7 @@ export const CASE_STUDY_BY_SLUG_QUERY = defineQuery(
     ...,
     coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
     gallery[]{asset->{_id, url, metadata{lqip, dimensions}}, alt, caption},
-    client->{name, industry, logo},
+    client->{name, industry, logo{asset->{url}, alt}},
     studio->{title, slug},
     testimonial->{quote, attribution, role}
   }`

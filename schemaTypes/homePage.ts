@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {bgColorField} from './shared/bgColorField'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -49,6 +50,7 @@ export const homePage = defineType({
               description: 'Add, remove, or reorder CTA buttons.',
               of: [defineArrayMember({type: 'ctaButton'})],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -72,6 +74,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -88,6 +91,61 @@ export const homePage = defineType({
           title: 'Studios Overview',
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'description', title: 'Description', type: 'text', rows: 3, description: 'Short description shown below the section heading.'}),
+            defineField({
+              name: 'studioCards',
+              title: 'Studio Card Media',
+              type: 'array',
+              description:
+                'Set the image or video displayed in the square container of each studio card on the homepage. Add one entry per studio and pick the media to show.',
+              of: [
+                defineArrayMember({
+                  type: 'object',
+                  name: 'studioCardMedia',
+                  title: 'Studio Card',
+                  fields: [
+                    defineField({
+                      name: 'studio',
+                      title: 'Studio',
+                      type: 'reference',
+                      to: [{type: 'studio'}],
+                      validation: (rule) => rule.required(),
+                    }),
+                    defineField({
+                      name: 'cardImage',
+                      title: 'Card Image',
+                      type: 'image',
+                      options: {hotspot: true},
+                      description: 'Image shown in the square 1:1 container of this studio\'s card.',
+                      fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                    }),
+                    defineField({
+                      name: 'cardVideoUrl',
+                      title: 'Card Video URL',
+                      type: 'url',
+                      description: 'Video shown in the square container. If set, takes priority over the card image.',
+                    }),
+                  ],
+                  preview: {
+                    select: {studioTitle: 'studio.title', media: 'cardImage'},
+                    prepare({studioTitle, media}) {
+                      return {
+                        title: studioTitle ? `${studioTitle}` : 'Studio Card',
+                        subtitle: 'Card media',
+                        media,
+                      }
+                    },
+                  },
+                }),
+              ],
+            }),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',
@@ -96,6 +154,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -108,10 +167,95 @@ export const homePage = defineType({
 
         defineArrayMember({
           type: 'object',
+          name: 'homeAbout',
+          title: 'About',
+          fields: [
+            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'text', title: 'Body Text', type: 'text', rows: 5}),
+            defineField({
+              name: 'imageLeft',
+              title: 'Left Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Image displayed on the left side of the about text.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
+            defineField({
+              name: 'imageRight',
+              title: 'Right Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Image displayed on the right side of the about text.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
+            defineField({
+              name: 'imageAspectRatio',
+              title: 'Image Container Ratio',
+              type: 'string',
+              description: 'Aspect ratio applied to both left and right image containers.',
+              options: {
+                list: [
+                  {title: '1:1 — Square', value: '1:1'},
+                  {title: '2:3 — Portrait', value: '2:3'},
+                  {title: '9:16 — Tall', value: '9:16'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: '1:1',
+            }),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
+            defineField({
+              name: 'aboutLogo',
+              title: 'About Section Logo',
+              type: 'image',
+              options: {hotspot: true},
+            }),
+            defineField({
+              name: 'logoMaxWidth',
+              title: 'Logo Max Width (px)',
+              type: 'number',
+              description: 'Set the maximum width of the logo in pixels, e.g., 150, 250, 400',
+              validation: (rule) => rule.positive(),
+            }),
+            defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
+            defineField({
+              name: 'bgImage',
+              title: 'Background Image',
+              type: 'image',
+              options: {hotspot: true},
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
+            bgColorField,
+            disabledField,
+          ],
+          preview: {
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] About' : 'About', subtitle: title}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
           name: 'homeHowWeWork',
           title: 'How We Work',
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({
+              name: 'sectionImage',
+              title: 'Section Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Displayed between the process steps and the button below. Container fits the natural dimensions of the image.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
             defineField({
               name: 'steps',
               title: 'Process Steps',
@@ -138,6 +282,13 @@ export const homePage = defineType({
                 }),
               ],
             }),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',
@@ -146,6 +297,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -169,12 +321,88 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
             select: {disabled: 'disabled'},
             prepare({disabled}) {
               return {title: disabled ? '[HIDDEN] Testimonials' : 'Testimonials'}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'homeClientLogos',
+          title: 'Client Logos',
+          fields: [
+            defineField({
+              name: 'clientLogos',
+              title: 'Client Logos',
+              type: 'array',
+              description: 'Logos in the scrolling strip. Select clients — their logo is pulled automatically from the Client record. Upload logos via Content Library → Clients.',
+              of: [
+                defineArrayMember({
+                  type: 'object',
+                  name: 'clientLogo',
+                  title: 'Client Logo',
+                  fields: [
+                    defineField({
+                      name: 'client',
+                      title: 'Client',
+                      type: 'reference',
+                      to: [{type: 'client'}],
+                      validation: (r) => r.required(),
+                    }),
+                    defineField({
+                      name: 'logoOverride',
+                      title: 'Logo Override (Homepage Strip)',
+                      type: 'image',
+                      options: {hotspot: true},
+                      description:
+                        'Optional. Upload a version of this logo tuned for the white homepage bar (e.g. cropped, darkened, or differently sized). This image is used only here and never changes the master logo in the Client record. Leave blank to use the master logo.',
+                      fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                    }),
+                    defineField({
+                      name: 'disabled',
+                      title: 'Hide from homepage strip',
+                      type: 'boolean',
+                      description: 'When ticked, this client will not appear in the scrolling logo bar.',
+                      initialValue: false,
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: 'client.name',
+                      overrideMedia: 'logoOverride',
+                      masterMedia: 'client.logo',
+                      disabled: 'disabled',
+                    },
+                    prepare({title, overrideMedia, masterMedia, disabled}) {
+                      const media = overrideMedia || masterMedia
+                      const logoNote = overrideMedia
+                        ? 'Using homepage override logo'
+                        : masterMedia
+                          ? 'Using master client logo'
+                          : 'No logo — name shown as text'
+                      return {
+                        title: disabled ? `[HIDDEN] ${title || 'Select a client'}` : (title || 'Select a client'),
+                        subtitle: logoNote,
+                        media,
+                      }
+                    },
+                  },
+                }),
+              ],
+            }),
+            bgColorField,
+            disabledField,
+          ],
+          preview: {
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Client Logos' : 'Client Logos'}
             },
           },
         }),
@@ -201,6 +429,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {

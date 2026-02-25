@@ -5,6 +5,12 @@ import {
   STUDIOS_QUERY,
   TESTIMONIALS_QUERY,
 } from "@/lib/sanity/queries";
+import { StudioCard } from "@/components/StudioCard";
+import { HowWeWorkSection } from "@/components/HowWeWorkSection";
+import { HomeTestimonials } from "@/components/HomeTestimonials";
+import { HomeClientLogos } from "@/components/HomeClientLogos";
+import { getBgStyle, getTextClass, isLightBg } from "@/lib/sectionColors";
+import { Button } from "@/components/ui/Button";
 
 type CtaButton = { _key?: string; label?: string; url?: string; style?: string };
 type BgImage = { asset?: { url: string }; alt?: string };
@@ -24,23 +30,6 @@ function getYouTubeEmbedUrl(url: string): string | null {
   } catch {
     return null;
   }
-}
-
-function CtaLink({ cta }: { cta: CtaButton }) {
-  if (!cta?.label || !cta?.url) return null;
-  const isPrimary = cta.style === "primary";
-  return (
-    <a
-      href={cta.url}
-      className={`inline-block px-8 py-3 rounded-sm font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest transition-colors ${
-        isPrimary
-          ? "bg-white text-black hover:bg-bms-grey-200"
-          : "border border-white text-white hover:bg-white hover:text-black"
-      }`}
-    >
-      {cta.label}
-    </a>
-  );
 }
 
 /**
@@ -107,8 +96,12 @@ function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) 
 }
 
 function HomeHero({ s }: { s: Section }) {
+  const onDark = !isLightBg(s.bgColor)
   return (
-    <section className="relative z-10 flex items-center justify-center min-h-screen bg-black text-white overflow-hidden">
+    <section
+      className={`relative z-10 flex items-center justify-center min-h-screen bg-black ${getTextClass(s.bgColor)} overflow-hidden`}
+      style={getBgStyle(s.bgColor)}
+    >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       {(s.title || s.subtitle || s.buttons?.length > 0) && (
         <div className="relative z-10 text-center max-w-4xl px-6">
@@ -118,15 +111,29 @@ function HomeHero({ s }: { s: Section }) {
             </h1>
           )}
           {s.subtitle && (
-            <p className="text-lg md:text-xl text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
-              {s.subtitle}
-            </p>
+            <div className="relative mb-10">
+              <div
+                className="absolute pointer-events-none"
+                style={{
+                  inset: "-60px -80px",
+                  background:
+                    "radial-gradient(ellipse at center, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 40%, transparent 70%)",
+                }}
+              />
+              <p className="relative text-lg md:text-xl text-bms-grey-300 font-[family-name:var(--font-body)]">
+                {s.subtitle}
+              </p>
+            </div>
           )}
           {s.buttons && s.buttons.length > 0 && (
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {s.buttons.map((btn: CtaButton) => (
-                <CtaLink key={btn._key} cta={btn} />
-              ))}
+              {s.buttons.map((btn: CtaButton) =>
+                btn.label && btn.url ? (
+                  <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                    {btn.label}
+                  </Button>
+                ) : null
+              )}
             </div>
           )}
         </div>
@@ -139,7 +146,10 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
   const hasMedia = !!(s.videoUrl || s.bgImage?.asset?.url);
   const ytEmbed = s.videoUrl ? getYouTubeEmbedUrl(s.videoUrl) : null;
   return (
-    <section className="bg-black text-white -mt-[62px]">
+    <section
+      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} -mt-[62px]`}
+      style={getBgStyle(s.bgColor)}
+    >
       {s.videoUrl && (
         ytEmbed ? (
           <YouTubeShowcase src={ytEmbed} />
@@ -162,7 +172,7 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
         />
       )}
       {projects && projects.length > 0 && (
-        <div className={`max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
+        <div className={`relative z-10 max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
           <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
             Featured Work
           </h2>
@@ -199,82 +209,73 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
 }
 
 function HomeStudiosOverview({ s, studios }: { s: Section; studios: any[] }) {
+  // Build a lookup map: studioId → card media set in this section
+  const cardMediaMap: Record<string, {cardImage?: any; cardVideoUrl?: string}> = {}
+  if (s.studioCards) {
+    for (const card of s.studioCards) {
+      if (card.studioId) cardMediaMap[card.studioId] = card
+    }
+  }
+  const onDark = !isLightBg(s.bgColor)
+
   return (
-    <section className="relative overflow-hidden bg-bms-dark-500 text-white py-24">
+    <section
+      className={`relative overflow-hidden bg-bms-dark-500 ${getTextClass(s.bgColor)} py-24`}
+      style={getBgStyle(s.bgColor)}
+    >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         {s.heading && (
-          <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">{s.heading}</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-center">{s.heading}</h2>
         )}
+        {s.description && (
+          <p className="text-base md:text-lg text-bms-grey-300 font-[family-name:var(--font-body)] text-center max-w-2xl mx-auto mb-8">
+            {s.description}
+          </p>
+        )}
+        <div className="flex flex-col items-center mb-10">
+          <svg width="56" height="16" viewBox="0 0 56 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="2,2 28,14 54,2" stroke="#999999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        {!s.description && !s.heading && <div className="mb-12" />}
         {studios && studios.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {studios.map((studio: any) => (
-              <a
-                key={studio._id}
-                href={`/studios/${studio.slug?.current}`}
-                className="group border border-bms-accent p-6 hover:bg-bms-accent transition-colors"
-              >
-                <h3 className="text-xl font-[family-name:var(--font-brand)] uppercase tracking-wide mb-3">
-                  {studio.title}
-                </h3>
-                <p className="text-sm text-bms-grey-300 group-hover:text-white transition-colors">
-                  {studio.purpose}
-                </p>
-              </a>
-            ))}
+          <div className="flex flex-wrap justify-center gap-8">
+            {studios.map((studio: any) => {
+              const cardMedia = cardMediaMap[studio._id] || {}
+              const videoUrl = cardMedia.cardVideoUrl || studio.heroVideoUrl
+              const image = cardMedia.cardImage || studio.heroImage
+              return (
+                <div key={studio._id} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]">
+                  <StudioCard
+                    href={`/studios/${studio.slug?.current}`}
+                    title={studio.title}
+                    purpose={studio.purpose}
+                    videoUrl={videoUrl}
+                    image={image}
+                  />
+                </div>
+              )
+            })}
           </div>
         ) : (
           <p className="text-center text-bms-grey-400">
             Studios will appear here once added in the CMS.
           </p>
         )}
-        <div className="text-center mt-12">
-          <a
-            href="/studios"
-            className="inline-block px-8 py-3 rounded-sm border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
-          >
-            Explore All Studios
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function HomeHowWeWork({ s }: { s: Section }) {
-  const hasBg = !!(s.bgVideoUrl || s.bgImage?.asset?.url);
-  return (
-    <section
-      className={`relative overflow-hidden py-24 ${hasBg ? "bg-black text-white" : "bg-white text-black"}`}
-    >
-      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
-      <div className="relative z-10 max-w-5xl mx-auto px-6">
-        {s.heading && (
-          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">{s.heading}</h2>
-        )}
-        {s.steps && s.steps.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {s.steps.map((step: any, i: number) => (
-              <div key={step._key || i} className="text-center">
-                {step.stepNumber && (
-                  <div className="text-4xl font-[family-name:var(--font-brand)] text-bms-accent mb-4">
-                    {step.stepNumber}
-                  </div>
-                )}
-                {step.title && (
-                  <h3 className="text-lg font-[family-name:var(--font-functional)] font-bold mb-2 uppercase tracking-wide">
-                    {step.title}
-                  </h3>
-                )}
-                {step.description && (
-                  <p
-                    className={`text-sm font-[family-name:var(--font-body)] ${hasBg ? "text-bms-grey-300" : "text-bms-grey-400"}`}
-                  >
-                    {step.description}
-                  </p>
-                )}
-              </div>
-            ))}
+        {s.buttons && s.buttons.length > 0 ? (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+            {s.buttons.map((btn: CtaButton) =>
+              btn.label && btn.url ? (
+                <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                  {btn.label}
+                </Button>
+              ) : null
+            )}
+          </div>
+        ) : (
+          <div className="text-center mt-12">
+            <Button variant="white" href="/studios">Explore All Studios</Button>
           </div>
         )}
       </div>
@@ -282,28 +283,120 @@ function HomeHowWeWork({ s }: { s: Section }) {
   );
 }
 
-function HomeTestimonials({ s, testimonials }: { s: Section; testimonials: any[] }) {
-  if (!testimonials || testimonials.length === 0) return null;
+function splitTextAtFounder(text: string): [string, string] {
+  const marker = 'Founded and operated by Rebekah-Breeze Johnson';
+  const idx = text.indexOf(marker);
+  if (idx !== -1) return [text.slice(0, idx).trim(), text.slice(idx).trim()];
+  // Fallback: split at nearest sentence boundary to midpoint
+  const mid = Math.floor(text.length / 2);
+  const after = text.indexOf('. ', mid);
+  const before = text.lastIndexOf('. ', mid);
+  let cut: number;
+  if (after === -1 && before === -1) cut = mid;
+  else if (after === -1) cut = before + 2;
+  else if (before === -1) cut = after + 2;
+  else cut = (after - mid < mid - before ? after : before) + 2;
+  return [text.slice(0, cut).trim(), text.slice(cut).trim()];
+}
+
+function AboutSideImage({ image, side }: { image?: { asset?: { url: string }; alt?: string }; side: 'left' | 'right' }) {
+  if (image?.asset?.url) {
+    const src = `${image.asset.url}?w=600&auto=format&q=80`
+    return (
+      <img
+        src={src}
+        alt={image.alt || ''}
+        className="w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+      />
+    );
+  }
   return (
-    <section className="relative overflow-hidden bg-black text-white py-24">
+    <div className="w-full h-full border border-dashed border-white/20 flex flex-col items-center justify-center gap-2 text-white/25 text-xs uppercase tracking-widest select-none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <polyline points="21 15 16 10 5 21" />
+      </svg>
+      <span>{side === 'left' ? 'Left Image' : 'Right Image'}</span>
+    </div>
+  );
+}
+
+const ABOUT_ASPECT_CLASS: Record<string, string> = {
+  '1:1':  'aspect-square',
+  '2:3':  'aspect-[2/3]',
+  '9:16': 'aspect-[9/16]',
+}
+
+function HomeAbout({ s }: { s: Section }) {
+  const onDark = !isLightBg(s.bgColor)
+  const [topText, bottomText] = s.text ? splitTextAtFounder(s.text) : ['', '']
+  const aspectClass = ABOUT_ASPECT_CLASS[s.imageAspectRatio ?? '1:1'] ?? 'aspect-square'
+  return (
+    <section
+      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24`}
+      style={getBgStyle(s.bgColor)}
+    >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
-      <div className="relative z-10 max-w-4xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center">
-          What Our Clients Say
-        </h2>
-        <div className="space-y-12">
-          {testimonials.map((t: any) => (
-            <blockquote key={t._id} className="text-center">
-              <p className="text-lg md:text-xl italic text-bms-grey-200 mb-4 font-[family-name:var(--font-body)]">
-                &ldquo;{t.quote}&rdquo;
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        {s.heading && (
+          <h2 className="font-[family-name:var(--font-brand)] text-3xl md:text-4xl uppercase tracking-wide mb-10 text-center">
+            {s.heading}
+          </h2>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr] gap-8 items-center">
+          {/* Left image */}
+          <div className={`hidden md:block ${aspectClass} overflow-hidden`}>
+            <AboutSideImage image={s.imageLeft} side="left" />
+          </div>
+
+          {/* Centre text */}
+          <div className="flex flex-col items-center text-center">
+            {topText && (
+              <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)] leading-relaxed">
+                {topText}
               </p>
-              <footer className="text-sm text-bms-grey-400">
-                &mdash; {t.attribution}
-                {t.role && `, ${t.role}`}
-                {t.client?.name && ` | ${t.client.name}`}
-              </footer>
-            </blockquote>
-          ))}
+            )}
+
+            {s.text && (
+              <div className="flex items-center gap-6 w-full pt-4 pb-8">
+                <hr className="flex-grow border-t border-white/15" />
+                <img
+                  src={s.aboutLogo?.asset?.url ?? '/logo.png'}
+                  alt="Breeze Motion Studio"
+                  className="h-auto shrink-0"
+                  style={{ width: s.logoMaxWidth ? `${s.logoMaxWidth}px` : '256px' }}
+                />
+                <hr className="flex-grow border-t border-white/15" />
+              </div>
+            )}
+
+            {bottomText && (
+              <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)] leading-relaxed">
+                {bottomText}
+              </p>
+            )}
+
+            {s.buttons && s.buttons.length > 0 && (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+                {s.buttons.map((btn: CtaButton) =>
+                  btn.label && btn.url ? (
+                    <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                      {btn.label}
+                    </Button>
+                  ) : null
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Right image */}
+          <div className={`hidden md:block ${aspectClass} overflow-hidden`}>
+            <AboutSideImage image={s.imageRight} side="right" />
+          </div>
         </div>
       </div>
     </section>
@@ -311,8 +404,12 @@ function HomeTestimonials({ s, testimonials }: { s: Section; testimonials: any[]
 }
 
 function HomeCta({ s }: { s: Section }) {
+  const onDark = !isLightBg(s.bgColor)
   return (
-    <section className="relative overflow-hidden bg-bms-dark-400 text-white py-24">
+    <section
+      className={`relative overflow-hidden bg-bms-dark-400 ${getTextClass(s.bgColor)} py-24`}
+      style={getBgStyle(s.bgColor)}
+    >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
@@ -325,9 +422,13 @@ function HomeCta({ s }: { s: Section }) {
         )}
         {s.buttons && s.buttons.length > 0 && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {s.buttons.map((btn: CtaButton) => (
-              <CtaLink key={btn._key} cta={btn} />
-            ))}
+            {s.buttons.map((btn: CtaButton) =>
+              btn.label && btn.url ? (
+                <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                  {btn.label}
+                </Button>
+              ) : null
+            )}
           </div>
         )}
       </div>
@@ -374,14 +475,18 @@ export default async function HomePage() {
             return (
               <HomeFeaturedWork key={section._key} s={section} projects={featuredProjects} />
             );
+          case "homeAbout":
+            return <HomeAbout key={section._key} s={section} />;
           case "homeStudiosOverview":
             return <HomeStudiosOverview key={section._key} s={section} studios={studios} />;
           case "homeHowWeWork":
-            return <HomeHowWeWork key={section._key} s={section} />;
+            return <HowWeWorkSection key={section._key} s={section} />;
           case "homeTestimonials":
             return (
               <HomeTestimonials key={section._key} s={section} testimonials={testimonials} />
             );
+          case "homeClientLogos":
+            return <HomeClientLogos key={section._key} s={section} />;
           case "homeCta":
             return <HomeCta key={section._key} s={section} />;
           default:
