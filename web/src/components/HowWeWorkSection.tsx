@@ -390,7 +390,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
             <img
               src={`${s.sectionImage.asset.url}?auto=format&q=80`}
               alt={s.sectionImage.alt || ''}
-              className="max-w-full h-auto"
+              className="max-w-full h-auto rounded-sm"
               loading="eager"
               decoding="async"
             />
