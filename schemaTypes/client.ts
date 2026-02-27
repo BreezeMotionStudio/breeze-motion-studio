@@ -36,6 +36,16 @@ export const client = defineType({
       name: 'logo',
       title: 'Client Logo',
       type: 'image',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description: 'Describe the logo for screen readers and SEO.',
+        }),
+        defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
+      ],
     }),
     defineField({
       name: 'website',

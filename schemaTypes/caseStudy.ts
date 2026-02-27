@@ -81,6 +81,7 @@ export const caseStudy = defineType({
           type: 'string',
           title: 'Alt Text',
         }),
+        defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
       ],
     }),
     defineField({
@@ -94,6 +95,7 @@ export const caseStudy = defineType({
           fields: [
             defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
             defineField({name: 'caption', type: 'string', title: 'Caption'}),
+            defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
           ],
         }),
       ],

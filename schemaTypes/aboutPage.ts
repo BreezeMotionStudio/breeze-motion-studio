@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {UserIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {bgColorField} from './shared/bgColorField'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -38,6 +39,7 @@ export const aboutPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -54,6 +56,7 @@ export const aboutPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -71,6 +74,7 @@ export const aboutPage = defineType({
           fields: [
             defineField({name: 'overview', title: 'Studio Overview', type: 'blockContent'}),
             defineField({name: 'mission', title: 'Mission', type: 'blockContent'}),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -98,8 +102,12 @@ export const aboutPage = defineType({
               title: 'Photo',
               type: 'image',
               options: {hotspot: true},
-              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+              fields: [
+                defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+                defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
+              ],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -135,6 +143,7 @@ export const aboutPage = defineType({
                 }),
               ],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -171,6 +180,7 @@ export const aboutPage = defineType({
                 }),
               ],
             }),
+            bgColorField,
             disabledField,
           ],
           preview: {

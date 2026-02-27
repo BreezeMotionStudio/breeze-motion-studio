@@ -80,6 +80,7 @@ export const project = defineType({
           title: 'Alt Text',
           validation: (rule) => rule.required().warning('Alt text is important for accessibility'),
         }),
+        defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
       ],
     }),
     defineField({
@@ -93,6 +94,7 @@ export const project = defineType({
           fields: [
             defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
             defineField({name: 'caption', type: 'string', title: 'Caption'}),
+            defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
           ],
         }),
       ],

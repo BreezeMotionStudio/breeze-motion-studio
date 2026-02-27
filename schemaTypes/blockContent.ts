@@ -64,6 +64,13 @@ export const blockContent = defineType({
           type: 'string',
           title: 'Caption',
         },
+        {
+          name: 'roundCrop',
+          type: 'boolean',
+          title: 'Round Crop',
+          description: 'Display this image with a circular crop',
+          initialValue: false,
+        },
       ],
     }),
   ],

@@ -29,6 +29,14 @@ export const siteSettings = defineType({
       group: 'general',
     }),
     defineField({
+      name: 'splashAccentsEnabled',
+      title: 'Splash Accents',
+      type: 'boolean',
+      description: 'Show decorative camera splash graphics in section corners across all pages.',
+      initialValue: true,
+      group: 'general',
+    }),
+    defineField({
       name: 'description',
       title: 'Default Meta Description',
       type: 'text',
@@ -41,6 +49,7 @@ export const siteSettings = defineType({
       title: 'Site Logo',
       type: 'image',
       group: 'general',
+      fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
     }),
     defineField({
       name: 'logoLight',
@@ -48,6 +57,7 @@ export const siteSettings = defineType({
       type: 'image',
       group: 'general',
       description: 'For use on dark backgrounds',
+      fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
     }),
 
     // — Header & Navigation —
@@ -108,6 +118,14 @@ export const siteSettings = defineType({
           initialValue: true,
         }),
         defineField({
+          name: 'logoImage',
+          title: 'Logo Image',
+          type: 'image',
+          description: 'Upload a logo image. Falls back to the Site Logo in General if left blank.',
+          options: {hotspot: true},
+          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
+        }),
+        defineField({
           name: 'sizePreset',
           title: 'Size Preset',
           type: 'string',
@@ -147,6 +165,14 @@ export const siteSettings = defineType({
           initialValue: false,
         }),
         defineField({
+          name: 'logoImage',
+          title: 'Logo Image',
+          type: 'image',
+          description: 'Upload a logo image for the round crop. Falls back to the Site Logo in General if left blank.',
+          options: {hotspot: true},
+          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
+        }),
+        defineField({
           name: 'sizePreset',
           title: 'Size Preset',
           type: 'string',
@@ -177,13 +203,21 @@ export const siteSettings = defineType({
       title: 'Icon Only — No Wordmark',
       type: 'object',
       group: 'header',
-      description: 'Logo icon displayed in the navigation bar without the Breeze Motion Studio wordmark text. Place your icon file at /web/public/logo-icon.png',
+      description: 'Logo icon displayed in the navigation bar without the Breeze Motion Studio wordmark text. Upload an image here or place your icon file at /web/public/logo-icon.png',
       fields: [
         defineField({
           name: 'enabled',
           title: 'Show Icon Only Logo',
           type: 'boolean',
           initialValue: false,
+        }),
+        defineField({
+          name: 'logoImage',
+          title: 'Icon Image',
+          type: 'image',
+          description: 'Upload an icon image (no wordmark). Falls back to /public/logo-icon.png if left blank.',
+          options: {hotspot: true},
+          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
         }),
         defineField({
           name: 'sizePreset',

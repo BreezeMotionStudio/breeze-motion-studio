@@ -142,13 +142,21 @@ Home | About | Studios ▾ | Case Studies | Contact
 
 ### Buttons
 
-**Primary:**
-- Solid fill: black on white OR white on black (contextual)
-- Hover: color inversion + slight scale-up (subtle)
-- Click: instant navigation, no click animation
+**Strict Rule: All buttons must be solid black with white text or solid white with black text. Outlines, transparent backgrounds, and other variants are strictly prohibited.**
 
-**Secondary:**
-- Outlined or text-only variation (contextual)
+Two variants only, implemented via `web/src/components/ui/Button.tsx`:
+
+| Variant | Background | Text | Hover |
+|---------|-----------|------|-------|
+| `black` | `#000000` | `#FFFFFF` | Inverts to white bg / black text |
+| `white` | `#FFFFFF` | `#000000` | Inverts to black bg / white text |
+
+- Use `white` variant on dark section backgrounds (hero, CTA, testimonials, studios overview)
+- Use `black` variant on light section backgrounds (contact form, services intro)
+- Hover: slight color dulling + `scale-105` (subtle scale increase)
+- All buttons use Arial, uppercase, tracked-widest, `rounded-sm`
+
+**Button hover rule: Hover states must never invert colors. They use a slight color dulling effect (`hover:bg-neutral-800` for black buttons, `hover:bg-gray-200` for white buttons) alongside a slight scale increase (`hover:scale-105`). Color inversion on hover is strictly prohibited.**
 
 ### Cards (Studio / Project)
 
@@ -332,3 +340,4 @@ web/src/
         ├── Hero.tsx
         └── ...
 ```
+\n- STANDING RULE (Images): All future image components or UI containers with crop options must support a 'round crop' variant (e.g., rounded-full).

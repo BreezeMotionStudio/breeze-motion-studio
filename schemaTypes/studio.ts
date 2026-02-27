@@ -65,24 +65,26 @@ export const studio = defineType({
     }),
     defineField({
       name: 'heroImage',
-      title: 'Hero Image',
+      title: 'Studio Page — Hero Image',
       type: 'image',
       options: {hotspot: true},
       group: 'media',
+      description: 'Full-width image for the top of the individual studio page.',
       fields: [
         defineField({
           name: 'alt',
           type: 'string',
           title: 'Alt Text',
         }),
+        defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
       ],
     }),
     defineField({
       name: 'heroVideoUrl',
-      title: 'Hero Video URL',
+      title: 'Studio Page — Hero Video URL',
       type: 'url',
       group: 'media',
-      description: 'Showcase video for the studio page header',
+      description: 'Showcase video for the top of the individual studio page.',
     }),
     defineField({
       name: 'displayOrder',
