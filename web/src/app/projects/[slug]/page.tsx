@@ -187,11 +187,11 @@ export default async function ProjectPage({ params }: Props) {
                   {deliverableImages.map((item, i) => (
                     <div key={i}>
                       {item.asset?.url && (
-                        <div className="aspect-[4/3] overflow-hidden rounded-sm">
+                        <div className="rounded-sm overflow-hidden">
                           <img
-                            src={`${item.asset.url}?w=900&auto=format&q=80`}
+                            src={`${item.asset.url}?w=1600&auto=format&q=85`}
                             alt={item.alt || ''}
-                            className="w-full h-full object-cover"
+                            className="w-full h-auto"
                           />
                         </div>
                       )}
