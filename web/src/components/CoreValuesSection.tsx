@@ -255,7 +255,8 @@ export function CoreValuesSection({ values, bgColor, sectionBg }: { values: Valu
   }
 
   const offset    = active || done ? 0 : (path?.len ?? 9999)
-  const coverFill = toColor(sectionBg?.bgType === 'solid' ? sectionBg?.bgColor : bgColor) || '#FFFFFF'
+  const rawCoverColor = sectionBg?.bgType === 'solid' ? sectionBg?.bgColor : bgColor
+  const coverFill = rawCoverColor ? toColor(rawCoverColor) : '#FFFFFF'
 
   return (
     <section
