@@ -67,9 +67,9 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 {(item.projectTitle || item.clientName || item.imageCaption || item.label) && (
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    {item.imageCaption && (
-                      <p className="font-[family-name:var(--font-functional)] text-[9px] uppercase tracking-widest text-white/60 leading-tight mb-0.5">
-                        {item.imageCaption}
+                    {item.clientName && (
+                      <p className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-white/60 leading-tight mb-0.5">
+                        {item.clientName}
                       </p>
                     )}
                     {(item.label || item.projectTitle) && (
@@ -77,9 +77,9 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
                         {item.label || item.projectTitle}
                       </p>
                     )}
-                    {item.clientName && (
-                      <p className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-white/60 leading-tight mt-0.5">
-                        {item.clientName}
+                    {item.imageCaption && (
+                      <p className="font-[family-name:var(--font-functional)] text-[9px] uppercase tracking-widest text-white/60 leading-tight mt-0.5">
+                        {item.imageCaption}
                       </p>
                     )}
                   </div>
