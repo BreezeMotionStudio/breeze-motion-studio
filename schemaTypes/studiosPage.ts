@@ -103,11 +103,11 @@ export const studiosPage = defineType({
           },
         }),
 
-        // ── Studios Grid ──────────────────────────────────────────────────
+        // ── Studio Cards ──────────────────────────────────────────────────
         defineArrayMember({
           type: 'object',
           name: 'studiosGrid',
-          title: 'Studios Grid',
+          title: 'Studio Cards',
           fields: [
             defineField({
               name: 'cards',
@@ -182,8 +182,8 @@ export const studiosPage = defineType({
             select: {disabled: 'disabled'},
             prepare({disabled}) {
               return {
-                title: disabled ? '[HIDDEN] Studios Grid' : 'Studios Grid',
-                subtitle: 'Studio cards — drag to reorder, override image or tagline per card',
+                title: disabled ? '[HIDDEN] Studio Cards' : 'Studio Cards',
+                subtitle: 'Drag to reorder, override image or tagline per card',
               }
             },
           },
