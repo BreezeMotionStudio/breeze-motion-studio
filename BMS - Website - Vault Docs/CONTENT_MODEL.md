@@ -114,15 +114,24 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 |-------------|--------|
 | `studiosHero` | heading, heroImage{alt} *(diagonal frame)* |
 | `studiosIntro` | text |
-| `studiosHighlights` | heading, subheading — highlights carousel; default bg `#0d0d0d`; `sectionBg` for override; project data from `STUDIOS_HIGHLIGHTS_QUERY` (projects with `isHighlight == true`) |
+| `studiosHighlights` | heading — highlights carousel; default bg `#0d0d0d`; `sectionBg` for override; `highlights[]` — array of `{project→, enabled}` entries with inline ON/OFF toggle; project data resolved in page from section array |
 | `studiosGrid` | cards[] *(optional: studio reference + taglineOverride + imageOverride + overlayOpacity + overlayDirection)*; falls back to all studios when empty; `sectionBg` for override; studio cards use `flex flex-wrap justify-center` — odd card auto-centres |
-| `studiosBts` | heading — Behind the Scenes strip; dark default; projects from `STUDIOS_BTS_QUERY` (projects with `btsImages` or `btsVideos`) |
-| `studiosLatestProjects` | heading — latest projects strip with pagination; data from `STUDIOS_LATEST_PROJECTS_QUERY` |
+| `studiosBts` | heading, `btsImages[]` *(managed list — see below)* |
+| `studiosLatestProjects` | heading; `latestProjects[]` — array of `{project→, enabled}` entries with inline ON/OFF toggle; `sectionBg` for override |
 | `studiosCta` | heading, text, buttons[], sectionBg *(full sectionBackground type)* |
+
+**`studiosBts.btsImages[]`** supports two member types:
+- `projectBts` — `{project→, imageOverride? (image), enabled (bool, default true), autoPulled (bool, hidden), label?, caption?}` — links a project; uses `imageOverride` if set, else pulls `project.btsImages[0]` at render time
+- `manualBts` — `{image (required), label?, caption?}` — standalone uploaded image; no project link
+
+Auto-population: `BtsImagesInput` custom component queries all projects with `defined(btsImages[0])` on mount and patches any new ones into the array as `projectBts { autoPulled: true }` entries. Auto-pulled items are tagged with a red "autopulled" badge in Studio; can be toggled, deleted, reordered, or have their image replaced just like manual entries.
+
+**Inline toggles:** Both `studiosHighlights.highlights[]` and `studiosLatestProjects.latestProjects[]` use the `InlineToggleItem` custom component — an ON/OFF pill button is rendered directly in the array item row without opening the item.
 
 **Section render order (current):** studiosHero → studiosIntro → studiosHighlights → studiosGrid → studiosBts → studiosLatestProjects → studiosCta *(only renders if configured in Sanity)*
 
-**Note (Session 27):** Highlights section moved above the studio grid. Studio cards switched from `grid-cols-2` to `flex flex-wrap justify-center` for correct odd-card centering.
+**Notes (Session 27):** Highlights section moved above the studio grid. Studio cards switched from `grid-cols-2` to `flex flex-wrap justify-center` for correct odd-card centering.
+**Notes (Session 28):** `studiosBts` fully redesigned — managed `btsImages[]` array replaces the old auto-query approach. `studiosHighlights` and `studiosLatestProjects` gained per-item inline toggles.
 
 ---
 

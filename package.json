@@ -15,10 +15,10 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^5.10.0",
+    "@sanity/vision": "^5.26.0",
     "react": "^19.1",
     "react-dom": "^19.1",
-    "sanity": "^5.10.0",
+    "sanity": "^5.26.0",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {
@@ -27,6 +27,11 @@
     "eslint": "^9.28",
     "prettier": "^3.5",
     "typescript": "^5.8"
+  },
+  "overrides": {
+    "@vercel/frameworks": {
+      "js-yaml": "^3.14.2"
+    }
   },
   "prettier": {
     "semi": false,

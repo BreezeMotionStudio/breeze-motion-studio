@@ -1,6 +1,8 @@
 // Shared types
 import {ctaButton} from './shared/ctaButton'
 import {blockContent} from './blockContent'
+import {simpleRichText} from './shared/simpleRichText'
+import {sectionBackground} from './shared/sectionBackground'
 
 // Document types
 import {siteSettings} from './siteSettings'
@@ -16,11 +18,14 @@ import {caseStudy} from './caseStudy'
 import {client} from './client'
 import {testimonial} from './testimonial'
 import {serviceCategory} from './serviceCategory'
+import {serviceCombination} from './serviceCombination'
 
 export const schemaTypes = [
   // Shared / Object types
   ctaButton,
   blockContent,
+  simpleRichText,
+  sectionBackground,
 
   // Singleton pages
   siteSettings,
@@ -38,4 +43,5 @@ export const schemaTypes = [
   client,
   testimonial,
   serviceCategory,
+  serviceCombination,
 ]

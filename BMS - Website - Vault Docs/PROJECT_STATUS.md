@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-05-25 (Session 27)
+**Last Updated:** 2026-05-25 (Session 28)
 
 ---
 
@@ -34,6 +34,32 @@
 ---
 
 ## Development Log
+
+### 2026-05-25 (Session 28) — Studios Page Inline Toggles, BTS Auto-Pull & Autopulled Badge
+
+**Inline ON/OFF toggles for Highlights and Latest Projects:**
+- ✅ `InlineToggleItem` custom Sanity component (`schemaTypes/components/InlineToggleItem.tsx`) — renders an ON/OFF pill button directly on each array item row using `components.item`; no need to open items individually
+- ✅ Uses `useFormValue(['_id']) + useClient` pattern for direct document patching (Sanity `ObjectItemProps` has no `onChange`); optimistic UI via `pending` state
+- ✅ Applied to `studiosHighlights.highlights[]` and `studiosLatestProjects.latestProjects[]` item member definitions via `components: {item: InlineToggleItem}`
+- ✅ Schema deployed
+
+**BTS section full redesign — managed array with auto-pull:**
+- ✅ `studiosBts.btsImages[]` redesigned from a simple auto-query to a fully managed array with two member types:
+  - `projectBts` — links a project reference; uses `imageOverride` if set, otherwise pulls `project.btsImages[0]` at query time; fields: `enabled`, `autoPulled` (hidden), `label`, `caption`
+  - `manualBts` — standalone uploaded image; fields: `image` (required), `label`, `caption`
+- ✅ `BtsImagesInput` custom Sanity component (`schemaTypes/components/BtsImagesInput.tsx`) — on mount, queries all projects with `defined(btsImages[0])`, finds ones not already in the array, and patches them in as `projectBts { autoPulled: true }` entries; returns `renderDefault(props)` — no separate preview panel
+- ✅ All auto-pulled and manual items are drag-reorderable, togglable, deletable, and have image override support — single unified list
+- ✅ `autoPulled` hidden boolean field added to `projectBts` member schema so the flag persists after auto-patching
+- ✅ Red "autopulled" badge on `InlineToggleItem` — positioned left of the ON/OFF button; visible only when `value.autoPulled === true`
+
+**Query and frontend updates:**
+- ✅ `STUDIOS_PAGE_QUERY` `btsImages[]` projection updated: `_type, _key, enabled, project->{_id, "firstBtsImage": btsImages[0]{asset->{url}, alt}}, imageOverride{asset->{url}, alt}, image{asset->{url}, alt}, label, caption`
+- ✅ GROQ conditional projection added: `_type == "studiosBts" => { "allProjectBts": *[_type == "project" && defined(btsImages[0])] | order(completedAt desc, _createdAt desc){ _id, "firstBtsImage": btsImages[0]{asset->{url}, alt} } }` — supplies unmanaged project BTS for append at end
+- ✅ `studios/page.tsx` BTS resolution: managed enabled items first (in array order) + unmanaged projects appended at end; handles both `projectBts` (imageOverride or firstBtsImage) and `manualBts` item shapes
+- ✅ Sections always render even when empty — removed all `return null` early exits from `StudiosHighlights`, `StudiosLatestProjects`, `StudiosBts`
+- ✅ Schema deployed
+
+---
 
 ### 2026-05-25 (Session 27) — Background Standardisation, Studios Page & Responsive Fixes
 

@@ -42,3 +42,30 @@ h1, h2, h3 {
 h4, h5, h6 {
   font-family: var(--font-functional);
 }
+
+/* Service modal subheading line draw */
+@keyframes bms-line-draw {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+.line-draw {
+  animation: bms-line-draw 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Scroll catchup animations */
+@keyframes bms-catchup {
+  from { transform: translateY(36px); }
+  to   { transform: translateY(0); }
+}
+
+/* Hero: plays once on page load */
+.hero-catchup {
+  animation: bms-catchup 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+/* Scroll reveal: initial hidden state applied by JS (SSR-safe).
+   Only the transitions are defined here so there is no flash on hydration. */
+.scroll-catchup {
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}

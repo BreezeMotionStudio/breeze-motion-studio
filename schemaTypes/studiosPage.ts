@@ -297,6 +297,7 @@ export const studiosPage = defineType({
                       fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
                     }),
                     defineField({name: 'enabled', title: 'Show', type: 'boolean', initialValue: true}),
+                    defineField({name: 'autoPulled', title: 'Auto-Pulled', type: 'boolean', initialValue: false, hidden: true}),
                     defineField({name: 'label', title: 'Hover Label', type: 'string'}),
                     defineField({name: 'caption', title: 'Caption', type: 'string'}),
                   ],

@@ -21,6 +21,7 @@ function toSanityPatchPath(path: Path, field: string): string {
 export function InlineToggleItem(props: ObjectItemProps) {
   const {value, path, renderDefault} = props
   const enabled = !!(value as any)?.enabled
+  const autoPulled = !!(value as any)?.autoPulled
   const [pending, setPending] = useState<boolean | null>(null)
   const display = pending !== null ? pending : enabled
 
@@ -44,6 +45,28 @@ export function InlineToggleItem(props: ObjectItemProps) {
   return (
     <div style={{position: 'relative'}}>
       {renderDefault(props)}
+      {autoPulled && (
+        <span
+          style={{
+            position: 'absolute',
+            top: '14px',
+            right: '118px',
+            background: '#c0392b',
+            color: '#fff',
+            borderRadius: '3px',
+            padding: '2px 6px',
+            fontSize: '9px',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            fontFamily: 'ui-monospace, monospace',
+            lineHeight: '1.6',
+            pointerEvents: 'none',
+            zIndex: 10,
+          }}
+        >
+          autopulled
+        </span>
+      )}
       <button
         type="button"
         onClick={handleToggle}
