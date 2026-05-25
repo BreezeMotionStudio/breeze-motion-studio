@@ -106,6 +106,11 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         label,
         caption
       },
+      autoPullEnabled,
+      autoPullOverride{ asset->{url}, alt },
+      _type == "studiosBts" => {
+        "latestProjectBts": *[_type == "project"] | order(completedAt desc, _createdAt desc)[0].btsImages[0]{ asset->{url}, alt }
+      },
       latestProjects[]{
         _key,
         enabled,

@@ -277,10 +277,26 @@ export const studiosPage = defineType({
             }),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
             defineField({
+              name: 'autoPullEnabled',
+              title: 'Auto-pull from Latest Project',
+              type: 'boolean',
+              initialValue: true,
+              description: 'When on, the first BTS image from your most recent project is automatically added at the top of the grid.',
+            }),
+            defineField({
+              name: 'autoPullOverride',
+              title: 'Replace Auto-pulled Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Upload an image here to swap out the auto-pulled one. Leave blank to use the original.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+              hidden: ({parent}: any) => parent?.autoPullEnabled === false,
+            }),
+            defineField({
               name: 'btsImages',
-              title: 'Behind the Scenes Images',
+              title: 'Additional BTS Images',
               type: 'array',
-              description: 'Manually upload BTS images here. Drag to reorder.',
+              description: 'Manually upload extra BTS images. These appear after the auto-pulled image. Drag to reorder.',
               of: [defineArrayMember({
                 type: 'object',
                 name: 'btsImageEntry',

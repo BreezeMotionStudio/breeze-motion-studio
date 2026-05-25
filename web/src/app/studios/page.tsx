@@ -219,8 +219,24 @@ export default async function StudiosPage() {
     return arr.filter((h) => h.enabled !== false).map((h) => h.project).filter(Boolean)
   })()
 
-  // Extract BTS images from section
+  // Build BTS images: auto-pulled first (if enabled), then manual additions
   const btsSectionImages = (btsSection?.btsImages as any[] | undefined) ?? []
+  const autoPullEnabled = btsSection?.autoPullEnabled !== false  // default true when undefined
+  const autoPullOverride = btsSection?.autoPullOverride as { asset?: { url: string }; alt?: string } | undefined
+  const latestProjectBts = btsSection?.latestProjectBts as { asset?: { url: string }; alt?: string } | undefined
+
+  const autoImage = (() => {
+    if (!autoPullEnabled) return null
+    const src = autoPullOverride?.asset?.url
+      ? { url: autoPullOverride.asset.url, alt: autoPullOverride.alt || '' }
+      : latestProjectBts?.asset?.url
+      ? { url: latestProjectBts.asset.url, alt: latestProjectBts.alt || '' }
+      : null
+    if (!src) return null
+    return { _key: '__auto__', image: { asset: { url: src.url }, alt: src.alt }, label: '', caption: '' }
+  })()
+
+  const allBtsImages = autoImage ? [autoImage, ...btsSectionImages] : btsSectionImages
 
   // Extract latest projects from section array (enabled entries only)
   const latestProjects = (() => {
@@ -289,7 +305,7 @@ export default async function StudiosPage() {
       {!btsDisabled && (
         <StudiosBts
           s={btsSection ?? {}}
-          btsImages={btsSectionImages}
+          btsImages={allBtsImages}
         />
       )}
 
