@@ -47,7 +47,7 @@ export function ImageLightbox({ src, alt, onClose, viewProjectHref }: Props) {
           <a
             href={viewProjectHref}
             onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-4 left-4 font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-white bg-black/70 hover:bg-black border border-white/20 px-3 py-2 transition-colors duration-200"
+            className="absolute bottom-4 left-4 font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-black bg-white hover:bg-black hover:text-white px-3 py-2 transition-colors duration-200"
           >
             View Project
           </a>
