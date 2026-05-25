@@ -92,7 +92,7 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         imageOverride{asset->{url}, alt},
         taglineOverride,
         overlayOpacity,
-        overlayAngle
+        overlayDirection
       }
     },
     seoTitle,

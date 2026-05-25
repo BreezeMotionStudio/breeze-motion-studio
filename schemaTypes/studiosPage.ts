@@ -157,13 +157,23 @@ export const studiosPage = defineType({
                       validation: (r) => r.min(0).max(100),
                     }),
                     defineField({
-                      name: 'overlayAngle',
-                      title: 'Gradient Angle',
-                      type: 'number',
-                      description:
-                        'Direction of the gradient in degrees. 0 = bottom to top, 90 = left to right, 180 = top to bottom, 270 = right to left. Default: 0.',
-                      initialValue: 0,
-                      validation: (r) => r.min(0).max(360),
+                      name: 'overlayDirection',
+                      title: 'Gradient Direction',
+                      type: 'string',
+                      options: {
+                        list: [
+                          {title: 'Bottom → Top', value: 'to top'},
+                          {title: 'Top → Bottom', value: 'to bottom'},
+                          {title: 'Left → Right', value: 'to right'},
+                          {title: 'Right → Left', value: 'to left'},
+                          {title: 'Diagonal ↗', value: 'to top right'},
+                          {title: 'Diagonal ↖', value: 'to top left'},
+                          {title: 'Diagonal ↘', value: 'to bottom right'},
+                          {title: 'Diagonal ↙', value: 'to bottom left'},
+                        ],
+                        layout: 'radio',
+                      },
+                      initialValue: 'to top',
                     }),
                   ],
                   preview: {
