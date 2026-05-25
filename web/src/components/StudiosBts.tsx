@@ -19,31 +19,30 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
 
   const valid = btsImages.filter((item) => !!item.image?.asset?.url)
 
+  const labelRow = (
+    <div className="max-w-5xl mx-auto px-6 mb-10 flex items-center gap-5">
+      <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
+        {s.heading || 'Behind the Scenes'}
+      </span>
+      <div className="flex-grow h-px bg-white/10" />
+    </div>
+  )
+
+  if (valid.length === 0) {
+    return (
+      <section className="bg-[#111] py-20">
+        {labelRow}
+      </section>
+    )
+  }
+
   return (
     <section className="bg-[#111] py-20">
-      {/* Label row */}
-      <div className="max-w-5xl mx-auto px-6 mb-10 flex items-center gap-5">
-        <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-          {s.heading || 'Behind the Scenes'}
-        </span>
-        <div className="flex-grow h-px bg-white/10" />
-      </div>
+      {labelRow}
 
       <div className="max-w-5xl mx-auto px-6">
-        {valid.length === 0 ? (
-          <>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="aspect-[4/3] border border-dashed border-white/10 rounded-sm" />
-              ))}
-            </div>
-            <p className="text-bms-grey-400/40 font-[family-name:var(--font-functional)] text-[11px] uppercase tracking-widest mt-8 text-center">
-              Upload BTS images in Sanity → Studio Page → Behind the Scenes.
-            </p>
-          </>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {valid.map((item, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {valid.map((item, i) => (
               <div
                 key={item._key || i}
                 className="relative aspect-[4/3] overflow-hidden rounded-sm group cursor-pointer"
@@ -69,9 +68,8 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       {lightbox && (

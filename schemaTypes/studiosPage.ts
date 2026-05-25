@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ComponentIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {InlineToggleItem} from './components/InlineToggleItem'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -103,6 +104,7 @@ export const studiosPage = defineType({
               of: [defineArrayMember({
                 type: 'object',
                 name: 'highlightEntry',
+                components: {item: InlineToggleItem},
                 fields: [
                   defineField({
                     name: 'project',
@@ -337,6 +339,7 @@ export const studiosPage = defineType({
               of: [defineArrayMember({
                 type: 'object',
                 name: 'latestEntry',
+                components: {item: InlineToggleItem},
                 fields: [
                   defineField({
                     name: 'project',

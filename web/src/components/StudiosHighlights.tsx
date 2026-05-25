@@ -24,14 +24,6 @@ type Props = {
 const PER_PAGE = 3
 const AUTO_MS  = 3000
 
-const PLACEHOLDERS: Project[] = Array.from({ length: 6 }, (_, i) => ({
-  _id: `ph-${i}`,
-  title: 'Project Title',
-  tagline: 'Short project descriptor goes here',
-  client: { name: 'Client Name' },
-  studio: { title: 'Studio' },
-}))
-
 function ChevronLeft() {
   return (
     <svg width="16" height="56" viewBox="0 0 16 56" fill="none">
@@ -48,10 +40,10 @@ function ChevronRight() {
   )
 }
 
-function HighlightCard({ project, isPlaceholder }: { project: Project; isPlaceholder: boolean }) {
-  const href = !isPlaceholder && project.slug?.current ? `/projects/${project.slug.current}` : null
+function HighlightCard({ project }: { project: Project }) {
+  const href = project.slug?.current ? `/projects/${project.slug.current}` : null
   const inner = (<>
-      <div className={`aspect-[3/2] overflow-hidden rounded-sm mb-3 ${isPlaceholder ? 'border border-dashed border-[#333] bg-[#111]' : 'bg-[#1a1a1a]'}`}>
+      <div className="aspect-[3/2] overflow-hidden rounded-sm mb-3 bg-[#1a1a1a]">
         {project.coverImage?.asset?.url ? (
           <img
             src={`${project.coverImage.asset.url}?w=640&auto=format&q=80`}
@@ -72,20 +64,20 @@ function HighlightCard({ project, isPlaceholder }: { project: Project; isPlaceho
       </div>
 
       <div className="flex items-center justify-between mb-1">
-        <span className={`font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest ${isPlaceholder ? 'text-[#555]' : 'text-bms-grey-400'}`}>
+        <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-grey-400">
           {project.client?.name ?? ''}
         </span>
-        <span className={`font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest ${isPlaceholder ? 'text-bms-accent/30' : 'text-bms-accent'}`}>
+        <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-accent">
           {project.studio?.title ?? ''}
         </span>
       </div>
 
-      <h3 className={`font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight transition-colors ${isPlaceholder ? 'text-[#555]' : 'text-white group-hover:text-bms-accent'}`}>
+      <h3 className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight transition-colors text-white group-hover:text-bms-accent">
         {project.title}
       </h3>
 
       {project.tagline && (
-        <p className={`font-[family-name:var(--font-body)] text-xs mt-1 leading-relaxed line-clamp-2 ${isPlaceholder ? 'text-[#444]' : 'text-bms-grey-400'}`}>
+        <p className="font-[family-name:var(--font-body)] text-xs mt-1 leading-relaxed line-clamp-2 text-bms-grey-400">
           {project.tagline}
         </p>
       )}
@@ -101,15 +93,12 @@ export function StudiosHighlights({ s, projects }: Props) {
   const pageRef               = useRef(0)
   const pausedRef             = useRef(false)
 
-  const isPlaceholder = projects.length === 0
-  const source = isPlaceholder ? PLACEHOLDERS : projects
-
   const pages: Project[][] = []
-  for (let i = 0; i < source.length; i += PER_PAGE) {
-    pages.push(source.slice(i, i + PER_PAGE))
+  for (let i = 0; i < projects.length; i += PER_PAGE) {
+    pages.push(projects.slice(i, i + PER_PAGE))
   }
   const totalPages = pages.length
-  const maxPage    = totalPages - 1
+  const maxPage    = Math.max(0, totalPages - 1)
   const canScroll  = totalPages > 1
 
   const handleNext = useCallback(() => {
@@ -145,6 +134,19 @@ export function StudiosHighlights({ s, projects }: Props) {
   }, [canScroll])
 
   const bgStyle = s.sectionBg ? sectionBgStyle(s.sectionBg) : undefined
+
+  if (projects.length === 0) {
+    return (
+      <section className="relative bg-[#0d0d0d] py-14" style={bgStyle}>
+        <div className="max-w-6xl mx-auto px-6 flex items-center gap-5">
+          <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
+            {s.heading || 'Highlights'}
+          </span>
+          <div className="flex-grow h-px bg-white/10" />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section
@@ -191,7 +193,6 @@ export function StudiosHighlights({ s, projects }: Props) {
                     <HighlightCard
                       key={`${project._id}-${i}`}
                       project={project}
-                      isPlaceholder={isPlaceholder}
                     />
                   ))}
                 </div>
