@@ -234,9 +234,9 @@ export default async function ProjectPage({ params }: Props) {
                 )}
                 {project.btsImages?.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {project.btsImages.map((img: { asset?: { url: string }; alt?: string; caption?: string }, i: number) => (
-                      <div key={i}>
-                        {img.asset?.url && (
+                    {project.btsImages.map((img: { asset?: { url: string }; alt?: string; caption?: string }, i: number) =>
+                      img.asset?.url ? (
+                        <div key={i}>
                           <div className="rounded-sm overflow-hidden">
                             <img
                               src={`${img.asset.url}?w=1600&auto=format&q=85`}
@@ -244,14 +244,14 @@ export default async function ProjectPage({ params }: Props) {
                               className="w-full h-auto"
                             />
                           </div>
-                        )}
-                        {img.caption && (
-                          <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
-                            {img.caption}
-                          </p>
-                        )}
-                      </div>
-                    ))}
+                          {img.caption && (
+                            <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
+                              {img.caption}
+                            </p>
+                          )}
+                        </div>
+                      ) : null
+                    )}
                   </div>
                 )}
               </div>
