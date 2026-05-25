@@ -230,8 +230,8 @@ export default async function StudiosPage() {
       .map((item: any) => item.project._id)
   )
 
-  // Resolve each managed item to a { _key, image, label, caption } shape
-  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string }
+  // Resolve each managed item to a { _key, image, label, caption, projectTitle } shape
+  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string; projectTitle?: string }
   const resolvedManaged: BtsImageItem[] = btsManaged
     .filter((item: any) => {
       if (item._type === 'projectBts') return item.enabled !== false
@@ -241,7 +241,7 @@ export default async function StudiosPage() {
       if (item._type === 'projectBts') {
         const imgUrl = item.imageOverride?.asset?.url || item.project?.firstBtsImage?.asset?.url
         if (!imgUrl) return []
-        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '' }]
+        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '', projectTitle: item.project?.title || '' }]
       }
       // manualBts
       if (!item.image?.asset?.url) return []
@@ -256,6 +256,7 @@ export default async function StudiosPage() {
       image: { asset: { url: p.firstBtsImage.asset.url }, alt: p.firstBtsImage.alt || '' },
       label: '',
       caption: '',
+      projectTitle: p.title || '',
     }))
 
   const allBtsImages = [...resolvedManaged, ...unmanagedAuto]
