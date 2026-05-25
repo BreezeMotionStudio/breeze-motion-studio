@@ -84,12 +84,12 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
         {(heading || intro) && (
           <div className="max-w-2xl mb-4">
             {heading && (
-              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-black">
+              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white">
                 {heading}
               </h2>
             )}
             {intro && (
-              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-[#4B4B4B]">
+              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-[#C8C8C8]">
                 <SimpleRichText value={intro} />
               </p>
             )}
@@ -101,7 +101,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
           {combinations.map((combo, index) => (
             <div
               key={combo._key}
-              className="relative rounded-2xl border-2 border-black overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
+              className="relative rounded-2xl border-2 border-white overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
             >
               {combo.bgImage?.asset?.url ? (
                 <>
