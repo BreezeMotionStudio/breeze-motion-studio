@@ -101,7 +101,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
           {combinations.map((combo, index) => (
             <div
               key={combo._key}
-              className="relative rounded-2xl border-2 border-black overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
+              className="relative rounded-2xl overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
             >
               {combo.bgImage?.asset?.url ? (
                 <>
