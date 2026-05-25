@@ -90,13 +90,13 @@ function StudiosGrid({ studios }: { studios: Studio[] }) {
     )
   }
   return (
-    <section className="bg-black">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/[0.04]">
+    <section className="bg-black p-3 md:p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {studios.map((studio) => (
           <Link
             key={studio._id}
             href={`/studios/${studio.slug?.current}`}
-            className="group relative block overflow-hidden"
+            className="group relative block overflow-hidden rounded-xl"
             style={{ aspectRatio: '4/3' }}
           >
             {studio.heroImage?.asset?.url ? (
