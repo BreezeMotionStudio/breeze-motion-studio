@@ -13,15 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "SANITY_STUDIO_GUIDE.md",
-                "mode": "source",
+                "file": "ARCHITECTURE.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "SANITY_STUDIO_GUIDE"
+              "title": "ARCHITECTURE"
+            }
+          },
+          {
+            "id": "52edfd35ffff42e3",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -183,14 +194,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "f02e93a006bca6cd",
+  "active": "52edfd35ffff42e3",
   "lastOpenFiles": [
-    "TOOLS_INTEGRATION.md",
-    "SANITY_STUDIO_GUIDE.md",
-    "WORKFLOW_GUIDE.md",
     "ARCHITECTURE.md",
     "CONTENT_MODEL.md",
     "DESIGN_SYSTEM.md",
-    "PROJECT_STATUS.md"
+    "PROJECT_STATUS.md",
+    "TOOLS_INTEGRATION.md",
+    "SANITY_STUDIO_GUIDE.md",
+    "WORKFLOW_GUIDE.md"
   ]
 }

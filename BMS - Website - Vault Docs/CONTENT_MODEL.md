@@ -18,7 +18,9 @@ There are **13 document types** total: 6 page singletons, 4 content collection t
 
 All 6 page singletons share a common architecture: a **`sections[]` array** as the primary content field, plus top-level `seoTitle` and `seoDescription` fields. Sections can be drag-reordered in Sanity Studio and the frontend renders them in that order.
 
-**Universal section fields:** Every section type includes a `disabled` boolean field ("Hide this section"). When ticked, the section is excluded from the GROQ query (`sections[disabled != true]`) and does not appear on the website. Content is preserved. Defaults to `false` (visible).
+**Universal section fields:** Every section type includes:
+- `disabled` boolean ("Hide this section") — when ticked, excluded at GROQ level (`sections[disabled != true]`); content preserved; defaults `false`
+- `sectionBg` (`sectionBackground` type) — full background control: solid color, gradient (start/end/direction/stop), or image. Added to every section in Session 27. Replaces all legacy `bgColor` string fields. Frontend uses `resolveBg(s.sectionBg, s.bgColor)` / `resolveTextClass(...)` helpers from `web/src/lib/sectionBackground.ts` for backwards compatibility.
 
 ---
 
@@ -112,7 +114,15 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 |-------------|--------|
 | `studiosHero` | heading, heroImage{alt} *(diagonal frame)* |
 | `studiosIntro` | text |
-| `studiosGrid` | *(no fields — automatically pulls all published studio documents)* |
+| `studiosHighlights` | heading, subheading — highlights carousel; default bg `#0d0d0d`; `sectionBg` for override; project data from `STUDIOS_HIGHLIGHTS_QUERY` (projects with `isHighlight == true`) |
+| `studiosGrid` | cards[] *(optional: studio reference + taglineOverride + imageOverride + overlayOpacity + overlayDirection)*; falls back to all studios when empty; `sectionBg` for override; studio cards use `flex flex-wrap justify-center` — odd card auto-centres |
+| `studiosBts` | heading — Behind the Scenes strip; dark default; projects from `STUDIOS_BTS_QUERY` (projects with `btsImages` or `btsVideos`) |
+| `studiosLatestProjects` | heading — latest projects strip with pagination; data from `STUDIOS_LATEST_PROJECTS_QUERY` |
+| `studiosCta` | heading, text, buttons[], sectionBg *(full sectionBackground type)* |
+
+**Section render order (current):** studiosHero → studiosIntro → studiosHighlights → studiosGrid → studiosBts → studiosLatestProjects → studiosCta *(only renders if configured in Sanity)*
+
+**Note (Session 27):** Highlights section moved above the studio grid. Studio cards switched from `grid-cols-2` to `flex flex-wrap justify-center` for correct odd-card centering.
 
 ---
 
@@ -366,6 +376,35 @@ Standalone documents for the "Example Combinations" section on the services page
 
 ## Shared Types
 
+### `sectionBackground` — Section Background Control
+
+Universal background type used on every section across all pages (added Session 27). Defined in `schemaTypes/shared/sectionBackground.ts`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `bgType` | radio string | `solid` / `gradient` / `image`; default `solid` |
+| `bgColor` | string (select) | Solid fill — 13-swatch dropdown (see COLOR_LIST below) |
+| `gradientFrom` | string (select) | Gradient start color — same 13-swatch dropdown |
+| `gradientTo` | string (select) | Gradient end color — same 13-swatch dropdown |
+| `gradientDirection` | radio string | 8 direction options; default `to bottom` |
+| `gradientStop` | number | Start color weight %; default 56 |
+| `bgImage` | image | Full-bleed background image; `sectionBgStyle()` returns `{}` for image type — component must render `<img>` tag explicitly |
+
+**COLOR_LIST (13 swatches):** Pure Black `#000000`, Deep Black `#0d0d0d`, Near Black `#333333`, Steel Blue Dark `#363F47`, Charcoal Dark `#3F3F3F`, Dark Blue-Grey `#444E57`, Charcoal `#4B4B4B`, Steel Blue — Accent `#535D66`, Dark Grey `#999999`, Mid Grey `#CCCCCC`, Light Grey `#E6E6E6`, Off-White `#F5F5F5`, Pure White `#FFFFFF`
+
+**Frontend helpers** (`web/src/lib/sectionBackground.ts`):
+- `sectionBgStyle(bg)` — converts sectionBg object → `CSSProperties` (handles solid + gradient; `{}` for image)
+- `resolveBg(sectionBg?, legacyBgColor?)` — checks sectionBg first, falls back to legacy `bgColor` string
+- `resolveTextClass(sectionBg?, legacyBgColor?, defaultIsLight?)` — returns `'text-white'` or `'text-black'`
+- `resolveIsLight(sectionBg?, legacyBgColor?)` — boolean; used to select button variant
+
+**GROQ projection** (required in every section projection that uses sectionBg):
+```groq
+sectionBg{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{ asset->{ url }, alt } }
+```
+
+---
+
 ### `blockContent` — Rich Text
 
 Standard Portable Text configuration supporting:
@@ -454,12 +493,12 @@ schemaTypes/
 ├── homePage.ts              # sections array: homeHero, homeFeaturedWork, homeAbout, homeStudiosOverview, homeHowWeWork, homeTestimonials, homeClientLogos, homeCta
 ├── aboutPage.ts             # sections array: aboutHero, aboutIntro, aboutOverview, aboutMission, aboutValues, aboutCta, aboutHowWeWork
 ├── contactPage.ts           # sections array: contactHero, contactIntro, contactDetails
-├── servicesPage.ts          # sections array: servicesHero, servicesIntro, servicesCategories, servicesCta
-├── studiosPage.ts           # sections array: studiosHero, studiosIntro, studiosGrid
+├── servicesPage.ts          # sections array: servicesHero, servicesIntro, servicesCategories, servicesStrip, serviceCombinations, servicesCta
+├── studiosPage.ts           # sections array: studiosHero, studiosIntro, studiosHighlights, studiosGrid, studiosBts, studiosLatestProjects, studiosCta
 ├── caseStudiesPage.ts       # sections array: caseStudiesHero, caseStudiesIntro
 ├── studio.ts
 ├── project.ts
-├── caseStudy.ts
+├── caseStudy.ts             # RETIRED — all case studies now use project type
 ├── client.ts
 ├── testimonial.ts
 ├── serviceCategory.ts
@@ -467,8 +506,9 @@ schemaTypes/
 ├── blockContent.ts
 └── shared/
     ├── ctaButton.ts         # includes topSpacing + bottomSpacing preset fields
-    ├── bgColorField.ts
-    └── seoFields.ts
+    ├── sectionBackground.ts # ← UNIVERSAL background type (solid/gradient/image); replaces bgColorField
+    ├── bgColorField.ts      # LEGACY — no longer added to new sections; kept for backwards compat
+    └── simpleRichText.ts
 ```
 
 ### Round Crop — Universal Image Field Convention

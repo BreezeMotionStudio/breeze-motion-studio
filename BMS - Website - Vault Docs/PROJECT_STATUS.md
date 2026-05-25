@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-05-25 (Session 26)
+**Last Updated:** 2026-05-25 (Session 27)
 
 ---
 
@@ -34,6 +34,45 @@
 ---
 
 ## Development Log
+
+### 2026-05-25 (Session 27) — Background Standardisation, Studios Page & Responsive Fixes
+
+**Background field standardisation — all sections now use `sectionBackground`:**
+- ✅ `sectionBackground` shared type (`schemaTypes/shared/sectionBackground.ts`) promoted to universal background field across every section on every page — replaces all legacy `bgColorField` uses
+- ✅ `bgColorField` is now legacy; retained in codebase but no longer added to new sections
+- ✅ New fields added: `sectionBg: sectionBackground` on every section in `aboutPage.ts`, `contactPage.ts`, `homePage.ts`, `studiosPage.ts`, `servicesPage.ts`; standalone `bgImage` and `bgColor` string fields removed from sections that only ever had one or the other
+- ✅ Three new helper functions in `web/src/lib/sectionBackground.ts`:
+  - `resolveBg(sectionBg?, legacyBgColor?)` — resolves to `CSSProperties`; checks `sectionBg` first, falls back to legacy string
+  - `resolveTextClass(sectionBg?, legacyBgColor?, defaultIsLight?)` — returns `'text-white'` or `'text-black'`
+  - `resolveIsLight(sectionBg?, legacyBgColor?)` — returns boolean; used to pick button variant
+- ✅ All 10 frontend files updated to use the new helpers (`about/page.tsx`, `contact/page.tsx`, `page.tsx`, `services/page.tsx`, `studios/page.tsx`, `CoreValuesSection.tsx`, `HomeStudiosOverview.tsx`, `HomeTestimonials.tsx`, `HowWeWorkSection.tsx`, `StudiosHighlights.tsx`)
+- ✅ GROQ queries updated for HOME, ABOUT, CONTACT pages: `sectionBg{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{ asset->{ url }, alt } }` projected on every section
+- ✅ Schema deployed
+
+**sectionBackground — gradient color dropdowns:**
+- ✅ `gradientFrom` and `gradientTo` fields changed from free-text inputs to dropdown selects
+- ✅ `bgColor` (solid) also changed from free-text to dropdown select
+- ✅ Shared `COLOR_LIST` constant (13 swatches): Pure Black `#000000`, Deep Black `#0d0d0d`, Near Black `#333333`, Steel Blue Dark `#363F47`, Charcoal Dark `#3F3F3F`, Dark Blue-Grey `#444E57`, Charcoal `#4B4B4B`, Steel Blue — Accent `#535D66`, Dark Grey `#999999`, Mid Grey `#CCCCCC`, Light Grey `#E6E6E6`, Off-White `#F5F5F5`, Pure White `#FFFFFF`
+- ✅ `COLOR_LIST` is shared across all three fields — identical palette on solid, gradient start, and gradient end
+- ✅ Schema deployed
+
+**Studios page improvements:**
+- ✅ `StudiosHighlights` section moved above the studio grid (was below) — highlights → grid → BTS → latest projects
+- ✅ `StudiosHighlights` default background changed from `bg-white` to `bg-[#0d0d0d]` — matches the dark service categories grid
+- ✅ `StudiosHighlights` updated for dark default: divider `bg-white/10`, chevrons `text-[#555] hover:text-white`, dot indicators `bg-white/20`, card titles `text-white`
+- ✅ `studiosHighlights` section in `studiosPage.ts` now has `sectionBg: sectionBackground` for optional override
+- ✅ `studiosGrid` section now has `sectionBg: sectionBackground`
+- ✅ Studio cards container changed from CSS grid to `flex flex-wrap justify-center` — odd card (e.g. 3 studios) auto-centres; each card `w-full md:w-[calc(50%-6px)]`
+
+**Responsive design improvements (site-wide):**
+- ✅ Hero H1 headings: added `sm:`/`md:` size steps on all page heroes to scale gracefully from mobile to desktop
+- ✅ Section H2 headings: added `sm:text-3xl md:text-4xl` responsive steps where missing
+- ✅ CTA H2 headings: same responsive scaling applied
+- ✅ `StudiosHighlights` hardcoded 3-column grid replaced with responsive flex/wrap
+- ✅ Various layout gaps and padding reviewed across pages
+- ✅ Footer grid: responsive column stacking verified
+
+---
 
 ### 2026-05-25 (Session 26) — Project Detail Pages, Portfolio Infrastructure & Content Display
 
