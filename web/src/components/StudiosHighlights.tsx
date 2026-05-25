@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { sectionBgStyle } from '@/lib/sectionBackground'
 
 type Project = {
   _id: string
@@ -13,7 +14,7 @@ type Project = {
   studio?: { title: string; slug?: { current: string } }
 }
 
-type SectionData = { heading?: string; [key: string]: unknown }
+type SectionData = { heading?: string; sectionBg?: any; [key: string]: unknown }
 
 type Props = {
   s: SectionData
@@ -50,7 +51,7 @@ function ChevronRight() {
 function HighlightCard({ project, isPlaceholder }: { project: Project; isPlaceholder: boolean }) {
   const href = !isPlaceholder && project.slug?.current ? `/projects/${project.slug.current}` : null
   const inner = (<>
-      <div className={`aspect-[3/2] overflow-hidden rounded-sm mb-3 ${isPlaceholder ? 'border border-dashed border-[#CCCCCC] bg-[#F5F5F5]' : 'bg-[#E6E6E6]'}`}>
+      <div className={`aspect-[3/2] overflow-hidden rounded-sm mb-3 ${isPlaceholder ? 'border border-dashed border-[#333] bg-[#111]' : 'bg-[#1a1a1a]'}`}>
         {project.coverImage?.asset?.url ? (
           <img
             src={`${project.coverImage.asset.url}?w=640&auto=format&q=80`}
@@ -61,7 +62,7 @@ function HighlightCard({ project, isPlaceholder }: { project: Project; isPlaceho
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="text-[#CCCCCC]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="text-[#444]">
               <rect x="2" y="6" width="20" height="14" rx="2" />
               <circle cx="12" cy="13" r="3.5" />
               <path d="M7 6l1.5-2.5h5L15 6" />
@@ -71,7 +72,7 @@ function HighlightCard({ project, isPlaceholder }: { project: Project; isPlaceho
       </div>
 
       <div className="flex items-center justify-between mb-1">
-        <span className={`font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest ${isPlaceholder ? 'text-[#CCCCCC]' : 'text-bms-grey-400'}`}>
+        <span className={`font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest ${isPlaceholder ? 'text-[#555]' : 'text-bms-grey-400'}`}>
           {project.client?.name ?? ''}
         </span>
         <span className={`font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest ${isPlaceholder ? 'text-bms-accent/30' : 'text-bms-accent'}`}>
@@ -79,12 +80,12 @@ function HighlightCard({ project, isPlaceholder }: { project: Project; isPlaceho
         </span>
       </div>
 
-      <h3 className={`font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight transition-colors ${isPlaceholder ? 'text-[#CCCCCC]' : 'text-black group-hover:text-bms-accent'}`}>
+      <h3 className={`font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight transition-colors ${isPlaceholder ? 'text-[#555]' : 'text-white group-hover:text-bms-accent'}`}>
         {project.title}
       </h3>
 
       {project.tagline && (
-        <p className={`font-[family-name:var(--font-body)] text-xs mt-1 leading-relaxed line-clamp-2 ${isPlaceholder ? 'text-[#CCCCCC]' : 'text-[#4B4B4B]'}`}>
+        <p className={`font-[family-name:var(--font-body)] text-xs mt-1 leading-relaxed line-clamp-2 ${isPlaceholder ? 'text-[#444]' : 'text-bms-grey-400'}`}>
           {project.tagline}
         </p>
       )}
@@ -143,9 +144,12 @@ export function StudiosHighlights({ s, projects }: Props) {
     return () => clearInterval(id)
   }, [canScroll])
 
+  const bgStyle = s.sectionBg ? sectionBgStyle(s.sectionBg) : undefined
+
   return (
     <section
-      className="relative bg-white py-14"
+      className="relative bg-[#0d0d0d] py-14"
+      style={bgStyle}
       onMouseEnter={() => { pausedRef.current = true }}
       onMouseLeave={() => { pausedRef.current = false }}
     >
@@ -154,7 +158,7 @@ export function StudiosHighlights({ s, projects }: Props) {
         <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
           {s.heading || 'Highlights'}
         </span>
-        <div className="flex-grow h-px bg-[#E6E6E6]" />
+        <div className="flex-grow h-px bg-white/10" />
       </div>
 
       {/* Carousel — chevrons flanking track */}
@@ -165,7 +169,7 @@ export function StudiosHighlights({ s, projects }: Props) {
           <button
             onClick={handlePrev}
             aria-label="Previous highlights"
-            className={`shrink-0 text-bms-grey-200 hover:text-black group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
+            className={`shrink-0 text-[#555] hover:text-white group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
           >
             <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
               <ChevronLeft />
@@ -199,7 +203,7 @@ export function StudiosHighlights({ s, projects }: Props) {
           <button
             onClick={handleNext}
             aria-label="Next highlights"
-            className={`shrink-0 text-bms-grey-200 hover:text-black group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
+            className={`shrink-0 text-[#555] hover:text-white group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
           >
             <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
               <ChevronRight />
@@ -216,7 +220,7 @@ export function StudiosHighlights({ s, projects }: Props) {
                 key={i}
                 onClick={() => { setTransit(true); pageRef.current = i; setPage(i) }}
                 aria-label={`Go to page ${i + 1}`}
-                className={`h-px transition-all duration-300 ${i === page ? 'w-8 bg-bms-accent' : 'w-4 bg-[#E6E6E6]'}`}
+                className={`h-px transition-all duration-300 ${i === page ? 'w-8 bg-bms-accent' : 'w-4 bg-white/20'}`}
               />
             ))}
           </div>

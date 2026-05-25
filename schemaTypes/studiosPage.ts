@@ -90,6 +90,12 @@ export const studiosPage = defineType({
               initialValue: 'Highlights',
               description: 'Small label shown above the carousel (e.g. "Highlights")',
             }),
+            defineField({
+              name: 'sectionBg',
+              title: 'Background',
+              type: 'sectionBackground',
+              description: 'Solid color, gradient, or image. Defaults to dark when left blank.',
+            }),
             disabledField,
           ],
           preview: {
@@ -109,6 +115,12 @@ export const studiosPage = defineType({
           name: 'studiosGrid',
           title: 'Studio Cards',
           fields: [
+            defineField({
+              name: 'sectionBg',
+              title: 'Background',
+              type: 'sectionBackground',
+              description: 'Solid color, gradient, or image. Defaults to black when left blank.',
+            }),
             defineField({
               name: 'cards',
               title: 'Studio Cards',

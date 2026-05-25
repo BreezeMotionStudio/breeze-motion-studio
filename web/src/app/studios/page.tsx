@@ -76,10 +76,11 @@ function StudiosIntro({ s }: { s: Section }) {
   )
 }
 
-function StudiosGrid({ studios }: { studios: Studio[] }) {
+function StudiosGrid({ studios, sectionBg }: { studios: Studio[]; sectionBg?: any }) {
+  const bgStyle = sectionBg ? sectionBgStyle(sectionBg) : undefined
   if (!studios.length) {
     return (
-      <section className="bg-black py-20">
+      <section className="bg-black py-20" style={bgStyle}>
         <div className="max-w-5xl mx-auto px-6">
           <p className="text-bms-grey-400 font-[family-name:var(--font-body)]">
             Studios will appear here once added in{' '}
@@ -90,13 +91,13 @@ function StudiosGrid({ studios }: { studios: Studio[] }) {
     )
   }
   return (
-    <section className="bg-black p-3 md:p-4 lg:p-6 xl:p-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <section className="bg-black p-3 md:p-4 lg:p-6 xl:p-8" style={bgStyle}>
+      <div className="flex flex-wrap justify-center gap-3">
         {studios.map((studio) => (
           <Link
             key={studio._id}
             href={`/studios/${studio.slug?.current}`}
-            className="group relative block overflow-hidden rounded-xl"
+            className="group relative block overflow-hidden rounded-xl w-full md:w-[calc(50%-6px)]"
             style={{ aspectRatio: '4/3' }}
           >
             {studio.heroImage?.asset?.url ? (
@@ -251,16 +252,16 @@ export default async function StudiosPage() {
       {/* Intro / page description — from Sanity */}
       {introSection && <StudiosIntro s={introSection} />}
 
-      {/* Studios grid — uses configured cards with overrides, falls back to all studios */}
-      {!gridDisabled && <StudiosGrid studios={gridStudios} />}
-
-      {/* Highlights strip — always visible, config from Sanity when present */}
+      {/* Highlights strip — always visible, sits above the studio cards */}
       {!highlightsDisabled && (
         <StudiosHighlights
           s={highlightsSection ?? {}}
           projects={highlights}
         />
       )}
+
+      {/* Studios grid — uses configured cards with overrides, falls back to all studios */}
+      {!gridDisabled && <StudiosGrid studios={gridStudios} sectionBg={gridSection?.sectionBg} />}
 
       {/* Behind the Scenes — always visible, config from Sanity when present */}
       {!btsDisabled && (
