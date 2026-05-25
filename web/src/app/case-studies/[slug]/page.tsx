@@ -176,9 +176,9 @@ export default async function CaseStudyPage({ params }: Props) {
                   Image Gallery
                 </span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {deliverableImages.map((item, i) => (
-                    <div key={i}>
-                      {item.asset?.url && (
+                  {deliverableImages.map((item, i) =>
+                    item.asset?.url ? (
+                      <div key={i}>
                         <div className="rounded-sm overflow-hidden">
                           <img
                             src={`${item.asset.url}?w=1600&auto=format&q=85`}
@@ -186,14 +186,14 @@ export default async function CaseStudyPage({ params }: Props) {
                             className="w-full h-auto"
                           />
                         </div>
-                      )}
-                      {item.caption && (
-                        <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
-                          {item.caption}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                        {item.caption && (
+                          <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
+                            {item.caption}
+                          </p>
+                        )}
+                      </div>
+                    ) : null
+                  )}
                 </div>
               </div>
             </section>
