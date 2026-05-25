@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation'
 export const revalidate = 0
 
 type Props = { params: Promise<{ slug: string }> }
-type DeliverableImage = { asset?: { url: string; metadata?: { dimensions?: { width: number; height: number } } }; alt?: string; caption?: string }
+type DeliverableImage = { asset?: { url: string }; alt?: string; caption?: string }
 type DeliverableVideo = { _key: string; title?: string; platform?: string; url?: string }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -184,16 +184,14 @@ export default async function ProjectPage({ params }: Props) {
                   Image Gallery
                 </span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {deliverableImages.map((item, i) => {
-                    if (!item.asset?.url) return null
-                    const isPortrait = (item.asset.metadata?.dimensions?.height ?? 0) > (item.asset.metadata?.dimensions?.width ?? 1)
-                    return (
+                  {deliverableImages.map((item, i) =>
+                    item.asset?.url ? (
                       <div key={i}>
                         <div className="rounded-sm overflow-hidden">
                           <img
                             src={`${item.asset.url}?w=1600&auto=format&q=85`}
                             alt={item.alt || ''}
-                            className={isPortrait ? 'max-h-[640px] w-auto mx-auto block' : 'w-full h-auto'}
+                            className="w-full h-auto"
                           />
                         </div>
                         {item.caption && (
@@ -202,8 +200,8 @@ export default async function ProjectPage({ params }: Props) {
                           </p>
                         )}
                       </div>
-                    )
-                  })}
+                    ) : null
+                  )}
                 </div>
               </div>
             </section>
@@ -236,16 +234,14 @@ export default async function ProjectPage({ params }: Props) {
                 )}
                 {project.btsImages?.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {project.btsImages.map((img: { asset?: { url: string; metadata?: { dimensions?: { width: number; height: number } } }; alt?: string; caption?: string }, i: number) => {
-                      if (!img.asset?.url) return null
-                      const isPortrait = (img.asset.metadata?.dimensions?.height ?? 0) > (img.asset.metadata?.dimensions?.width ?? 1)
-                      return (
+                    {project.btsImages.map((img: { asset?: { url: string }; alt?: string; caption?: string }, i: number) =>
+                      img.asset?.url ? (
                         <div key={i}>
                           <div className="rounded-sm overflow-hidden">
                             <img
                               src={`${img.asset.url}?w=1600&auto=format&q=85`}
                               alt={img.alt || `Behind the scenes ${i + 1}`}
-                              className={isPortrait ? 'max-h-[640px] w-auto mx-auto block' : 'w-full h-auto'}
+                              className="w-full h-auto"
                             />
                           </div>
                           {img.caption && (
@@ -254,8 +250,8 @@ export default async function ProjectPage({ params }: Props) {
                             </p>
                           )}
                         </div>
-                      )
-                    })}
+                      ) : null
+                    )}
                   </div>
                 )}
               </div>
