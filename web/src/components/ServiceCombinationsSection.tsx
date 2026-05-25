@@ -72,8 +72,6 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
 
   return (
     <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden bg-white" style={sectionBgStyle(sectionBg)}>
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black to-transparent pointer-events-none z-20" />
       {sectionBg?.bgType === 'image' && sectionBg?.bgImage?.asset?.url && (
         <>
           <img src={sectionBg.bgImage.asset.url} alt={sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
@@ -86,12 +84,12 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
         {(heading || intro) && (
           <div className="max-w-2xl mb-4">
             {heading && (
-              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white">
+              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-black">
                 {heading}
               </h2>
             )}
             {intro && (
-              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-[#C8C8C8]">
+              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-[#4B4B4B]">
                 <SimpleRichText value={intro} />
               </p>
             )}
@@ -103,7 +101,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
           {combinations.map((combo, index) => (
             <div
               key={combo._key}
-              className="relative rounded-2xl border-2 border-[#888888] overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
+              className="relative rounded-2xl border-2 border-black overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
             >
               {combo.bgImage?.asset?.url ? (
                 <>
