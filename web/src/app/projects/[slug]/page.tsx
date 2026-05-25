@@ -135,24 +135,42 @@ export default async function ProjectPage({ params }: Props) {
       {/* ── Media sections in configured order ──────────────────────────────── */}
       {mediaSections.map(({ key }) => {
         if (key === 'videos' && deliverableVideos.length > 0) {
+          const featuredVideo = deliverableVideos[0]
+          const supportingVideos = deliverableVideos.slice(1)
+          const supportingGridCols =
+            supportingVideos.length === 1 ? 'grid-cols-1 max-w-sm' :
+            supportingVideos.length === 2 ? 'grid-cols-2 max-w-2xl' :
+            'grid-cols-3'
           return (
             <section key="videos" className="bg-black py-16">
               <div className="max-w-5xl mx-auto px-6">
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-                  Deliverables
+                  Video Gallery
                 </span>
-                <div className="flex flex-col gap-10">
-                  {deliverableVideos.map((item) => (
-                    <div key={item._key}>
-                      {item.url && <VideoEmbed url={item.url} platform={item.platform} title={item.title} />}
-                      {item.title && (
-                        <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-3">
-                          {item.title}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                {/* Featured video — full width */}
+                <div className={supportingVideos.length > 0 ? 'mb-8' : ''}>
+                  {featuredVideo.url && <VideoEmbed url={featuredVideo.url} platform={featuredVideo.platform} title={featuredVideo.title} />}
+                  {featuredVideo.title && (
+                    <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-3">
+                      {featuredVideo.title}
+                    </p>
+                  )}
                 </div>
+                {/* Supporting videos — smaller grid, centered */}
+                {supportingVideos.length > 0 && (
+                  <div className={`grid gap-4 mx-auto ${supportingGridCols}`}>
+                    {supportingVideos.map((item) => (
+                      <div key={item._key}>
+                        {item.url && <VideoEmbed url={item.url} platform={item.platform} title={item.title} />}
+                        {item.title && (
+                          <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
+                            {item.title}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </section>
           )
@@ -163,7 +181,7 @@ export default async function ProjectPage({ params }: Props) {
             <section key="images" className="bg-[#F5F5F5] py-16">
               <div className="max-w-5xl mx-auto px-6">
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-                  {deliverableVideos.length > 0 ? 'Gallery' : 'Deliverables'}
+                  Image Gallery
                 </span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {deliverableImages.map((item, i) => (
