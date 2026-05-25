@@ -241,6 +241,7 @@ export const studiosPage = defineType({
               initialValue: 'Behind the Scenes',
               description: 'Small label shown above the image grid',
             }),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
             disabledField,
           ],
           preview: {
@@ -267,6 +268,7 @@ export const studiosPage = defineType({
               initialValue: 'Latest Projects',
               description: 'Small label shown above the project grid',
             }),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
             disabledField,
           ],
           preview: {
