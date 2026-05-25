@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
+import { ScrollObserver } from "@/components/ScrollObserver";
 import { client } from "@/lib/sanity/client";
-import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
+import { SITE_SETTINGS_QUERY, STUDIOS_QUERY } from "@/lib/sanity/queries";
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +22,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await client.fetch(SITE_SETTINGS_QUERY).catch(() => null);
+  const [settings, studios] = await Promise.all([
+    client.fetch(SITE_SETTINGS_QUERY).catch(() => null),
+    client.fetch(STUDIOS_QUERY).catch(() => []),
+  ]);
 
   return (
     <html lang="en">
@@ -32,9 +36,12 @@ export default async function RootLayout({
           plainLogo={settings?.plainLogo}
           roundLogo={settings?.roundLogo}
           iconLogo={settings?.iconLogo}
+          studios={studios}
         />
+        <ScrollObserver />
         <main className="pt-16">{children}</main>
         <Footer
+          siteTitle={settings?.siteTitle}
           tagline={settings?.footerTagline}
           copyright={settings?.footerText}
           email={settings?.contactEmail}

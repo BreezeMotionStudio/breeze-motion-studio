@@ -13,6 +13,7 @@ import {
   EarthGlobeIcon,
   ArchiveIcon,
   SparklesIcon,
+  FolderIcon,
 } from '@sanity/icons'
 
 // Singleton document types (excluded from generic lists)
@@ -104,35 +105,84 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('Content Library')
             .items([
+              // Studios
               S.listItem()
                 .title('Studios')
                 .icon(ComponentIcon)
                 .child(S.documentTypeList('studio').title('Studios')),
 
+              // Case Studies — filtered view of projects with showAsCaseStudy == true
               S.listItem()
                 .title('Case Studies')
                 .icon(DocumentTextIcon)
-                .child(S.documentTypeList('caseStudy').title('Case Studies')),
+                .child(
+                  S.documentList()
+                    .title('Case Studies')
+                    .filter('_type == "project" && showAsCaseStudy == true')
+                    .defaultOrdering([{field: 'caseStudyOrder', direction: 'asc'}]),
+                ),
 
+              S.divider(),
+
+              // Project Library — grouped by client
               S.listItem()
-                .title('Projects')
-                .icon(ImageIcon)
-                .child(S.documentTypeList('project').title('Projects')),
+                .title('Project Library')
+                .icon(FolderIcon)
+                .child(
+                  S.list()
+                    .title('Project Library')
+                    .items([
+                      S.listItem()
+                        .title('All Projects')
+                        .icon(ImageIcon)
+                        .child(S.documentTypeList('project').title('All Projects')),
 
+                      S.divider(),
+
+                      S.listItem()
+                        .title('By Client')
+                        .icon(UsersIcon)
+                        .child(
+                          S.documentTypeList('client')
+                            .title('Select a Client')
+                            .child((clientId) =>
+                              S.documentList()
+                                .title('Projects')
+                                .filter('_type == "project" && client._ref == $id')
+                                .params({id: clientId})
+                                .defaultOrdering([{field: 'completedAt', direction: 'desc'}]),
+                            ),
+                        ),
+                    ]),
+                ),
+
+              // Clients
               S.listItem()
                 .title('Clients')
                 .icon(UsersIcon)
                 .child(S.documentTypeList('client').title('Clients')),
 
+              S.divider(),
+
+              // Testimonials
               S.listItem()
                 .title('Testimonials')
                 .icon(BlockquoteIcon)
                 .child(S.documentTypeList('testimonial').title('Testimonials')),
 
+              // Service Categories
               S.listItem()
                 .title('Service Categories')
                 .icon(BulbOutlineIcon)
                 .child(S.documentTypeList('serviceCategory').title('Service Categories')),
+
+              // Services Combination Examples
+              S.listItem()
+                .title('Services Combination Examples')
+                .icon(SparklesIcon)
+                .child(
+                  S.documentTypeList('serviceCombination').title('Services Combination Examples'),
+                ),
             ]),
         ),
 
@@ -152,7 +202,7 @@ export const structure: StructureResolver = (S) =>
         return (
           id !== undefined &&
           !SINGLETONS.includes(id) &&
-          !['studio', 'project', 'caseStudy', 'client', 'testimonial', 'serviceCategory'].includes(
+          !['studio', 'project', 'client', 'testimonial', 'serviceCategory', 'serviceCombination'].includes(
             id,
           )
         )

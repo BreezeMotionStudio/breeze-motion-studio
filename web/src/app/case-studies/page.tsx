@@ -11,9 +11,8 @@ type CaseStudy = {
   title: string;
   slug: { current: string };
   summary?: string;
-  industry?: string;
   coverImage?: { asset?: { url: string }; alt?: string };
-  client?: { name: string };
+  client?: { name: string; industry?: string };
   studio?: { title: string; slug: { current: string } };
 };
 
@@ -77,9 +76,9 @@ function CaseStudiesListings({ caseStudies }: { caseStudies: CaseStudy[] }) {
                         {cs.client.name}
                       </span>
                     )}
-                    {cs.industry && (
+                    {cs.client?.industry && (
                       <span className="font-[family-name:var(--font-functional)] text-xs text-bms-grey-400 uppercase tracking-wide">
-                        {cs.industry}
+                        {cs.client.industry}
                       </span>
                     )}
                   </div>

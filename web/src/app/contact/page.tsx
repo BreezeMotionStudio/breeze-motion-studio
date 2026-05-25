@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
+import { getBgStyle, getTextClass } from "@/lib/sectionColors";
+import { sectionBgStyle } from "@/lib/sectionBackground";
+import { Button } from "@/components/ui/Button";
+import { HeroImageFrame } from "@/components/HeroImageFrame";
 
 export const revalidate = 0;
 
@@ -19,8 +23,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function ContactHero({ s }: { s: Section }) {
   return (
-    <section className="bg-black text-white py-24 md:py-32">
-      <div className="max-w-5xl mx-auto px-6">
+    <section
+      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24 md:py-32`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading || "Contact"}
         </h1>
@@ -32,8 +40,11 @@ function ContactHero({ s }: { s: Section }) {
 function ContactIntro({ s }: { s: Section }) {
   if (!s.content) return null;
   return (
-    <section className="bg-white border-b border-[#E6E6E6]">
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+    <section
+      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${getTextClass(s.bgColor, true)}`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <PortableTextContent
           value={s.content}
           className="text-[#4B4B4B] max-w-2xl [&_p]:text-[#4B4B4B] [&_p]:text-lg [&_p]:leading-relaxed"
@@ -57,10 +68,13 @@ function ContactDetailsForm({
   const formHeading = s.formHeading || "Send Us a Message";
 
   return (
-    <section className="bg-white text-black py-20">
-      <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-16">
+    <section
+      className={`relative overflow-hidden bg-white ${getTextClass(s.bgColor, true)} py-20`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <div className="relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-16">
         <div>
-          <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-8">
+          <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-8">
             Get In Touch
           </h2>
           <ul className="flex flex-col gap-5">
@@ -89,41 +103,54 @@ function ContactDetailsForm({
               </li>
             )}
           </ul>
+          {s.note && (
+            <p className="font-[family-name:var(--font-body)] text-[#4B4B4B] text-base leading-relaxed mt-10 max-w-[260px]">
+              {s.note}
+            </p>
+          )}
         </div>
-        <div>
-          <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-8">
-            {formHeading}
-          </h2>
-          <form className="flex flex-col gap-5">
-            <input
-              type="text"
-              placeholder="Your name"
-              className="w-full bg-transparent border border-[#E6E6E6] text-black placeholder-bms-grey-400 px-4 py-3 focus:outline-none focus:border-black font-[family-name:var(--font-body)]"
-            />
-            <input
-              type="email"
-              placeholder="Your email"
-              className="w-full bg-transparent border border-[#E6E6E6] text-black placeholder-bms-grey-400 px-4 py-3 focus:outline-none focus:border-black font-[family-name:var(--font-body)]"
-            />
-            <input
-              type="text"
-              placeholder="Company / Organisation (optional)"
-              className="w-full bg-transparent border border-[#E6E6E6] text-black placeholder-bms-grey-400 px-4 py-3 focus:outline-none focus:border-black font-[family-name:var(--font-body)]"
-            />
-            <textarea
-              placeholder="Tell us about your project"
-              rows={6}
-              className="w-full bg-transparent border border-[#E6E6E6] text-black placeholder-bms-grey-400 px-4 py-3 focus:outline-none focus:border-black font-[family-name:var(--font-body)] resize-none"
-            />
-            <div>
-              <button
-                type="submit"
-                className="px-10 py-4 rounded-sm bg-black text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-bms-accent transition-colors"
-              >
-                Send Message
-              </button>
-            </div>
-          </form>
+        <div
+          className="relative rounded-xl overflow-hidden p-8 md:p-10"
+          style={s.formBg ? sectionBgStyle(s.formBg) : { backgroundColor: '#000000' }}
+        >
+          {s.formBg?.bgType === 'image' && s.formBg?.bgImage?.asset?.url && (
+            <>
+              <img src={s.formBg.bgImage.asset.url} alt={s.formBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/60" />
+            </>
+          )}
+          <div className="relative z-10">
+            <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white mb-8">
+              {formHeading}
+            </h2>
+            <form className="flex flex-col gap-5">
+              <input
+                type="text"
+                placeholder={s.namePlaceholder || 'Your name'}
+                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)]"
+              />
+              <input
+                type="email"
+                placeholder={s.emailPlaceholder || 'Your email'}
+                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)]"
+              />
+              <input
+                type="text"
+                placeholder={s.companyPlaceholder || 'Company / Organisation (optional)'}
+                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)]"
+              />
+              <textarea
+                placeholder={s.messagePlaceholder || 'Tell us about your project'}
+                rows={6}
+                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)] resize-none"
+              />
+              <div>
+                <Button type="submit" variant="white" size="lg">
+                  {s.submitLabel || 'Send Message'}
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </section>
