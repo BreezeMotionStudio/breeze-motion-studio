@@ -41,7 +41,7 @@ export function BtsImagesInput(props: Props) {
 
     client
       .fetch<{_id: string}[]>(
-        `*[_type == "project" && defined(btsImages[0])] | order(completedAt desc, _createdAt desc){ _id }`,
+        `*[_type == "project" && count(btsImages[defined(asset)]) > 0] | order(completedAt desc, _createdAt desc){ _id }`,
       )
       .then((projects) => {
         const newProjects = projects.filter((p) => !existingRefs.has(p._id))

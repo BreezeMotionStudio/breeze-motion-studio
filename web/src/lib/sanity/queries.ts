@@ -104,16 +104,16 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         _type,
         _key,
         enabled,
-        project->{ _id, "firstBtsImage": btsImages[0]{ asset->{url}, alt } },
+        project->{ _id, "firstBtsImage": btsImages[defined(asset)][0]{ asset->{url}, alt } },
         imageOverride{ asset->{url}, alt },
         image{ asset->{url}, alt },
         label,
         caption
       },
       _type == "studiosBts" => {
-        "allProjectBts": *[_type == "project" && defined(btsImages[0])] | order(completedAt desc, _createdAt desc){
+        "allProjectBts": *[_type == "project" && count(btsImages[defined(asset)]) > 0] | order(completedAt desc, _createdAt desc){
           _id,
-          "firstBtsImage": btsImages[0]{ asset->{url}, alt }
+          "firstBtsImage": btsImages[defined(asset)][0]{ asset->{url}, alt }
         }
       },
       latestProjects[]{
