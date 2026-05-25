@@ -262,42 +262,17 @@ export default async function ProjectPage({ params }: Props) {
         return null
       })}
 
-      {/* ── Case Study narrative ─────────────────────────────────────────────── */}
+      {/* ── Case Study CTA ───────────────────────────────────────────────────── */}
       {hasCaseStudy && (
-        <section className="bg-white text-black py-20">
-          <div className="max-w-3xl mx-auto px-6">
-            <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-12">
+        <section className="bg-white border-b border-[#E6E6E6] py-12">
+          <div className="max-w-5xl mx-auto px-6 flex items-center gap-6">
+            <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 shrink-0">
               Case Study
             </span>
-            {project.caseStudyOverview && (
-              <p className="font-[family-name:var(--font-body)] text-xl text-[#4B4B4B] leading-relaxed mb-14">
-                {project.caseStudyOverview}
-              </p>
-            )}
-            {project.caseStudyChallenge && (
-              <div className="mb-12">
-                <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-5">
-                  The Challenge
-                </h2>
-                <PortableTextContent value={project.caseStudyChallenge} className="text-[#4B4B4B] [&_p]:leading-relaxed" />
-              </div>
-            )}
-            {project.caseStudyApproach && (
-              <div className="mb-12">
-                <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-5">
-                  The Approach
-                </h2>
-                <PortableTextContent value={project.caseStudyApproach} className="text-[#4B4B4B] [&_p]:leading-relaxed" />
-              </div>
-            )}
-            {project.caseStudyOutcome && (
-              <div className="mb-12">
-                <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-5">
-                  The Outcome
-                </h2>
-                <PortableTextContent value={project.caseStudyOutcome} className="text-[#4B4B4B] [&_p]:leading-relaxed" />
-              </div>
-            )}
+            <div className="flex-grow h-px bg-[#E6E6E6]" />
+            <Button variant="black" size="sm" href={`/case-studies/${project.slug?.current}`}>
+              View Case Study
+            </Button>
           </div>
         </section>
       )}
