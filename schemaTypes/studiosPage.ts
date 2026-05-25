@@ -109,8 +109,73 @@ export const studiosPage = defineType({
           name: 'studiosGrid',
           title: 'Studios Grid',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
-            bgColorField,
+            defineField({
+              name: 'cards',
+              title: 'Studio Cards',
+              type: 'array',
+              description:
+                'One card per studio. Drag to reorder. Leave empty to show all studios automatically.',
+              of: [
+                defineArrayMember({
+                  type: 'object',
+                  name: 'studioGridCard',
+                  title: 'Studio Card',
+                  fields: [
+                    defineField({
+                      name: 'studio',
+                      title: 'Studio',
+                      type: 'reference',
+                      to: [{type: 'studio'}],
+                      validation: (r) => r.required(),
+                    }),
+                    defineField({
+                      name: 'imageOverride',
+                      title: 'Card Image Override',
+                      type: 'image',
+                      options: {hotspot: true},
+                      description:
+                        'Replaces the studio\'s hero image on this card. Leave blank to use the default.',
+                      fields: [
+                        defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+                      ],
+                    }),
+                    defineField({
+                      name: 'taglineOverride',
+                      title: 'Tagline Override',
+                      type: 'string',
+                      description:
+                        'Replaces the studio\'s default tagline on this card. Leave blank to use the default.',
+                      validation: (r) => r.max(120),
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: 'studio.title',
+                      subtitle: 'taglineOverride',
+                      defaultTagline: 'studio.tagline',
+                      media: 'imageOverride',
+                    },
+                    prepare({
+                      title,
+                      subtitle,
+                      defaultTagline,
+                      media,
+                    }: {
+                      title?: string
+                      subtitle?: string
+                      defaultTagline?: string
+                      media?: unknown
+                    }) {
+                      return {
+                        title: title || 'Studio Card',
+                        subtitle: subtitle || defaultTagline || '',
+                        media,
+                      }
+                    },
+                  },
+                }),
+              ],
+            }),
             disabledField,
           ],
           preview: {
@@ -118,7 +183,7 @@ export const studiosPage = defineType({
             prepare({disabled}) {
               return {
                 title: disabled ? '[HIDDEN] Studios Grid' : 'Studios Grid',
-                subtitle: '2×2 dark image cards — one per studio',
+                subtitle: 'Studio cards — drag to reorder, override image or tagline per card',
               }
             },
           },

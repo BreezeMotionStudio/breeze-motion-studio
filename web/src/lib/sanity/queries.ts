@@ -86,6 +86,12 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
       heroImage{asset->{url}, alt},
       sectionBg{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{ asset->{ url }, alt } },
       buttons[]{_key, label, url, style, topSpacing, bottomSpacing},
+      cards[]{
+        _key,
+        studio->{_id, title, slug, tagline, heroImage{asset->{url}, alt}},
+        imageOverride{asset->{url}, alt},
+        taglineOverride
+      }
     },
     seoTitle,
     seoDescription

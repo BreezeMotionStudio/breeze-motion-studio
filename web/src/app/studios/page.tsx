@@ -199,6 +199,24 @@ export default async function StudiosPage() {
   const latestSection = sections.find((s) => s._type === 'studiosLatestProjects')
   const ctaSection = sections.find((s) => s._type === 'studiosCta')
 
+  // Build grid studio list — use configured cards (with overrides) or fall back to all studios
+  type CardStudio = typeof studios[number]
+  const gridStudios: CardStudio[] = (() => {
+    const cards = gridSection?.cards
+    if (Array.isArray(cards) && cards.length > 0) {
+      return cards
+        .filter((c: any) => c.studio?._id)
+        .map((c: any) => ({
+          _id: c.studio._id,
+          title: c.studio.title,
+          slug: c.studio.slug,
+          tagline: c.taglineOverride || c.studio.tagline,
+          heroImage: c.imageOverride?.asset?.url ? c.imageOverride : c.studio.heroImage,
+        }))
+    }
+    return studios
+  })()
+
   // Respect the disabled flag when set from Sanity
   const gridDisabled = gridSection?.disabled === true
   const highlightsDisabled = highlightsSection?.disabled === true
@@ -224,8 +242,8 @@ export default async function StudiosPage() {
       {/* Intro / page description — from Sanity */}
       {introSection && <StudiosIntro s={introSection} />}
 
-      {/* Studios 2×2 grid — configurable via Sanity, disabled flag respected */}
-      {!gridDisabled && <StudiosGrid studios={studios} />}
+      {/* Studios grid — uses configured cards with overrides, falls back to all studios */}
+      {!gridDisabled && <StudiosGrid studios={gridStudios} />}
 
       {/* Highlights strip — always visible, config from Sanity when present */}
       {!highlightsDisabled && (
