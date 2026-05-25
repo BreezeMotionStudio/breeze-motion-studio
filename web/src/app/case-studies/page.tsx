@@ -30,7 +30,7 @@ function CaseStudiesHero({ s }: { s: Section }) {
   return (
     <section className="bg-black text-white py-24 md:py-32">
       <div className="max-w-5xl mx-auto px-6">
-        <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+        <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading || "Case Studies"}
         </h1>
       </div>

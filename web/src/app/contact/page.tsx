@@ -29,7 +29,7 @@ function ContactHero({ s }: { s: Section }) {
     >
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="relative z-10 max-w-5xl mx-auto px-6">
-        <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+        <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading || "Contact"}
         </h1>
       </div>
@@ -72,7 +72,7 @@ function ContactDetailsForm({
       className={`relative overflow-hidden bg-white ${getTextClass(s.bgColor, true)} py-20`}
       style={getBgStyle(s.bgColor)}
     >
-      <div className="relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-16">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 md:gap-16">
         <div>
           <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-8">
             Get In Touch

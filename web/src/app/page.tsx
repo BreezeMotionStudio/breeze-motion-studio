@@ -3,16 +3,19 @@ import {
   HOME_PAGE_QUERY,
   FEATURED_PROJECTS_QUERY,
   STUDIOS_QUERY,
-  TESTIMONIALS_QUERY,
 } from "@/lib/sanity/queries";
 import { StudioCard } from "@/components/StudioCard";
+import { HomeStudiosOverview } from "@/components/HomeStudiosOverview";
+import { SimpleRichText } from "@/components/ui/SimpleRichText";
 import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 import { HomeTestimonials } from "@/components/HomeTestimonials";
 import { HomeClientLogos } from "@/components/HomeClientLogos";
+import { AboutSlideshow } from "@/components/AboutSlideshow";
 import { getBgStyle, getTextClass, isLightBg } from "@/lib/sectionColors";
 import { Button } from "@/components/ui/Button";
+import { btnSpacingClass } from "@/lib/buttonSpacing";
 
-type CtaButton = { _key?: string; label?: string; url?: string; style?: string };
+type CtaButton = { _key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string };
 type BgImage = { asset?: { url: string }; alt?: string };
 type Section = Record<string, any> & { _type: string; _key: string };
 
@@ -53,7 +56,7 @@ function YouTubeShowcase({ src }: { src: string }) {
   );
 }
 
-function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) {
+function SectionBg({ videoUrl, image, priority = false }: { videoUrl?: string; image?: BgImage; priority?: boolean }) {
   if (videoUrl) {
     const ytEmbed = getYouTubeEmbedUrl(videoUrl);
     return (
@@ -81,12 +84,15 @@ function SectionBg({ videoUrl, image }: { videoUrl?: string; image?: BgImage }) 
     );
   }
   if (image?.asset?.url) {
+    const src = `${image.asset.url}?w=1920&auto=format&q=80`
     return (
       <>
         <img
           className="absolute inset-0 w-full h-full object-cover"
-          src={image.asset.url}
+          src={src}
           alt={image.alt || ""}
+          fetchPriority={priority ? 'high' : 'low'}
+          loading={priority ? 'eager' : 'lazy'}
         />
         <div className="absolute inset-0 bg-black/55" />
       </>
@@ -102,11 +108,11 @@ function HomeHero({ s }: { s: Section }) {
       className={`relative z-10 flex items-center justify-center min-h-screen bg-black ${getTextClass(s.bgColor)} overflow-hidden`}
       style={getBgStyle(s.bgColor)}
     >
-      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
+      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} priority />
       {(s.title || s.subtitle || s.buttons?.length > 0) && (
-        <div className="relative z-10 text-center max-w-4xl px-6">
+        <div className="hero-catchup relative z-10 text-center max-w-4xl px-6">
           {s.title && (
-            <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
+            <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-6">
               {s.title}
             </h1>
           )}
@@ -121,7 +127,7 @@ function HomeHero({ s }: { s: Section }) {
                 }}
               />
               <p className="relative text-lg md:text-xl text-bms-grey-300 font-[family-name:var(--font-body)]">
-                {s.subtitle}
+                <SimpleRichText value={s.subtitle} />
               </p>
             </div>
           )}
@@ -129,7 +135,7 @@ function HomeHero({ s }: { s: Section }) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {s.buttons.map((btn: CtaButton) =>
                 btn.label && btn.url ? (
-                  <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                  <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url} className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}>
                     {btn.label}
                   </Button>
                 ) : null
@@ -172,8 +178,8 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
         />
       )}
       {projects && projects.length > 0 && (
-        <div className={`relative z-10 max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
-          <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
+        <div className={`scroll-catchup relative z-10 max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
             Featured Work
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -208,80 +214,6 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
   );
 }
 
-function HomeStudiosOverview({ s, studios }: { s: Section; studios: any[] }) {
-  // Build a lookup map: studioId → card media set in this section
-  const cardMediaMap: Record<string, {cardImage?: any; cardVideoUrl?: string}> = {}
-  if (s.studioCards) {
-    for (const card of s.studioCards) {
-      if (card.studioId) cardMediaMap[card.studioId] = card
-    }
-  }
-  const onDark = !isLightBg(s.bgColor)
-
-  return (
-    <section
-      className={`relative overflow-hidden bg-bms-dark-500 ${getTextClass(s.bgColor)} py-24`}
-      style={getBgStyle(s.bgColor)}
-    >
-      <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        {s.heading && (
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 text-center">{s.heading}</h2>
-        )}
-        {s.description && (
-          <p className="text-base md:text-lg text-bms-grey-300 font-[family-name:var(--font-body)] text-center max-w-2xl mx-auto mb-8">
-            {s.description}
-          </p>
-        )}
-        <div className="flex flex-col items-center mb-10">
-          <svg width="56" height="16" viewBox="0 0 56 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="2,2 28,14 54,2" stroke="#999999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        {!s.description && !s.heading && <div className="mb-12" />}
-        {studios && studios.length > 0 ? (
-          <div className="flex flex-wrap justify-center gap-8">
-            {studios.map((studio: any) => {
-              const cardMedia = cardMediaMap[studio._id] || {}
-              const videoUrl = cardMedia.cardVideoUrl || studio.heroVideoUrl
-              const image = cardMedia.cardImage || studio.heroImage
-              return (
-                <div key={studio._id} className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)]">
-                  <StudioCard
-                    href={`/studios/${studio.slug?.current}`}
-                    title={studio.title}
-                    purpose={studio.purpose}
-                    videoUrl={videoUrl}
-                    image={image}
-                  />
-                </div>
-              )
-            })}
-          </div>
-        ) : (
-          <p className="text-center text-bms-grey-400">
-            Studios will appear here once added in the CMS.
-          </p>
-        )}
-        {s.buttons && s.buttons.length > 0 ? (
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-            {s.buttons.map((btn: CtaButton) =>
-              btn.label && btn.url ? (
-                <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
-                  {btn.label}
-                </Button>
-              ) : null
-            )}
-          </div>
-        ) : (
-          <div className="text-center mt-12">
-            <Button variant="white" href="/studios">Explore All Studios</Button>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
 
 function splitTextAtFounder(text: string): [string, string] {
   const marker = 'Founded and operated by Rebekah-Breeze Johnson';
@@ -306,7 +238,7 @@ function AboutSideImage({ image, side }: { image?: { asset?: { url: string }; al
       <img
         src={src}
         alt={image.alt || ''}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover transition-transform duration-500 ease-out hover:scale-105"
         loading="eager"
         decoding="async"
       />
@@ -332,7 +264,6 @@ const ABOUT_ASPECT_CLASS: Record<string, string> = {
 
 function HomeAbout({ s }: { s: Section }) {
   const onDark = !isLightBg(s.bgColor)
-  const [topText, bottomText] = s.text ? splitTextAtFounder(s.text) : ['', '']
   const aspectClass = ABOUT_ASPECT_CLASS[s.imageAspectRatio ?? '1:1'] ?? 'aspect-square'
   return (
     <section
@@ -340,43 +271,35 @@ function HomeAbout({ s }: { s: Section }) {
       style={getBgStyle(s.bgColor)}
     >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
+      <div className="scroll-catchup relative z-10 max-w-6xl mx-auto px-6">
         {s.heading && (
-          <h2 className="font-[family-name:var(--font-brand)] text-3xl md:text-4xl uppercase tracking-wide mb-10 text-center">
+          <h2 className="font-[family-name:var(--font-brand)] text-xl sm:text-3xl md:text-4xl uppercase tracking-wide mb-10 text-center">
             {s.heading}
           </h2>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr] gap-8 items-center">
-          {/* Left image */}
-          <div className={`hidden md:block ${aspectClass} overflow-hidden`}>
-            <AboutSideImage image={s.imageLeft} side="left" />
+          {/* Left slideshow */}
+          <div className={`group hidden md:block ${aspectClass} overflow-hidden rounded-sm`}>
+            <AboutSlideshow images={s.imageLeftSlides} side="left" />
           </div>
 
           {/* Centre text */}
           <div className="flex flex-col items-center text-center">
-            {topText && (
-              <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)] leading-relaxed">
-                {topText}
-              </p>
-            )}
+            <div className="flex items-center gap-6 w-full pb-8">
+              <hr className="flex-grow border-t border-white/15" />
+              <img
+                src={s.aboutLogo?.asset?.url ?? '/logo.png'}
+                alt="Breeze Motion Studio"
+                className={`h-auto shrink-0${s.aboutLogo?.roundCrop ? ' rounded-full overflow-hidden' : ''}`}
+                style={{ width: s.logoMaxWidth ? `${s.logoMaxWidth}px` : '256px' }}
+              />
+              <hr className="flex-grow border-t border-white/15" />
+            </div>
 
             {s.text && (
-              <div className="flex items-center gap-6 w-full pt-4 pb-8">
-                <hr className="flex-grow border-t border-white/15" />
-                <img
-                  src={s.aboutLogo?.asset?.url ?? '/logo.png'}
-                  alt="Breeze Motion Studio"
-                  className="h-auto shrink-0"
-                  style={{ width: s.logoMaxWidth ? `${s.logoMaxWidth}px` : '256px' }}
-                />
-                <hr className="flex-grow border-t border-white/15" />
-              </div>
-            )}
-
-            {bottomText && (
               <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)] leading-relaxed">
-                {bottomText}
+                <SimpleRichText value={s.text} />
               </p>
             )}
 
@@ -384,7 +307,7 @@ function HomeAbout({ s }: { s: Section }) {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
                 {s.buttons.map((btn: CtaButton) =>
                   btn.label && btn.url ? (
-                    <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                    <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url} className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}>
                       {btn.label}
                     </Button>
                   ) : null
@@ -393,9 +316,9 @@ function HomeAbout({ s }: { s: Section }) {
             )}
           </div>
 
-          {/* Right image */}
-          <div className={`hidden md:block ${aspectClass} overflow-hidden`}>
-            <AboutSideImage image={s.imageRight} side="right" />
+          {/* Right slideshow */}
+          <div className={`group hidden md:block ${aspectClass} overflow-hidden rounded-sm`}>
+            <AboutSlideshow images={s.imageRightSlides} side="right" />
           </div>
         </div>
       </div>
@@ -413,18 +336,18 @@ function HomeCta({ s }: { s: Section }) {
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
-          <h2 className="text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
         )}
         {s.text && (
           <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
-            {s.text}
+            <SimpleRichText value={s.text} />
           </p>
         )}
         {s.buttons && s.buttons.length > 0 && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {s.buttons.map((btn: CtaButton) =>
               btn.label && btn.url ? (
-                <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url}>
+                <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url} className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}>
                   {btn.label}
                 </Button>
               ) : null
@@ -439,18 +362,17 @@ function HomeCta({ s }: { s: Section }) {
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const [page, featuredProjects, studios, testimonials] = await Promise.all([
+  const [page, featuredProjects, studios] = await Promise.all([
     client.fetch(HOME_PAGE_QUERY).catch(() => null),
     client.fetch(FEATURED_PROJECTS_QUERY).catch(() => []),
     client.fetch(STUDIOS_QUERY).catch(() => []),
-    client.fetch(TESTIMONIALS_QUERY).catch(() => []),
   ]);
 
   if (!page?.sections?.length) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white">
         <div className="text-center max-w-2xl px-6">
-          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-6">
+          <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-6">
             Breeze Motion Studio
           </h1>
           <p className="text-lg text-bms-grey-400 mb-4">
@@ -472,19 +394,15 @@ export default async function HomePage() {
           case "homeHero":
             return <HomeHero key={section._key} s={section} />;
           case "homeFeaturedWork":
-            return (
-              <HomeFeaturedWork key={section._key} s={section} projects={featuredProjects} />
-            );
+            return <HomeFeaturedWork key={section._key} s={section} projects={featuredProjects} />;
           case "homeAbout":
             return <HomeAbout key={section._key} s={section} />;
           case "homeStudiosOverview":
             return <HomeStudiosOverview key={section._key} s={section} studios={studios} />;
           case "homeHowWeWork":
-            return <HowWeWorkSection key={section._key} s={section} />;
+            return <HowWeWorkSection key={section._key} s={section as any} />;
           case "homeTestimonials":
-            return (
-              <HomeTestimonials key={section._key} s={section} testimonials={testimonials} />
-            );
+            return <HomeTestimonials key={section._key} s={section} testimonials={section.testimonials ?? []} />;
           case "homeClientLogos":
             return <HomeClientLogos key={section._key} s={section} />;
           case "homeCta":

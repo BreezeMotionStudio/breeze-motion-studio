@@ -84,7 +84,7 @@ export default async function ProjectPage({ params }: Props) {
               </span>
             )}
           </div>
-          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+          <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
             {project.title}
           </h1>
         </div>
@@ -297,7 +297,7 @@ export default async function ProjectPage({ params }: Props) {
       {/* ── CTA ──────────────────────────────────────────────────────────────── */}
       <section className="bg-[#2A3137] text-white py-20">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="font-[family-name:var(--font-brand)] text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
+          <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
             Start a Project
           </h2>
           <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">

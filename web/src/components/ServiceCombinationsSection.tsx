@@ -1,0 +1,220 @@
+'use client'
+
+import Link from 'next/link'
+import { useState } from 'react'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
+import { sectionBgStyle } from '@/lib/sectionBackground'
+
+type CombinationImage = {
+  asset?: { url: string }
+  alt?: string
+}
+
+type Combination = {
+  _key: string
+  title: string
+  subtitle?: string
+  description?: any
+  items?: string[]
+  caseStudySlug?: string
+  bgImage?: { asset?: { url: string }; alt?: string }
+  images?: CombinationImage[]
+}
+
+type Props = {
+  heading?: string
+  intro?: any
+  combinations?: Combination[]
+  collageImages?: { asset?: { url: string }; alt?: string }[]
+  sectionBg?: any
+}
+
+function ImagePlaceholder() {
+  return (
+    <div className="flex-1 aspect-square bg-[#1e1e1e] rounded-md flex items-center justify-center border border-[#2a2a2a]">
+      <svg className="text-[#333333]" width="14" height="14" viewBox="0 0 40 40" fill="none">
+        <rect x="3" y="8" width="34" height="24" rx="1" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="20" cy="20" r="5" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="20" cy="20" r="1.5" fill="currentColor" />
+        <path d="M27 12h5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    </div>
+  )
+}
+
+function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-5 right-6 text-white/70 hover:text-white text-3xl leading-none transition-colors"
+        aria-label="Close"
+      >
+        ×
+      </button>
+      <div
+        className="max-w-[90vw] max-h-[90vh] rounded-lg overflow-hidden shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <img src={src} alt={alt} className="max-w-[90vw] max-h-[90vh] object-contain" />
+      </div>
+    </div>
+  )
+}
+
+export function ServiceCombinationsSection({ heading, intro, combinations, collageImages, sectionBg }: Props) {
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
+
+  if (!combinations?.length) return null
+
+  return (
+    <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden bg-white" style={sectionBgStyle(sectionBg)}>
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
+      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black to-transparent pointer-events-none z-20" />
+      {sectionBg?.bgType === 'image' && sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={sectionBg.bgImage.asset.url} alt={sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/55" />
+        </>
+      )}
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+
+        {/* Header */}
+        {(heading || intro) && (
+          <div className="max-w-2xl mb-4">
+            {heading && (
+              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white">
+                {heading}
+              </h2>
+            )}
+            {intro && (
+              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-[#C8C8C8]">
+                <SimpleRichText value={intro} />
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Cards */}
+        <div className="flex flex-col gap-6">
+          {combinations.map((combo, index) => (
+            <div
+              key={combo._key}
+              className="relative rounded-2xl border-2 border-[#888888] overflow-hidden group/card transition-transform duration-300 hover:scale-[1.015]"
+            >
+              {combo.bgImage?.asset?.url ? (
+                <>
+                  <img
+                    src={combo.bgImage.asset.url}
+                    alt={combo.bgImage.alt || ''}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-[1.06]"
+                  />
+                  <div className="absolute inset-0 bg-black/70" />
+                </>
+              ) : (
+                <div className="absolute inset-0 bg-[#141414] transition-transform duration-500 group-hover/card:scale-[1.06]" />
+              )}
+              <div className="relative z-10 p-8 md:p-12">
+              {/* Main row */}
+              <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-8 md:gap-12">
+
+                {/* Number */}
+                <div className="flex items-start">
+                  <span className="font-[family-name:var(--font-brand)] text-5xl md:text-6xl text-white leading-none select-none w-16 inline-block transition-transform duration-300 group-hover/card:scale-[1.08] origin-left">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                {/* Title + description + image thumbnails */}
+                <div className="flex flex-col">
+                  <h3 className="font-[family-name:var(--font-brand)] text-2xl uppercase tracking-wide text-white mb-2 leading-snug transition-transform duration-300 group-hover/card:scale-[1.04] origin-left">
+                    {combo.title}
+                  </h3>
+                  {combo.subtitle && (
+                    <p className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-[#B3B3B3] mb-5">
+                      {combo.subtitle}
+                    </p>
+                  )}
+                  {combo.description && (
+                    <p className="font-[family-name:var(--font-body)] text-sm text-[#B3B3B3] leading-relaxed mb-6">
+                      <SimpleRichText value={combo.description} />
+                    </p>
+                  )}
+                  {/* Small image row */}
+                  <div className="flex gap-2 mt-auto">
+                    {[0, 1, 2].map((i) => {
+                      const img = combo.images?.[i]
+                      return img?.asset?.url ? (
+                        <button
+                          key={i}
+                          onClick={() => setLightbox({ src: img.asset!.url, alt: img.alt || '' })}
+                          className="flex-1 aspect-square rounded-md overflow-hidden cursor-pointer group/thumb relative"
+                          aria-label={`View image ${i + 1}`}
+                        >
+                          <img
+                            src={img.asset.url}
+                            alt={img.alt || ''}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover/thumb:scale-110"
+                          />
+                        </button>
+                      ) : (
+                        <ImagePlaceholder key={i} />
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Items + button */}
+                <div className="flex flex-col">
+                  {combo.items && combo.items.length > 0 && (
+                    <div className="mb-8">
+                      <p className="font-[family-name:var(--font-brand)] font-bold text-sm uppercase tracking-widest text-white mb-4">
+                        Typically Includes
+                      </p>
+                      <ul className="space-y-2">
+                        {combo.items.map((item, i) => (
+                          <li
+                            key={i}
+                            className="font-[family-name:var(--font-body)] text-sm text-[#B3B3B3] flex gap-2"
+                          >
+                            <span className="text-[#B3B3B3] shrink-0 mt-[5px] text-[6px]">●</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="mt-auto">
+                    {combo.caseStudySlug ? (
+                      <Link
+                        href={`/case-studies/${combo.caseStudySlug}`}
+                        className="inline-flex items-center gap-2 font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-[#ffffff] text-black px-5 py-2.5 rounded-md hover:scale-[1.05] transition-transform duration-200 cursor-pointer"
+                      >
+                        View Case Study
+                      </Link>
+                    ) : (
+                      <button
+                        disabled
+                        className="inline-flex items-center gap-2 font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-[#ffffff] text-black px-5 py-2.5 rounded-md opacity-80 cursor-not-allowed"
+                      >
+                        View Case Study
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {lightbox && (
+        <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
+      )}
+    </section>
+  )
+}

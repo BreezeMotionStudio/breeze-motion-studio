@@ -10,6 +10,7 @@ type LogoSettings = {
 };
 
 type FooterProps = {
+  siteTitle?: string;
   tagline?: string;
   copyright?: string;
   email?: string;
@@ -43,6 +44,7 @@ function resolveSize(
 }
 
 export default function Footer({
+  siteTitle,
   tagline,
   copyright,
   email,
@@ -66,24 +68,14 @@ export default function Footer({
   return (
     <footer className="bg-black text-white border-t border-[#1a1a1a]">
       {/* Main footer body — 4 columns: Brand | Quick Links | Get In Touch | Follow */}
-      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10">
+      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-6 md:gap-10">
 
         {/* Col 1 — Brand */}
-        <div>
-          <Link href="/" className="inline-flex items-center gap-3 mb-5 hover:opacity-80 transition-opacity">
-            {showPlain && (
-              <Image
-                src="/logo.png"
-                alt="Breeze Motion Studio"
-                width={plainSize}
-                height={plainSize}
-                style={{ height: plainSize, width: "auto" }}
-                className="shrink-0"
-              />
-            )}
-            {showRound && (
+        <div className="flex flex-col items-center text-center">
+          <Link href="/" className="mb-5 hover:opacity-80 transition-opacity">
+            {showRound ? (
               <div
-                className="rounded-full overflow-hidden shrink-0 border border-[#2a2a2a]"
+                className="rounded-full overflow-hidden border border-[#2a2a2a]"
                 style={{ width: roundSize, height: roundSize }}
               >
                 <Image
@@ -94,13 +86,22 @@ export default function Footer({
                   className="w-full h-full object-cover"
                 />
               </div>
-            )}
+            ) : showPlain ? (
+              <Image
+                src="/logo.png"
+                alt="Breeze Motion Studio"
+                width={plainSize}
+                height={plainSize}
+                style={{ height: plainSize, width: "auto" }}
+                className="shrink-0"
+              />
+            ) : null}
           </Link>
           <p className="font-[family-name:var(--font-brand)] text-white uppercase tracking-widest text-sm mb-3">
-            Breeze Motion Studio
+            {siteTitle || "Breeze Motion Studio"}
           </p>
           {tagline && (
-            <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-sm leading-relaxed max-w-xs">
+            <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-xs leading-relaxed">
               {tagline}
             </p>
           )}

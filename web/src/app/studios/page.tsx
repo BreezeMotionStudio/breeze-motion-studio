@@ -52,7 +52,7 @@ function StudiosHero({ s }: { s: Section }) {
     >
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
-        <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+        <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading || 'Studios'}
         </h1>
       </div>
@@ -90,7 +90,7 @@ function StudiosGrid({ studios }: { studios: Studio[] }) {
     )
   }
   return (
-    <section className="bg-black p-3 md:p-4">
+    <section className="bg-black p-3 md:p-4 lg:p-6 xl:p-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {studios.map((studio) => (
           <Link
@@ -153,7 +153,7 @@ function StudiosCta({ s }: { s: Section }) {
       )}
       <div className="scroll-catchup relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
-          <h2 className="font-[family-name:var(--font-brand)] text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6 text-white">
+          <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6 text-white">
             {s.heading}
           </h2>
         )}

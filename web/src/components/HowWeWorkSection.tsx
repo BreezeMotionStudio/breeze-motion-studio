@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { isLightBg } from '@/lib/sectionColors'
 import { Button } from '@/components/ui/Button'
+import { btnSpacingClass } from '@/lib/buttonSpacing'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
-type Step = { _key?: string; stepNumber?: string; title?: string; description?: string }
-type CtaButton = { _key?: string; label?: string; url?: string; style?: string }
+type Step = { _key?: string; stepNumber?: string; title?: string; description?: any }
+type CtaButton = { _key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string }
 type SectionData = {
   heading?: string
   bgVideoUrl?: string
@@ -108,6 +110,15 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
     const grid  = stepsGridRef.current
     if (!sec || !hSpan || !grid) return
 
+    // Temporarily clear any active scroll-catchup transform so that
+    // getBoundingClientRect returns natural layout coordinates.
+    const contentDiv = hSpan.closest<HTMLElement>('.scroll-catchup')
+    const savedTransform = contentDiv?.style.transform ?? ''
+    if (contentDiv && savedTransform) {
+      contentDiv.style.transition = 'none'
+      contentDiv.style.transform = ''
+    }
+
     const sR = sec.getBoundingClientRect()
     const hR = hSpan.getBoundingClientRect()
     const gR = grid.getBoundingClientRect()
@@ -181,6 +192,12 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
     })
 
     setPath({ d, len, covers, headingCover, arrow: { tip, w1, w2 }, stepTriggerMs })
+
+    // Restore the transform after measurements are done
+    if (contentDiv && savedTransform) {
+      contentDiv.style.transform = savedTransform
+      contentDiv.style.transition = 'transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)'
+    }
   }, [])
 
   useEffect(() => {
@@ -338,9 +355,9 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
         </svg>
       )}
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6">
+      <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
         {s.heading && (
-          <h2 className="text-3xl md:text-4xl font-semibold mb-16 text-center">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-16 text-center">
             <span
               ref={headingSpanRef}
               className="inline-block transition-transform duration-500 ease-out"
@@ -376,7 +393,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
                         data-stepdesc={i === 0 ? '' : undefined}
                         className={`text-sm font-[family-name:var(--font-body)] ${hasBg ? 'text-bms-grey-300' : 'text-bms-grey-400'}`}
                       >
-                        {step.description}
+                        <SimpleRichText value={step.description} />
                       </p>
                     )}
                   </div>
@@ -390,7 +407,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
             <img
               src={`${s.sectionImage.asset.url}?auto=format&q=80`}
               alt={s.sectionImage.alt || ''}
-              className="max-w-full h-auto rounded-sm"
+              className="max-w-full h-auto rounded-sm transition-transform duration-700 ease-out hover:scale-[1.08]"
               loading="eager"
               decoding="async"
             />
@@ -400,7 +417,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-16">
             {s.buttons.map((btn) =>
               btn.label && btn.url ? (
-                <Button key={btn._key} variant={hasBg ? 'white' : 'black'} href={btn.url}>
+                <Button key={btn._key} variant={hasBg ? 'white' : 'black'} href={btn.url} className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}>
                   {btn.label}
                 </Button>
               ) : null

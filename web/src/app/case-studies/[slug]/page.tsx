@@ -82,7 +82,7 @@ export default async function CaseStudyPage({ params }: Props) {
               </span>
             )}
           </div>
-          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+          <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
             {cs.title}
           </h1>
         </div>

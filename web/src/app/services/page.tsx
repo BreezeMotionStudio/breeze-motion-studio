@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { SERVICES_PAGE_QUERY, SERVICE_CATEGORIES_QUERY } from "@/lib/sanity/queries";
+import { Button } from "@/components/ui/Button";
+import { btnSpacingClass } from "@/lib/buttonSpacing";
+import { SimpleRichText } from "@/components/ui/SimpleRichText";
+import { ServiceCategoriesGrid } from "@/components/ServiceCategoriesGrid";
+import { ServiceCombinationsSection } from "@/components/ServiceCombinationsSection";
+import { MissionReveal } from "@/components/MissionReveal";
+import { HeroImageFrame } from "@/components/HeroImageFrame";
 
 export const revalidate = 0;
 
 type Section = Record<string, any> & { _type: string; _key: string };
-type CtaButton = { _key?: string; label?: string; url?: string; style?: string };
+type CtaButton = { _key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string };
 type ServiceCategory = {
   _id: string;
   title: string;
   slug: { current: string };
   shortDescription: string;
   services: string[];
+  image?: { asset?: { url: string }; alt?: string };
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -26,9 +34,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function ServicesHero({ s }: { s: Section }) {
   return (
-    <section className="bg-black text-white py-24 md:py-32">
-      <div className="max-w-5xl mx-auto px-6">
-        <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+    <section className="relative overflow-hidden bg-black text-white py-24 md:py-32">
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading || "Services"}
         </h1>
       </div>
@@ -42,68 +51,8 @@ function ServicesIntro({ s }: { s: Section }) {
     <section className="bg-white border-b border-[#E6E6E6]">
       <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
         <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
-          {s.text}
+          <SimpleRichText value={s.text} />
         </p>
-      </div>
-    </section>
-  );
-}
-
-function ServicesCategories({
-  categories,
-}: {
-  categories: ServiceCategory[];
-}) {
-  if (!categories || categories.length === 0) {
-    return (
-      <section className="bg-white text-black py-24">
-        <div className="max-w-5xl mx-auto px-6">
-          <p className="text-[#999999] font-[family-name:var(--font-body)]">
-            Service listings will appear here once added in the CMS under{" "}
-            <strong>Content Library → Service Categories</strong>.
-          </p>
-        </div>
-      </section>
-    );
-  }
-  return (
-    <section className="bg-white text-black py-24">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="divide-y divide-[#E6E6E6]">
-          {categories.map((category, index) => (
-            <div
-              key={category._id}
-              className="py-16 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-10 md:gap-16"
-            >
-              <div>
-                <span className="block font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-[#535D66] mb-3">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide">
-                  {category.title}
-                </h2>
-              </div>
-              <div>
-                <p className="font-[family-name:var(--font-body)] text-base text-[#4B4B4B] mb-8 leading-relaxed">
-                  {category.shortDescription}
-                </p>
-                {category.services && category.services.length > 0 && (
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-                    {category.services.map((service) => (
-                      <li
-                        key={service}
-                        className="flex items-start gap-3 font-[family-name:var(--font-functional)] text-sm text-black"
-                      >
-                        <span className="mt-1 block w-1.5 h-1.5 rounded-full bg-[#535D66] shrink-0" />
-                        {service}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -111,42 +60,37 @@ function ServicesCategories({
 
 function ServicesCta({ s }: { s: Section }) {
   return (
-    <section className="bg-black text-white py-24">
-      <div className="max-w-3xl mx-auto px-6 text-center">
+    <section className="relative bg-black text-white py-24 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
+      {s.bgImage?.asset?.url && (
+        <>
+          <img
+            src={s.bgImage.asset.url}
+            alt={s.bgImage.alt || ''}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/70" />
+        </>
+      )}
+      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         <h2 className="font-[family-name:var(--font-brand)] text-3xl md:text-4xl uppercase tracking-wide mb-6">
           {s.heading || "Ready to work together?"}
         </h2>
         {s.text && (
-          <p className="text-bms-grey-300 font-[family-name:var(--font-body)] text-lg mb-10">
-            {s.text}
+          <p className="text-bms-grey-300 font-[family-name:var(--font-body)] text-lg mb-8">
+            <SimpleRichText value={s.text} />
           </p>
         )}
-        {s.buttons && s.buttons.length > 0 ? (
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {s.buttons.map((btn: CtaButton) => {
-              const isPrimary = btn.style === "primary";
-              return (
-                <a
-                  key={btn._key}
-                  href={btn.url || "/contact"}
-                  className={`inline-block px-10 py-4 rounded-sm font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest transition-colors ${
-                    isPrimary
-                      ? "bg-white text-black hover:bg-bms-grey-200"
-                      : "border border-white text-white hover:bg-white hover:text-black"
-                  }`}
-                >
+        {s.buttons && s.buttons.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            {s.buttons.map((btn: CtaButton) =>
+              btn.label && btn.url ? (
+                <Button key={btn._key} variant="white" size="lg" href={btn.url} className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}>
                   {btn.label}
-                </a>
-              );
-            })}
+                </Button>
+              ) : null
+            )}
           </div>
-        ) : (
-          <a
-            href="/contact"
-            className="inline-block px-10 py-4 rounded-sm border border-white text-white font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
-          >
-            Get In Touch
-          </a>
         )}
       </div>
     </section>
@@ -179,7 +123,55 @@ export default async function ServicesPage() {
           case "servicesIntro":
             return <ServicesIntro key={section._key} s={section} />;
           case "servicesCategories":
-            return <ServicesCategories key={section._key} categories={categories} />;
+            return (
+              <ServiceCategoriesGrid
+                key={section._key}
+                categories={(section.orderedCategories?.length ? section.orderedCategories : categories) as ServiceCategory[]}
+                sectionBg={section.sectionBg}
+                collageImages={section.collageImages}
+                sectionTitle={section.sectionTitle}
+                sectionTitleColor={section.sectionTitleColor}
+                stripImage={section.stripImage}
+                stripColor={section.stripColor}
+                stripOpacity={section.stripOpacity}
+                buttonLabel={section.buttonLabel}
+                buttonUrl={section.buttonUrl}
+              />
+            );
+          case "servicesStrip":
+            return (
+              <section key={section._key} className="relative overflow-hidden bg-black py-20">
+                {section.bgImage?.asset?.url && (
+                  <>
+                    <img
+                      src={section.bgImage.asset.url}
+                      alt={section.bgImage.alt || ""}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/65" />
+                  </>
+                )}
+<div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-10 items-start">
+                  <div>
+                    <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
+                      Services
+                    </h2>
+                  </div>
+                  {section.text && <MissionReveal text={section.text} />}
+                </div>
+              </section>
+            );
+          case "serviceCombinations":
+            return (
+              <ServiceCombinationsSection
+                key={section._key}
+                heading={section.heading}
+                intro={section.intro}
+                combinations={section.combinations}
+                collageImages={section.collageImages}
+                sectionBg={section.sectionBg}
+              />
+            );
           case "servicesCta":
             return <ServicesCta key={section._key} s={section} />;
           default:

@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import { sectionBgStyle as cardBgStyleFn, toColor } from "@/lib/sectionBackground";
 import { client } from "@/lib/sanity/client";
 import { ABOUT_PAGE_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
+import { SimpleRichText } from "@/components/ui/SimpleRichText";
+import { getBgStyle, getTextClass } from "@/lib/sectionColors";
+import { CoreValuesSection } from "@/components/CoreValuesSection";
+import { HeroImageFrame } from "@/components/HeroImageFrame";
+import { AboutMission } from "@/components/AboutMission";
+import { Button } from "@/components/ui/Button";
+import { btnSpacingClass } from "@/lib/buttonSpacing";
 
 export const revalidate = 0;
 
@@ -19,9 +27,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function AboutHero({ s }: { s: Section }) {
   return (
-    <section className="bg-black text-white py-24 md:py-32">
-      <div className="max-w-5xl mx-auto px-6">
-        <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide">
+    <section
+      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24 md:py-32`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
+        <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide leading-none">
           {s.heading || "About"}
         </h1>
       </div>
@@ -32,103 +44,125 @@ function AboutHero({ s }: { s: Section }) {
 function AboutIntro({ s }: { s: Section }) {
   if (!s.text) return null;
   return (
-    <section className="bg-white border-b border-[#E6E6E6]">
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+    <section
+      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${getTextClass(s.bgColor, true)}`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
-          {s.text}
+          <SimpleRichText value={s.text} />
         </p>
       </div>
     </section>
   );
 }
 
+const cardBgStyle = cardBgStyleFn
+
 function AboutOverview({ s }: { s: Section }) {
   if (!s.overview && !s.mission) return null;
   return (
-    <section className="bg-white text-black py-20">
-      <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
-        {s.overview && (
-          <div>
-            <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-6">
-              The Studio
-            </h2>
-            <PortableTextContent value={s.overview} className="text-[#4B4B4B]" />
-          </div>
-        )}
-        {s.mission && (
-          <div>
-            <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-6">
-              Mission
-            </h2>
-            <PortableTextContent value={s.mission} className="text-[#4B4B4B]" />
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-function AboutFounder({ s }: { s: Section }) {
-  if (!s.name) return null;
-  return (
-    <section className="bg-[#F5F5F5] text-black py-20">
-      <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12 items-start">
-        {s.image?.asset?.url && (
-          <div className="aspect-square overflow-hidden">
+    <section
+      className={`relative overflow-hidden bg-white ${getTextClass(s.bgColor, true)} py-20`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:items-stretch">
+          {s.mission && (
+            <div className="scroll-catchup h-full">
+              <div className="relative flex flex-col text-center transition-transform duration-500 ease-out hover:scale-[1.02] h-full">
+              <div className="absolute -inset-y-8 -inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.founderCard)}>
+                {s.founderCard?.bgType === 'image' && s.founderCard?.bgImage?.asset?.url && (
+                  <img src={s.founderCard.bgImage.asset.url} alt={s.founderCard.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+              </div>
+              <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
+                The Founder
+              </h2>
+              {s.founderImage?.asset?.url && (
+                <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
+                  <img
+                    src={s.founderImage.asset.url}
+                    alt={s.founderImage.alt || 'Founder'}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
+                  />
+                </div>
+              )}
+              <PortableTextContent value={s.mission} className="text-white" />
+              {s.founderImage2?.asset?.url && (
+                <div className="flex justify-center my-8">
+                  <div className="w-56 h-56 rounded-full overflow-hidden transition-transform duration-700 ease-out hover:scale-[1.08]">
+                    <img
+                      src={s.founderImage2.asset.url}
+                      alt={s.founderImage2.alt || ''}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+              {s.missionPart2 && (
+                <PortableTextContent value={s.missionPart2} className="text-white mt-auto" />
+              )}
+              </div>
+            </div>
+          )}
+          {s.overview && (
+            <div className="scroll-catchup h-full" style={{ transitionDelay: '300ms' }}>
+              <div className="relative flex flex-col text-center transition-transform duration-500 ease-out hover:scale-[1.02] h-full">
+              <div className="absolute -inset-y-8 -inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.studioCard)}>
+                {s.studioCard?.bgType === 'image' && s.studioCard?.bgImage?.asset?.url && (
+                  <img src={s.studioCard.bgImage.asset.url} alt={s.studioCard.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+              </div>
+              <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
+                The Studio
+              </h2>
+              {s.studioImage?.asset?.url && (
+                <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
+                  <img
+                    src={s.studioImage.asset.url}
+                    alt={s.studioImage.alt || ''}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
+                  />
+                </div>
+              )}
+              <PortableTextContent value={s.overview} className="text-white" />
+              </div>
+            </div>
+          )}
+        </div>
+        {s.overviewImage?.asset?.url && (
+          <div className="scroll-catchup -mx-7 mt-20">
             <img
-              src={s.image.asset.url}
-              alt={s.image.alt || s.name}
-              className="w-full h-full object-cover"
+              src={`${s.overviewImage.asset.url}?auto=format&q=80`}
+              alt={s.overviewImage.alt || ''}
+              className="w-full h-auto rounded-sm transition-transform duration-700 ease-out hover:scale-[1.08]"
+              loading="eager"
+              decoding="async"
             />
           </div>
         )}
-        <div>
-          <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-3 block">
-            Founder
-          </span>
-          <h2 className="font-[family-name:var(--font-brand)] text-3xl uppercase tracking-wide mb-6">
-            {s.name}
-          </h2>
-          {s.bio && <PortableTextContent value={s.bio} className="text-[#4B4B4B]" />}
-        </div>
       </div>
     </section>
   );
 }
 
+
+
 function AboutValues({ s }: { s: Section }) {
   if (!s.values || s.values.length === 0) return null;
-  return (
-    <section className="bg-white text-black py-20">
-      <div className="max-w-5xl mx-auto px-6">
-        <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-12">
-          Core Values
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {s.values.map((v: { _key?: string; title: string; description?: string }, i: number) => (
-            <div key={v._key || i} className="border-t border-[#E6E6E6] pt-6">
-              <h3 className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide mb-3">
-                {v.title}
-              </h3>
-              {v.description && (
-                <p className="font-[family-name:var(--font-body)] text-sm text-[#4B4B4B] leading-relaxed">
-                  {v.description}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <CoreValuesSection values={s.values} bgColor={s.bgColor} />;
 }
 
 function AboutHowWeWork({ s }: { s: Section }) {
   if (!s.steps || s.steps.length === 0) return null;
   return (
-    <section className="bg-black text-white py-20">
-      <div className="max-w-5xl mx-auto px-6">
-        <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-12">
+    <section
+      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-20`}
+      style={getBgStyle(s.bgColor)}
+    >
+      <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
+        <h2 className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest text-bms-grey-400 mb-12">
           How We Work
         </h2>
         {s.intro && (
@@ -143,12 +177,12 @@ function AboutHowWeWork({ s }: { s: Section }) {
               <span className="font-[family-name:var(--font-brand)] text-3xl text-bms-accent mb-4 block">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest font-bold mb-3">
+              <h3 className="font-[family-name:var(--font-functional)] text-base uppercase tracking-widest font-bold mb-3">
                 {step.title}
               </h3>
               {step.description && (
                 <p className="font-[family-name:var(--font-body)] text-sm text-bms-grey-400 leading-relaxed">
-                  {step.description}
+                  <SimpleRichText value={step.description} />
                 </p>
               )}
             </div>
@@ -157,6 +191,54 @@ function AboutHowWeWork({ s }: { s: Section }) {
       </div>
     </section>
   );
+}
+
+function AboutCta({ s }: { s: Section }) {
+  const hasBgImage = !!s.bgImage?.asset?.url
+  return (
+    <section
+      className={`relative overflow-hidden py-24 ${getTextClass(s.bgColor)} ${!s.bgColor ? 'bg-[#2A3137]' : ''}`}
+      style={getBgStyle(s.bgColor)}
+    >
+      {hasBgImage && (
+        <>
+          <img
+            src={`${s.bgImage.asset.url}?w=1920&auto=format&q=80`}
+            alt={s.bgImage.alt || ''}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
+      <div className="scroll-catchup relative z-10 max-w-3xl mx-auto px-6 text-center">
+        {s.heading && (
+          <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6 text-white">
+            {s.heading}
+          </h2>
+        )}
+        {s.text && (
+          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
+            <SimpleRichText value={s.text} />
+          </p>
+        )}
+        {s.buttons?.length > 0 && (
+          <div className="flex flex-wrap gap-4 justify-center">
+            {s.buttons.map((btn: { _key: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string }) => (
+              <Button
+                key={btn._key}
+                href={btn.url}
+                variant="white"
+                className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}
+              >
+                {btn.label}
+              </Button>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
 }
 
 export default async function AboutPage() {
@@ -183,12 +265,15 @@ export default async function AboutPage() {
             return <AboutIntro key={section._key} s={section} />;
           case "aboutOverview":
             return <AboutOverview key={section._key} s={section} />;
-          case "aboutFounder":
-            return <AboutFounder key={section._key} s={section} />;
+
+          case "aboutMission":
+            return <AboutMission key={section._key} s={section} />;
           case "aboutValues":
             return <AboutValues key={section._key} s={section} />;
           case "aboutHowWeWork":
             return <AboutHowWeWork key={section._key} s={section} />;
+          case "aboutCta":
+            return <AboutCta key={section._key} s={section} />;
           default:
             return null;
         }

@@ -49,7 +49,7 @@ export default async function StudioPage({ params }: Props) {
           >
             ← Studios
           </Link>
-          <h1 className="font-[family-name:var(--font-brand)] text-5xl md:text-7xl uppercase tracking-wide mb-4">
+          <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-4">
             {studio.title}
           </h1>
           {studio.tagline && (
@@ -152,7 +152,7 @@ export default async function StudioPage({ params }: Props) {
       {/* CTA strip */}
       <section className="bg-[#2A3137] text-white py-20">
         <div className="scroll-catchup max-w-3xl mx-auto px-6 text-center">
-          <h2 className="font-[family-name:var(--font-brand)] text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
+          <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
             Start a Project
           </h2>
           <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">

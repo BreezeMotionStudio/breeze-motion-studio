@@ -182,7 +182,7 @@ export function StudiosHighlights({ s, projects }: Props) {
               }}
             >
               {pages.map((pageCards, pageIdx) => (
-                <div key={pageIdx} className="flex-none w-full grid grid-cols-3 gap-6">
+                <div key={pageIdx} className="flex-none w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                   {pageCards.map((project, i) => (
                     <HighlightCard
                       key={`${project._id}-${i}`}
