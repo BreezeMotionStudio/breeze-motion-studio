@@ -229,11 +229,11 @@ export default async function CaseStudyPage({ params }: Props) {
                     {cs.btsImages.map((img: {asset?: {url: string}; alt?: string; caption?: string}, i: number) => (
                       <div key={i}>
                         {img.asset?.url && (
-                          <div className="aspect-[4/3] overflow-hidden rounded-sm">
+                          <div className="rounded-sm overflow-hidden">
                             <img
-                              src={`${img.asset.url}?w=900&auto=format&q=80`}
+                              src={`${img.asset.url}?w=1600&auto=format&q=85`}
                               alt={img.alt || `Behind the scenes ${i + 1}`}
-                              className="w-full h-full object-cover"
+                              className="w-full h-auto"
                             />
                           </div>
                         )}
