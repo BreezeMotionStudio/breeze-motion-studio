@@ -277,48 +277,69 @@ export const studiosPage = defineType({
             }),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
             defineField({
-              name: 'autoPullEnabled',
-              title: 'Auto-pull from Latest Project',
-              type: 'boolean',
-              initialValue: true,
-              description: 'When on, the first BTS image from your most recent project is automatically added at the top of the grid.',
-            }),
-            defineField({
-              name: 'autoPullOverride',
-              title: 'Replace Auto-pulled Image',
-              type: 'image',
-              options: {hotspot: true},
-              description: 'Upload an image here to swap out the auto-pulled one. Leave blank to use the original.',
-              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
-              hidden: ({parent}: any) => parent?.autoPullEnabled === false,
-            }),
-            defineField({
               name: 'btsImages',
-              title: 'Additional BTS Images',
+              title: 'Behind the Scenes Images',
               type: 'array',
-              description: 'Manually upload extra BTS images. These appear after the auto-pulled image. Drag to reorder.',
-              of: [defineArrayMember({
-                type: 'object',
-                name: 'btsImageEntry',
-                fields: [
-                  defineField({
-                    name: 'image',
-                    title: 'Image',
-                    type: 'image',
-                    options: {hotspot: true},
-                    fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
-                    validation: (r) => r.required(),
-                  }),
-                  defineField({name: 'label', title: 'Hover Label', type: 'string', description: 'Optional text shown on hover (e.g. project name)'}),
-                  defineField({name: 'caption', title: 'Caption', type: 'string'}),
-                ],
-                preview: {
-                  select: {label: 'label', caption: 'caption', media: 'image'},
-                  prepare({label, caption, media}: {label?: string; caption?: string; media?: unknown}) {
-                    return {title: label || caption || 'BTS Image', media}
+              description: 'Drag to reorder. Add "From Project" entries to manage project BTS images (toggle on/off, replace image). Add "Manual Image" entries for standalone uploads. Any project with BTS images not listed here will appear automatically at the end.',
+              of: [
+                // ── Project-sourced ─────────────────────────────────────────
+                defineArrayMember({
+                  type: 'object',
+                  name: 'projectBts',
+                  title: 'From Project',
+                  components: {item: InlineToggleItem},
+                  fields: [
+                    defineField({
+                      name: 'project',
+                      title: 'Project',
+                      type: 'reference',
+                      to: [{type: 'project'}],
+                      validation: (r) => r.required(),
+                    }),
+                    defineField({
+                      name: 'imageOverride',
+                      title: 'Replace Image',
+                      type: 'image',
+                      options: {hotspot: true},
+                      description: 'Upload to replace this project\'s BTS image. Leave blank to use the original.',
+                      fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                    }),
+                    defineField({name: 'enabled', title: 'Show', type: 'boolean', initialValue: true}),
+                    defineField({name: 'label', title: 'Hover Label', type: 'string'}),
+                    defineField({name: 'caption', title: 'Caption', type: 'string'}),
+                  ],
+                  preview: {
+                    select: {title: 'project.title', enabled: 'enabled', media: 'imageOverride', fallbackMedia: 'project.coverImage'},
+                    prepare({title, enabled, media, fallbackMedia}: {title?: string; enabled?: boolean; media?: unknown; fallbackMedia?: unknown}) {
+                      return {title: title || 'Project BTS', subtitle: enabled !== false ? 'Visible' : 'Hidden', media: media || fallbackMedia}
+                    },
                   },
-                },
-              })],
+                }),
+                // ── Manual ──────────────────────────────────────────────────
+                defineArrayMember({
+                  type: 'object',
+                  name: 'manualBts',
+                  title: 'Manual Image',
+                  fields: [
+                    defineField({
+                      name: 'image',
+                      title: 'Image',
+                      type: 'image',
+                      options: {hotspot: true},
+                      fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                      validation: (r) => r.required(),
+                    }),
+                    defineField({name: 'label', title: 'Hover Label', type: 'string', description: 'Optional text shown on hover'}),
+                    defineField({name: 'caption', title: 'Caption', type: 'string'}),
+                  ],
+                  preview: {
+                    select: {label: 'label', caption: 'caption', media: 'image'},
+                    prepare({label, caption, media}: {label?: string; caption?: string; media?: unknown}) {
+                      return {title: label || caption || 'Manual Image', media}
+                    },
+                  },
+                }),
+              ],
             }),
             disabledField,
           ],

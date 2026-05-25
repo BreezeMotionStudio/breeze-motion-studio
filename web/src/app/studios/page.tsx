@@ -219,24 +219,46 @@ export default async function StudiosPage() {
     return arr.filter((h) => h.enabled !== false).map((h) => h.project).filter(Boolean)
   })()
 
-  // Build BTS images: auto-pulled first (if enabled), then manual additions
-  const btsSectionImages = (btsSection?.btsImages as any[] | undefined) ?? []
-  const autoPullEnabled = btsSection?.autoPullEnabled !== false  // default true when undefined
-  const autoPullOverride = btsSection?.autoPullOverride as { asset?: { url: string }; alt?: string } | undefined
-  const latestProjectBts = btsSection?.latestProjectBts as { asset?: { url: string }; alt?: string } | undefined
+  // Build BTS images: managed entries (in array order) + unmanaged project BTS images appended
+  const btsManaged = (btsSection?.btsImages as any[] | undefined) ?? []
+  const allProjectBts = (btsSection?.allProjectBts as any[] | undefined) ?? []
 
-  const autoImage = (() => {
-    if (!autoPullEnabled) return null
-    const src = autoPullOverride?.asset?.url
-      ? { url: autoPullOverride.asset.url, alt: autoPullOverride.alt || '' }
-      : latestProjectBts?.asset?.url
-      ? { url: latestProjectBts.asset.url, alt: latestProjectBts.alt || '' }
-      : null
-    if (!src) return null
-    return { _key: '__auto__', image: { asset: { url: src.url }, alt: src.alt }, label: '', caption: '' }
-  })()
+  // Track which project IDs are already managed (to avoid duplicating them)
+  const managedProjectIds = new Set<string>(
+    btsManaged
+      .filter((item: any) => item._type === 'projectBts' && item.project?._id)
+      .map((item: any) => item.project._id)
+  )
 
-  const allBtsImages = autoImage ? [autoImage, ...btsSectionImages] : btsSectionImages
+  // Resolve each managed item to a { _key, image, label, caption } shape
+  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string }
+  const resolvedManaged: BtsImageItem[] = btsManaged
+    .filter((item: any) => {
+      if (item._type === 'projectBts') return item.enabled !== false
+      return true  // manualBts always shown
+    })
+    .flatMap((item: any): BtsImageItem[] => {
+      if (item._type === 'projectBts') {
+        const imgUrl = item.imageOverride?.asset?.url || item.project?.firstBtsImage?.asset?.url
+        if (!imgUrl) return []
+        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '' }]
+      }
+      // manualBts
+      if (!item.image?.asset?.url) return []
+      return [{ _key: item._key, image: { asset: { url: item.image.asset.url }, alt: item.image.alt || '' }, label: item.label || '', caption: item.caption || '' }]
+    })
+
+  // Append unmanaged project BTS images (newest first — auto-display for any project not yet in the list)
+  const unmanagedAuto: BtsImageItem[] = allProjectBts
+    .filter((p: any) => !managedProjectIds.has(p._id) && p.firstBtsImage?.asset?.url)
+    .map((p: any) => ({
+      _key: `__auto__${p._id}`,
+      image: { asset: { url: p.firstBtsImage.asset.url }, alt: p.firstBtsImage.alt || '' },
+      label: '',
+      caption: '',
+    }))
+
+  const allBtsImages = [...resolvedManaged, ...unmanagedAuto]
 
   // Extract latest projects from section array (enabled entries only)
   const latestProjects = (() => {

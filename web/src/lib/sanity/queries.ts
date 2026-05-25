@@ -101,15 +101,20 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         project->{ _id, title, slug, tagline, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug} }
       },
       btsImages[]{
+        _type,
         _key,
-        image{asset->{url}, alt},
+        enabled,
+        project->{ _id, "firstBtsImage": btsImages[0]{ asset->{url}, alt } },
+        imageOverride{ asset->{url}, alt },
+        image{ asset->{url}, alt },
         label,
         caption
       },
-      autoPullEnabled,
-      autoPullOverride{ asset->{url}, alt },
       _type == "studiosBts" => {
-        "latestProjectBts": *[_type == "project"] | order(completedAt desc, _createdAt desc)[0].btsImages[0]{ asset->{url}, alt }
+        "allProjectBts": *[_type == "project" && defined(btsImages[0])] | order(completedAt desc, _createdAt desc){
+          _id,
+          "firstBtsImage": btsImages[0]{ asset->{url}, alt }
+        }
       },
       latestProjects[]{
         _key,
