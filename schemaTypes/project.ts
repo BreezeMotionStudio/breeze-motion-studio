@@ -242,18 +242,18 @@ export const project = defineType({
     // ─── Case Study ────────────────────────────────────────────────────────────
     defineField({
       name: 'showAsCaseStudy',
-      title: 'Feature as Case Study',
+      title: 'Feature on Case Studies Page',
       type: 'boolean',
       group: 'caseStudy',
-      description: 'When enabled, this project appears on the Case Studies page with a full narrative.',
+      description: 'When enabled, this case study appears on the public Case Studies listing page.',
       initialValue: false,
     }),
     defineField({
       name: 'caseStudyOrder',
-      title: 'Case Study Display Order',
+      title: 'Display Order on Case Studies Page',
       type: 'number',
       group: 'caseStudy',
-      description: 'Lower numbers appear first on the Case Studies page.',
+      description: 'Lower numbers appear first. Only relevant when featured above.',
       initialValue: 0,
       hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
@@ -264,28 +264,24 @@ export const project = defineType({
       rows: 4,
       group: 'caseStudy',
       description: 'One paragraph framing the project for the reader',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyChallenge',
       title: 'The Challenge',
       type: 'blockContent',
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyApproach',
       title: 'The Approach',
       type: 'blockContent',
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyOutcome',
       title: 'The Outcome',
       type: 'blockContent',
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'testimonial',
@@ -293,7 +289,6 @@ export const project = defineType({
       type: 'reference',
       to: [{type: 'testimonial'}],
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
 
     // ─── Settings ──────────────────────────────────────────────────────────────

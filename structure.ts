@@ -111,14 +111,14 @@ export const structure: StructureResolver = (S) =>
                 .icon(ComponentIcon)
                 .child(S.documentTypeList('studio').title('Studios')),
 
-              // Case Studies — filtered view of projects with showAsCaseStudy == true
+              // Case Studies — all projects with any case study content
               S.listItem()
                 .title('Case Studies')
                 .icon(DocumentTextIcon)
                 .child(
                   S.documentList()
                     .title('Case Studies')
-                    .filter('_type == "project" && showAsCaseStudy == true')
+                    .filter('_type == "project" && (defined(caseStudyOverview) || defined(caseStudyChallenge) || defined(caseStudyApproach) || defined(caseStudyOutcome))')
                     .defaultOrdering([{field: 'caseStudyOrder', direction: 'asc'}]),
                 ),
 
