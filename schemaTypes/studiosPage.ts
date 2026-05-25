@@ -147,6 +147,15 @@ export const studiosPage = defineType({
                         'Replaces the studio\'s default tagline on this card. Leave blank to use the default.',
                       validation: (r) => r.max(120),
                     }),
+                    defineField({
+                      name: 'overlayOpacity',
+                      title: 'Gradient Strength',
+                      type: 'number',
+                      description:
+                        'Controls how dark the gradient is at the bottom of the card. 0 = no gradient, 100 = full black. Default: 70.',
+                      initialValue: 70,
+                      validation: (r) => r.min(0).max(100),
+                    }),
                   ],
                   preview: {
                     select: {

@@ -90,7 +90,8 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         _key,
         studio->{_id, title, slug, tagline, heroImage{asset->{url}, alt}},
         imageOverride{asset->{url}, alt},
-        taglineOverride
+        taglineOverride,
+        overlayOpacity
       }
     },
     seoTitle,
