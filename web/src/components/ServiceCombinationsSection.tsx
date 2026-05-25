@@ -84,12 +84,12 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
         {(heading || intro) && (
           <div className="max-w-2xl mb-4">
             {heading && (
-              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white">
+              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white/80">
                 {heading}
               </h2>
             )}
             {intro && (
-              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-[#C8C8C8]">
+              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-white/50">
                 <SimpleRichText value={intro} />
               </p>
             )}
