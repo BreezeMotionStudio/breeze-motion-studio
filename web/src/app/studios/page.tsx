@@ -101,7 +101,7 @@ function StudiosGrid({ studios }: { studios: Studio[] }) {
           >
             {studio.heroImage?.asset?.url ? (
               <img
-                src={`${studio.heroImage.asset.url}?w=900&auto=format&q=80`}
+                src={`${studio.heroImage.asset.url}?w=1800&auto=format&q=90`}
                 alt={studio.heroImage.alt || studio.title}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
               />
