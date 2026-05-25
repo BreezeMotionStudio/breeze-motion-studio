@@ -187,6 +187,7 @@ export const project = defineType({
         defineArrayMember({
           type: 'image',
           options: {hotspot: true},
+          validation: (r) => r.required(),
           fields: [
             defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
             defineField({name: 'caption', type: 'string', title: 'Caption'}),
