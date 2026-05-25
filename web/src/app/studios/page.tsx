@@ -231,7 +231,7 @@ export default async function StudiosPage() {
   )
 
   // Resolve each managed item to a { _key, image, label, caption, projectTitle } shape
-  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string; projectTitle?: string }
+  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string; projectTitle?: string; clientName?: string; imageCaption?: string }
   const resolvedManaged: BtsImageItem[] = btsManaged
     .filter((item: any) => {
       if (item._type === 'projectBts') return item.enabled !== false
@@ -241,7 +241,7 @@ export default async function StudiosPage() {
       if (item._type === 'projectBts') {
         const imgUrl = item.imageOverride?.asset?.url || item.project?.firstBtsImage?.asset?.url
         if (!imgUrl) return []
-        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '', projectTitle: item.project?.title || '' }]
+        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '', projectTitle: item.project?.title || '', clientName: item.project?.client?.name || '', imageCaption: item.imageOverride ? '' : (item.project?.firstBtsImage?.caption || '') }]
       }
       // manualBts
       if (!item.image?.asset?.url) return []
@@ -257,6 +257,8 @@ export default async function StudiosPage() {
       label: '',
       caption: '',
       projectTitle: p.title || '',
+      clientName: p.client?.name || '',
+      imageCaption: p.firstBtsImage?.caption || '',
     }))
 
   const allBtsImages = [...resolvedManaged, ...unmanagedAuto]
