@@ -193,12 +193,14 @@ export default async function StudiosPage() {
   const sections: Section[] = page?.sections ?? []
   const heroSection = sections.find((s) => s._type === 'studiosHero')
   const introSection = sections.find((s) => s._type === 'studiosIntro')
+  const gridSection = sections.find((s) => s._type === 'studiosGrid')
   const highlightsSection = sections.find((s) => s._type === 'studiosHighlights')
   const btsSection = sections.find((s) => s._type === 'studiosBts')
   const latestSection = sections.find((s) => s._type === 'studiosLatestProjects')
   const ctaSection = sections.find((s) => s._type === 'studiosCta')
 
   // Respect the disabled flag when set from Sanity
+  const gridDisabled = gridSection?.disabled === true
   const highlightsDisabled = highlightsSection?.disabled === true
   const btsDisabled = btsSection?.disabled === true
   const latestDisabled = latestSection?.disabled === true
@@ -222,8 +224,8 @@ export default async function StudiosPage() {
       {/* Intro / page description — from Sanity */}
       {introSection && <StudiosIntro s={introSection} />}
 
-      {/* Studios 2×2 grid — always visible */}
-      <StudiosGrid studios={studios} />
+      {/* Studios 2×2 grid — configurable via Sanity, disabled flag respected */}
+      {!gridDisabled && <StudiosGrid studios={studios} />}
 
       {/* Highlights strip — always visible, config from Sanity when present */}
       {!highlightsDisabled && (
