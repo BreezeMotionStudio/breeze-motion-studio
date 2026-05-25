@@ -5,6 +5,7 @@ import { PROJECT_BY_SLUG_QUERY } from '@/lib/sanity/queries'
 import PortableTextContent from '@/components/ui/PortableTextContent'
 import { VideoEmbed } from '@/components/ui/VideoEmbed'
 import { Button } from '@/components/ui/Button'
+import { ProjectImageGrid } from '@/components/ProjectImageGrid'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 0
@@ -183,26 +184,7 @@ export default async function ProjectPage({ params }: Props) {
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
                   Image Gallery
                 </span>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {deliverableImages.map((item, i) =>
-                    item.asset?.url ? (
-                      <div key={i}>
-                        <div className="rounded-sm overflow-hidden">
-                          <img
-                            src={`${item.asset.url}?w=1600&auto=format&q=85`}
-                            alt={item.alt || ''}
-                            className="w-full h-auto"
-                          />
-                        </div>
-                        {item.caption && (
-                          <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
-                            {item.caption}
-                          </p>
-                        )}
-                      </div>
-                    ) : null
-                  )}
-                </div>
+                <ProjectImageGrid images={deliverableImages} />
               </div>
             </section>
           )
@@ -233,26 +215,7 @@ export default async function ProjectPage({ params }: Props) {
                   </div>
                 )}
                 {project.btsImages?.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {project.btsImages.map((img: { asset?: { url: string }; alt?: string; caption?: string }, i: number) =>
-                      img.asset?.url ? (
-                        <div key={i}>
-                          <div className="rounded-sm overflow-hidden">
-                            <img
-                              src={`${img.asset.url}?w=1600&auto=format&q=85`}
-                              alt={img.alt || `Behind the scenes ${i + 1}`}
-                              className="w-full h-auto"
-                            />
-                          </div>
-                          {img.caption && (
-                            <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
-                              {img.caption}
-                            </p>
-                          )}
-                        </div>
-                      ) : null
-                    )}
-                  </div>
+                  <ProjectImageGrid images={project.btsImages} />
                 )}
               </div>
             </section>

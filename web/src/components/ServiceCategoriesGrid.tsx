@@ -80,7 +80,7 @@ export function ServiceCategoriesGrid({
 }: {
   categories: Category[]
   sectionBg?: any
-  collageImages?: { asset?: { url: string }; alt?: string }[]
+  collageImages?: { image?: { asset?: { url: string }; alt?: string } }[]
   sectionTitle?: string
   sectionTitleColor?: string
   stripImage?: { asset?: { url: string }; alt?: string }
