@@ -29,6 +29,7 @@ type Studio = {
   tagline?: string
   heroImage?: { asset?: { url: string }; alt?: string }
   overlayOpacity?: number
+  overlayAngle?: number
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -110,7 +111,7 @@ function StudiosGrid({ studios }: { studios: Studio[] }) {
             <div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(to top, rgba(0,0,0,${((studio.overlayOpacity ?? 70) / 100).toFixed(2)}) 0%, rgba(0,0,0,0) 65%)`,
+                background: `linear-gradient(${studio.overlayAngle ?? 0}deg, rgba(0,0,0,${((studio.overlayOpacity ?? 70) / 100).toFixed(2)}) 0%, rgba(0,0,0,0) 65%)`,
               }}
             />
             <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
@@ -219,6 +220,7 @@ export default async function StudiosPage() {
           tagline: c.taglineOverride || c.studio.tagline,
           heroImage: c.imageOverride?.asset?.url ? c.imageOverride : c.studio.heroImage,
           overlayOpacity: c.overlayOpacity ?? 70,
+          overlayAngle: c.overlayAngle ?? 0,
         }))
     }
     return studios

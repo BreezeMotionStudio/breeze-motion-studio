@@ -152,9 +152,18 @@ export const studiosPage = defineType({
                       title: 'Gradient Strength',
                       type: 'number',
                       description:
-                        'Controls how dark the gradient is at the bottom of the card. 0 = no gradient, 100 = full black. Default: 70.',
+                        'Controls how dark the gradient is. 0 = no gradient, 100 = full black. Default: 70.',
                       initialValue: 70,
                       validation: (r) => r.min(0).max(100),
+                    }),
+                    defineField({
+                      name: 'overlayAngle',
+                      title: 'Gradient Angle',
+                      type: 'number',
+                      description:
+                        'Direction of the gradient in degrees. 0 = bottom to top, 90 = left to right, 180 = top to bottom, 270 = right to left. Default: 0.',
+                      initialValue: 0,
+                      validation: (r) => r.min(0).max(360),
                     }),
                   ],
                   preview: {
