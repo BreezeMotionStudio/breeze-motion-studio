@@ -173,7 +173,7 @@ export const studiosPage = defineType({
                         ],
                         layout: 'radio',
                       },
-                      initialValue: 'to top',
+                      initialValue: 'to top right',
                     }),
                   ],
                   preview: {
