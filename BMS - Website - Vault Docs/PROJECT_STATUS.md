@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-05-25 (Session 28)
+**Last Updated:** 2026-05-25 (Session 29)
 
 ---
 
@@ -34,6 +34,45 @@
 ---
 
 ## Development Log
+
+### 2026-05-25 (Session 29) — Studios Page Fixes, Service Combinations Styling & BTS Image Labels
+
+**Studios page — `sectionBg` wiring:**
+- ✅ `StudiosBts` and `StudiosLatestProjects` were ignoring `s.sectionBg` entirely — both had hardcoded backgrounds with no `style` prop; added `sectionBgStyle` import and wiring to both components
+- ✅ `StudiosHighlights` was already correct
+
+**Studios page — project cards:**
+- ✅ Studio name removed from the meta row on `StudiosLatestProjects` and `StudiosHighlights` project cards — client name only; studio label was crowding the text
+
+**Studios page — BTS image labels:**
+- ✅ Project name displayed permanently at bottom-left of each BTS image card (was hover-only)
+- ✅ Client name added above project title (muted, small caps)
+- ✅ Image caption added below project title (muted, small caps) — sourced from `btsImages[].caption` on the project
+- ✅ Display order: client name (top) → project title (middle, main) → image caption (bottom)
+- ✅ GROQ query updated: `client->{name}` and `caption` added to `firstBtsImage` projection for both `btsImages[]` and `allProjectBts`
+- ✅ `BtsImageItem` type extended with `clientName` and `imageCaption`; page resolver threads both through
+
+**Studios page — BTS empty asset fix:**
+- ✅ `btsImages[0]` on a project could be an empty placeholder entry (no asset uploaded) — query now uses `btsImages[defined(asset)][0]` throughout to skip empties
+- ✅ `BtsImagesInput` auto-pull filter changed from `defined(btsImages[0])` to `count(btsImages[defined(asset)]) > 0`
+- ✅ `project.ts` schema: added `validation: r.required()` to `btsImages` array member — prevents empty image entries being saved in future
+
+**Service combinations section (`ServiceCombinationsSection.tsx`):**
+- ✅ Background set to pure white in Sanity (`#FFFFFF`)
+- ✅ Removed top/bottom black gradient overlays (were designed for dark background)
+- ✅ Card borders removed entirely; replaced with `shadow-[0_8px_32px_rgba(0,0,0,0.18)]` drop shadow
+- ✅ Heading: `text-white/80` (slightly off-white); intro: `text-white/50` (muted)
+
+**Core Values section — black rectangle bug fixed:**
+- ✅ SVG cover rects (masking the animated line behind value cards) were rendering black instead of white
+- ✅ Root cause: `toColor(undefined)` returns `'#000000'` (truthy), so `|| '#FFFFFF'` fallback never fired
+- ✅ Fix: check for a colour value before calling `toColor`; default to `#FFFFFF` when none set
+
+**Sanity content — CTA backgrounds:**
+- ✅ `studiosCta` — standard CTA background image set via `sectionBg`; "Get in Touch" button added linking to `/contact`
+- ✅ `aboutCta` — standard CTA background image set via `sectionBg` (had legacy `bgImage` field set but `sectionBg` was null)
+
+---
 
 ### 2026-05-25 (Session 28) — Studios Page Inline Toggles, BTS Auto-Pull & Autopulled Badge
 

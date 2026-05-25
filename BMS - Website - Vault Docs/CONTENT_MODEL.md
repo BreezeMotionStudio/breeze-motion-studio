@@ -121,10 +121,14 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 | `studiosCta` | heading, text, buttons[], sectionBg *(full sectionBackground type)* |
 
 **`studiosBts.btsImages[]`** supports two member types:
-- `projectBts` — `{project→, imageOverride? (image), enabled (bool, default true), autoPulled (bool, hidden), label?, caption?}` — links a project; uses `imageOverride` if set, else pulls `project.btsImages[0]` at render time
-- `manualBts` — `{image (required), label?, caption?}` — standalone uploaded image; no project link
+- `projectBts` — `{project→, imageOverride? (image), enabled (bool, default true), autoPulled (bool, hidden), label?, caption?}` — links a project; uses `imageOverride` if set, else pulls `project.btsImages[defined(asset)][0]` at render time
+- `manualBts` — `{image (required, validated), label?, caption?}` — standalone uploaded image; no project link
 
-Auto-population: `BtsImagesInput` custom component queries all projects with `defined(btsImages[0])` on mount and patches any new ones into the array as `projectBts { autoPulled: true }` entries. Auto-pulled items are tagged with a red "autopulled" badge in Studio; can be toggled, deleted, reordered, or have their image replaced just like manual entries.
+Auto-population: `BtsImagesInput` custom component queries all projects with `count(btsImages[defined(asset)]) > 0` on mount and patches any new ones into the array as `projectBts { autoPulled: true }` entries. Auto-pulled items are tagged with a red "autopulled" badge in Studio; can be toggled, deleted, reordered, or have their image replaced just like manual entries.
+
+**BTS image card display (bottom-left overlay):** client name (top, muted) → project title (main) → image caption (bottom, muted). Caption is sourced from `project.btsImages[].caption`. For `manualBts` entries, only `label` is shown if set.
+
+**`project.btsImages[]`** — array members now have `validation: r.required()` on the image field — empty placeholder entries cannot be saved. Query always uses `btsImages[defined(asset)][0]` to skip any legacy empty entries.
 
 **Inline toggles:** Both `studiosHighlights.highlights[]` and `studiosLatestProjects.latestProjects[]` use the `InlineToggleItem` custom component — an ON/OFF pill button is rendered directly in the array item row without opening the item.
 
