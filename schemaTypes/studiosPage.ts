@@ -95,6 +95,38 @@ export const studiosPage = defineType({
               type: 'sectionBackground',
               description: 'Solid color, gradient, or image. Defaults to dark when left blank.',
             }),
+            defineField({
+              name: 'highlights',
+              title: 'Project List',
+              type: 'array',
+              description: 'All projects listed here. Toggle each one on or off to control what appears in the carousel.',
+              of: [defineArrayMember({
+                type: 'object',
+                name: 'highlightEntry',
+                fields: [
+                  defineField({
+                    name: 'project',
+                    title: 'Project',
+                    type: 'reference',
+                    to: [{type: 'project'}],
+                    validation: (r) => r.required(),
+                  }),
+                  defineField({
+                    name: 'enabled',
+                    title: 'Show in Highlights',
+                    type: 'boolean',
+                    initialValue: false,
+                    description: 'Toggle on to display this project in the highlights carousel.',
+                  }),
+                ],
+                preview: {
+                  select: {title: 'project.title', subtitle: 'project.client.name', enabled: 'enabled', media: 'project.coverImage'},
+                  prepare({title, subtitle, enabled, media}: {title?: string; subtitle?: string; enabled?: boolean; media?: unknown}) {
+                    return {title: `${enabled ? '✓ ' : '○ '}${title || 'Untitled Project'}`, subtitle: subtitle || '', media}
+                  },
+                },
+              })],
+            }),
             disabledField,
           ],
           preview: {
@@ -242,6 +274,34 @@ export const studiosPage = defineType({
               description: 'Small label shown above the image grid',
             }),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
+            defineField({
+              name: 'btsImages',
+              title: 'Behind the Scenes Images',
+              type: 'array',
+              description: 'Manually upload BTS images here. Drag to reorder.',
+              of: [defineArrayMember({
+                type: 'object',
+                name: 'btsImageEntry',
+                fields: [
+                  defineField({
+                    name: 'image',
+                    title: 'Image',
+                    type: 'image',
+                    options: {hotspot: true},
+                    fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                    validation: (r) => r.required(),
+                  }),
+                  defineField({name: 'label', title: 'Hover Label', type: 'string', description: 'Optional text shown on hover (e.g. project name)'}),
+                  defineField({name: 'caption', title: 'Caption', type: 'string'}),
+                ],
+                preview: {
+                  select: {label: 'label', caption: 'caption', media: 'image'},
+                  prepare({label, caption, media}: {label?: string; caption?: string; media?: unknown}) {
+                    return {title: label || caption || 'BTS Image', media}
+                  },
+                },
+              })],
+            }),
             disabledField,
           ],
           preview: {
@@ -269,6 +329,37 @@ export const studiosPage = defineType({
               description: 'Small label shown above the project grid',
             }),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
+            defineField({
+              name: 'latestProjects',
+              title: 'Projects',
+              type: 'array',
+              description: 'Projects shown in the Latest Projects strip. Toggle on/off to control visibility. Drag to reorder. Only use the toggle — do not change project references.',
+              of: [defineArrayMember({
+                type: 'object',
+                name: 'latestEntry',
+                fields: [
+                  defineField({
+                    name: 'project',
+                    title: 'Project',
+                    type: 'reference',
+                    to: [{type: 'project'}],
+                  }),
+                  defineField({
+                    name: 'enabled',
+                    title: 'Show',
+                    type: 'boolean',
+                    initialValue: true,
+                    description: 'Toggle off to hide this project without removing it from the list.',
+                  }),
+                ],
+                preview: {
+                  select: {title: 'project.title', subtitle: 'project.client.name', enabled: 'enabled', media: 'project.coverImage'},
+                  prepare({title, subtitle, enabled, media}: {title?: string; subtitle?: string; enabled?: boolean; media?: unknown}) {
+                    return {title: `${enabled !== false ? '✓ ' : '○ '}${title || 'Untitled Project'}`, subtitle: subtitle || '', media}
+                  },
+                },
+              })],
+            }),
             disabledField,
           ],
           preview: {

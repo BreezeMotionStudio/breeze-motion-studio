@@ -94,6 +94,22 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         taglineOverride,
         overlayOpacity,
         overlayDirection
+      },
+      highlights[]{
+        _key,
+        enabled,
+        project->{ _id, title, slug, tagline, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug} }
+      },
+      btsImages[]{
+        _key,
+        image{asset->{url}, alt},
+        label,
+        caption
+      },
+      latestProjects[]{
+        _key,
+        enabled,
+        project->{ _id, title, slug, tagline, completedAt, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug} }
       }
     },
     seoTitle,

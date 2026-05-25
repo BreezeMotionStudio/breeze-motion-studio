@@ -4,9 +4,6 @@ import { client } from '@/lib/sanity/client'
 import {
   STUDIOS_QUERY,
   STUDIOS_PAGE_QUERY,
-  STUDIOS_HIGHLIGHTS_QUERY,
-  STUDIOS_LATEST_PROJECTS_QUERY,
-  STUDIOS_BTS_QUERY,
 } from '@/lib/sanity/queries'
 import { sectionBgStyle, resolveBg, resolveTextClass } from '@/lib/sectionBackground'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
@@ -199,12 +196,9 @@ function StudiosCta({ s }: { s: Section }) {
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export default async function StudiosPage() {
-  const [studios, page, highlights, btsProjects, latestProjects] = await Promise.all([
+  const [studios, page] = await Promise.all([
     client.fetch(STUDIOS_QUERY).catch(() => []),
     client.fetch(STUDIOS_PAGE_QUERY).catch(() => null),
-    client.fetch(STUDIOS_HIGHLIGHTS_QUERY).catch(() => []),
-    client.fetch(STUDIOS_BTS_QUERY).catch(() => []),
-    client.fetch(STUDIOS_LATEST_PROJECTS_QUERY).catch(() => []),
   ])
 
   // Pull section configs from Sanity if present (for heading/disabled control),
@@ -217,6 +211,23 @@ export default async function StudiosPage() {
   const btsSection = sections.find((s) => s._type === 'studiosBts')
   const latestSection = sections.find((s) => s._type === 'studiosLatestProjects')
   const ctaSection = sections.find((s) => s._type === 'studiosCta')
+
+  // Extract highlights from section array (enabled entries only)
+  const highlights = (() => {
+    const arr = highlightsSection?.highlights as any[] | undefined
+    if (!arr?.length) return []
+    return arr.filter((h) => h.enabled !== false).map((h) => h.project).filter(Boolean)
+  })()
+
+  // Extract BTS images from section
+  const btsSectionImages = (btsSection?.btsImages as any[] | undefined) ?? []
+
+  // Extract latest projects from section array (enabled entries only)
+  const latestProjects = (() => {
+    const arr = latestSection?.latestProjects as any[] | undefined
+    if (!arr?.length) return []
+    return arr.filter((p) => p.enabled !== false).map((p) => p.project).filter(Boolean)
+  })()
 
   // Build grid studio list — use configured cards (with overrides) or fall back to all studios
   type CardStudio = typeof studios[number]
@@ -278,7 +289,7 @@ export default async function StudiosPage() {
       {!btsDisabled && (
         <StudiosBts
           s={btsSection ?? {}}
-          projects={btsProjects}
+          btsImages={btsSectionImages}
         />
       )}
 
