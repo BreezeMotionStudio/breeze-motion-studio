@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
+import { sectionBgStyle } from '@/lib/sectionBackground'
 
 type BtsImage = {
   _key?: string
@@ -10,7 +11,7 @@ type BtsImage = {
   caption?: string
 }
 
-type SectionData = { heading?: string; [key: string]: unknown }
+type SectionData = { heading?: string; sectionBg?: any; [key: string]: unknown }
 
 type LightboxState = { src: string; alt: string }
 
@@ -18,6 +19,7 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
   const [lightbox, setLightbox] = useState<LightboxState | null>(null)
 
   const valid = btsImages.filter((item) => !!item.image?.asset?.url)
+  const bgStyle = s.sectionBg ? sectionBgStyle(s.sectionBg) : undefined
 
   const labelRow = (
     <div className="max-w-5xl mx-auto px-6 mb-10 flex items-center gap-5">
@@ -30,14 +32,14 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
 
   if (valid.length === 0) {
     return (
-      <section className="bg-[#111] py-20">
+      <section className="bg-[#111] py-20" style={bgStyle}>
         {labelRow}
       </section>
     )
   }
 
   return (
-    <section className="bg-[#111] py-20">
+    <section className="bg-[#111] py-20" style={bgStyle}>
       {labelRow}
 
       <div className="max-w-5xl mx-auto px-6">

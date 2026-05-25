@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { sectionBgStyle } from '@/lib/sectionBackground'
 
 type Project = {
   _id: string
@@ -14,7 +15,7 @@ type Project = {
   studio?: { title: string; slug?: { current: string } }
 }
 
-type SectionData = { heading?: string; [key: string]: unknown }
+type SectionData = { heading?: string; sectionBg?: any; [key: string]: unknown }
 
 type Props = {
   s: SectionData
@@ -75,6 +76,7 @@ function ProjectCard({ project }: { project: Project }) {
 
 export function StudiosLatestProjects({ s, projects }: Props) {
   const [page, setPage] = useState(0)
+  const bgStyle = s.sectionBg ? sectionBgStyle(s.sectionBg) : undefined
 
   const source = projects.slice(0, 6)
   const totalPages = Math.ceil(source.length / PER_PAGE)
@@ -85,7 +87,7 @@ export function StudiosLatestProjects({ s, projects }: Props) {
   }
 
   return (
-    <section className="bg-black text-white py-20">
+    <section className="bg-black text-white py-20" style={bgStyle}>
       <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-14">
