@@ -15,6 +15,7 @@ import {
   SparklesIcon,
   FolderIcon,
 } from '@sanity/icons'
+import {CaseStudyPane} from './components/CaseStudyPane'
 
 // Singleton document types (excluded from generic lists)
 const SINGLETONS = [
@@ -118,8 +119,19 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentList()
                     .title('Case Studies')
-                    .filter('_type == "project" && (defined(caseStudyOverview) || defined(caseStudyChallenge) || defined(caseStudyApproach) || defined(caseStudyOutcome))')
-                    .defaultOrdering([{field: 'caseStudyOrder', direction: 'asc'}]),
+                    .filter(
+                      '_type == "project" && (defined(caseStudyOverview) || defined(caseStudyChallenge) || defined(caseStudyApproach) || defined(caseStudyOutcome))',
+                    )
+                    .defaultOrdering([{field: 'caseStudyOrder', direction: 'asc'}])
+                    .child((docId: string) =>
+                      S.document()
+                        .documentId(docId)
+                        .schemaType('project')
+                        .views([
+                          S.view.component(CaseStudyPane).title('Case Study'),
+                          S.view.form().title('Full Project'),
+                        ]),
+                    ),
                 ),
 
               S.divider(),
