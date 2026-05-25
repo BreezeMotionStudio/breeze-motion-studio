@@ -202,13 +202,13 @@ export default async function CaseStudyPage({ params }: Props) {
 
         if (key === 'bts' && hasBts) {
           return (
-            <section key="bts" className="bg-[#F5F5F5] py-16">
+            <section key="bts" className="bg-black py-16">
               <div className="max-w-5xl mx-auto px-6">
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
                   Behind the Scenes
                 </span>
                 {cs.btsNote && (
-                  <p className="font-[family-name:var(--font-body)] text-base text-[#4B4B4B] leading-relaxed max-w-2xl mb-10">
+                  <p className="font-[family-name:var(--font-body)] text-base text-white/70 leading-relaxed max-w-2xl mb-10">
                     {cs.btsNote}
                   </p>
                 )}
