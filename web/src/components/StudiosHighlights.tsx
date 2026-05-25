@@ -63,12 +63,9 @@ function HighlightCard({ project }: { project: Project }) {
         )}
       </div>
 
-      <div className="flex items-center justify-between mb-1">
+      <div className="mb-1">
         <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-grey-400">
           {project.client?.name ?? ''}
-        </span>
-        <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-accent">
-          {project.studio?.title ?? ''}
         </span>
       </div>
 
