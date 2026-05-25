@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ComponentIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {bgColorField} from './shared/bgColorField'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -27,6 +28,7 @@ export const studiosPage = defineType({
       group: 'sections',
       description: 'Drag to reorder sections. Click + to add a new section.',
       of: [
+        // ── Hero ──────────────────────────────────────────────────────────
         defineArrayMember({
           type: 'object',
           name: 'studiosHero',
@@ -38,6 +40,15 @@ export const studiosPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            defineField({
+              name: 'heroImage',
+              title: 'Hero Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Displayed in the diagonal frame on the right side of the hero.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -48,12 +59,14 @@ export const studiosPage = defineType({
           },
         }),
 
+        // ── Intro Text ────────────────────────────────────────────────────
         defineArrayMember({
           type: 'object',
           name: 'studiosIntro',
           title: 'Intro Text',
           fields: [
-            defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            defineField({name: 'text', title: 'Text', type: 'simpleRichText'}),
+            bgColorField,
             disabledField,
           ],
           preview: {
@@ -64,18 +77,141 @@ export const studiosPage = defineType({
           },
         }),
 
+        // ── Highlights Strip ──────────────────────────────────────────────
+        defineArrayMember({
+          type: 'object',
+          name: 'studiosHighlights',
+          title: 'Highlights Strip',
+          fields: [
+            defineField({
+              name: 'heading',
+              title: 'Section Label',
+              type: 'string',
+              initialValue: 'Highlights',
+              description: 'Small label shown above the carousel (e.g. "Highlights")',
+            }),
+            disabledField,
+          ],
+          preview: {
+            select: {heading: 'heading', disabled: 'disabled'},
+            prepare({heading, disabled}) {
+              return {
+                title: disabled ? '[HIDDEN] Highlights Strip' : 'Highlights Strip',
+                subtitle: 'Auto-pulls projects marked as highlights — light strip',
+              }
+            },
+          },
+        }),
+
+        // ── Studios Grid ──────────────────────────────────────────────────
         defineArrayMember({
           type: 'object',
           name: 'studiosGrid',
           title: 'Studios Grid',
           fields: [
             defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+            bgColorField,
             disabledField,
           ],
           preview: {
             select: {disabled: 'disabled'},
             prepare({disabled}) {
-              return {title: disabled ? '[HIDDEN] Studios Grid' : 'Studios Grid'}
+              return {
+                title: disabled ? '[HIDDEN] Studios Grid' : 'Studios Grid',
+                subtitle: '2×2 dark image cards — one per studio',
+              }
+            },
+          },
+        }),
+
+        // ── Behind the Scenes ────────────────────────────────────────────
+        defineArrayMember({
+          type: 'object',
+          name: 'studiosBts',
+          title: 'Behind the Scenes',
+          fields: [
+            defineField({
+              name: 'heading',
+              title: 'Section Label',
+              type: 'string',
+              initialValue: 'Behind the Scenes',
+              description: 'Small label shown above the image grid',
+            }),
+            disabledField,
+          ],
+          preview: {
+            select: {heading: 'heading', disabled: 'disabled'},
+            prepare({heading, disabled}) {
+              return {
+                title: disabled ? '[HIDDEN] Behind the Scenes' : 'Behind the Scenes',
+                subtitle: 'Auto-pulls BTS images from recent projects — dark strip',
+              }
+            },
+          },
+        }),
+
+        // ── Latest Projects Strip ─────────────────────────────────────────
+        defineArrayMember({
+          type: 'object',
+          name: 'studiosLatestProjects',
+          title: 'Latest Projects Strip',
+          fields: [
+            defineField({
+              name: 'heading',
+              title: 'Section Label',
+              type: 'string',
+              initialValue: 'Latest Projects',
+              description: 'Small label shown above the project grid',
+            }),
+            disabledField,
+          ],
+          preview: {
+            select: {heading: 'heading', disabled: 'disabled'},
+            prepare({heading, disabled}) {
+              return {
+                title: disabled ? '[HIDDEN] Latest Projects' : 'Latest Projects Strip',
+                subtitle: 'Auto-pulls 6 most recent completed projects — dark strip',
+              }
+            },
+          },
+        }),
+
+        // ── CTA ───────────────────────────────────────────────────────────
+        defineArrayMember({
+          type: 'object',
+          name: 'studiosCta',
+          title: 'Call to Action',
+          fields: [
+            defineField({
+              name: 'heading',
+              title: 'Heading',
+              type: 'string',
+              validation: (r) => r.required(),
+            }),
+            defineField({
+              name: 'text',
+              title: 'Body Text',
+              type: 'text',
+              rows: 2,
+            }),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
+            defineField({
+              name: 'sectionBg',
+              title: 'Background',
+              type: 'sectionBackground',
+              description: 'Solid color, gradient, or image. Defaults to black when left blank.',
+            }),
+            disabledField,
+          ],
+          preview: {
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] CTA' : 'Call to Action', subtitle: title}
             },
           },
         }),

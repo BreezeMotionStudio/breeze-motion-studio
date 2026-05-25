@@ -117,6 +117,16 @@ export const STUDIOS_LATEST_PROJECTS_QUERY = defineQuery(
   }`
 );
 
+export const STUDIOS_BTS_QUERY = defineQuery(
+  `*[_type == "project" && count(btsImages) > 0] | order(completedAt desc)[0...6]{
+    _id,
+    title,
+    slug,
+    studio->{title, slug},
+    btsImages[0...2]{asset->{url}, alt}
+  }`
+);
+
 export const CASE_STUDIES_PAGE_QUERY = defineQuery(
   `*[_type == "caseStudiesPage"][0]{
     sections[disabled != true]{...},
