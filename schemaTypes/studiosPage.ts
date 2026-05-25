@@ -2,6 +2,7 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ComponentIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 import {InlineToggleItem} from './components/InlineToggleItem'
+import {BtsImagesInput} from './components/BtsImagesInput'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -123,7 +124,7 @@ export const studiosPage = defineType({
                 ],
                 preview: {
                   select: {title: 'project.title', subtitle: 'project.client.name', enabled: 'enabled', media: 'project.coverImage'},
-                  prepare({title, subtitle, enabled, media}: {title?: string; subtitle?: string; enabled?: boolean; media?: unknown}) {
+                  prepare({title, subtitle, enabled, media}: any) {
                     return {title: `${enabled ? '✓ ' : '○ '}${title || 'Untitled Project'}`, subtitle: subtitle || '', media}
                   },
                 },
@@ -228,17 +229,7 @@ export const studiosPage = defineType({
                       defaultTagline: 'studio.tagline',
                       media: 'imageOverride',
                     },
-                    prepare({
-                      title,
-                      subtitle,
-                      defaultTagline,
-                      media,
-                    }: {
-                      title?: string
-                      subtitle?: string
-                      defaultTagline?: string
-                      media?: unknown
-                    }) {
+                    prepare({title, subtitle, defaultTagline, media}: any) {
                       return {
                         title: title || 'Studio Card',
                         subtitle: subtitle || defaultTagline || '',
@@ -280,6 +271,7 @@ export const studiosPage = defineType({
               name: 'btsImages',
               title: 'Behind the Scenes Images',
               type: 'array',
+              components: {input: BtsImagesInput},
               description: 'Drag to reorder. Add "From Project" entries to manage project BTS images (toggle on/off, replace image). Add "Manual Image" entries for standalone uploads. Any project with BTS images not listed here will appear automatically at the end.',
               of: [
                 // ── Project-sourced ─────────────────────────────────────────
@@ -310,7 +302,7 @@ export const studiosPage = defineType({
                   ],
                   preview: {
                     select: {title: 'project.title', enabled: 'enabled', media: 'imageOverride', fallbackMedia: 'project.coverImage'},
-                    prepare({title, enabled, media, fallbackMedia}: {title?: string; enabled?: boolean; media?: unknown; fallbackMedia?: unknown}) {
+                    prepare({title, enabled, media, fallbackMedia}: any) {
                       return {title: title || 'Project BTS', subtitle: enabled !== false ? 'Visible' : 'Hidden', media: media || fallbackMedia}
                     },
                   },
@@ -334,7 +326,7 @@ export const studiosPage = defineType({
                   ],
                   preview: {
                     select: {label: 'label', caption: 'caption', media: 'image'},
-                    prepare({label, caption, media}: {label?: string; caption?: string; media?: unknown}) {
+                    prepare({label, caption, media}: any) {
                       return {title: label || caption || 'Manual Image', media}
                     },
                   },
@@ -394,7 +386,7 @@ export const studiosPage = defineType({
                 ],
                 preview: {
                   select: {title: 'project.title', subtitle: 'project.client.name', enabled: 'enabled', media: 'project.coverImage'},
-                  prepare({title, subtitle, enabled, media}: {title?: string; subtitle?: string; enabled?: boolean; media?: unknown}) {
+                  prepare({title, subtitle, enabled, media}: any) {
                     return {title: `${enabled !== false ? '✓ ' : '○ '}${title || 'Untitled Project'}`, subtitle: subtitle || '', media}
                   },
                 },
