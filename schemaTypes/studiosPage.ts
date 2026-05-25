@@ -1,7 +1,6 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ComponentIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
-import {bgColorField} from './shared/bgColorField'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -48,7 +47,7 @@ export const studiosPage = defineType({
               description: 'Displayed in the diagonal frame on the right side of the hero.',
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -66,7 +65,7 @@ export const studiosPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'text', title: 'Text', type: 'simpleRichText'}),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {

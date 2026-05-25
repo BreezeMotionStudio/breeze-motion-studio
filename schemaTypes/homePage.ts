@@ -1,7 +1,6 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
-import {bgColorField} from './shared/bgColorField'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -34,7 +33,7 @@ export const homePage = defineType({
           title: 'Hero',
           fields: [
             defineField({name: 'title', title: 'Title', type: 'string'}),
-            defineField({name: 'subtitle', title: 'Subtitle', type: 'text', rows: 2}),
+            defineField({name: 'subtitle', title: 'Subtitle', type: 'simpleRichText'}),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',
@@ -50,7 +49,7 @@ export const homePage = defineType({
               description: 'Add, remove, or reorder CTA buttons.',
               of: [defineArrayMember({type: 'ctaButton'})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -74,7 +73,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -91,7 +90,18 @@ export const homePage = defineType({
           title: 'Studios Overview',
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
-            defineField({name: 'description', title: 'Description', type: 'text', rows: 3, description: 'Short description shown below the section heading.'}),
+            defineField({name: 'description', title: 'Description', type: 'simpleRichText', description: 'Short description shown below the section heading.'}),
+            defineField({
+              name: 'parentLogo',
+              title: 'Parent Studio Logo',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Centered logo displayed above the connector tree linking to sub-studios.',
+              fields: [
+                defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+                defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
+              ],
+            }),
             defineField({
               name: 'studioCards',
               title: 'Studio Card Media',
@@ -154,7 +164,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -171,22 +181,32 @@ export const homePage = defineType({
           title: 'About',
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
-            defineField({name: 'text', title: 'Body Text', type: 'text', rows: 5}),
+            defineField({name: 'text', title: 'Body Text', type: 'simpleRichText'}),
             defineField({
-              name: 'imageLeft',
-              title: 'Left Image',
-              type: 'image',
-              options: {hotspot: true},
-              description: 'Image displayed on the left side of the about text.',
-              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
+              name: 'imageLeftSlides',
+              title: 'Left Slideshow Images',
+              type: 'array',
+              description: 'Images for the left side slideshow. Add multiple images to enable auto-sliding (right to left, 8s per slide).',
+              of: [
+                defineArrayMember({
+                  type: 'image',
+                  options: {hotspot: true},
+                  fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                }),
+              ],
             }),
             defineField({
-              name: 'imageRight',
-              title: 'Right Image',
-              type: 'image',
-              options: {hotspot: true},
-              description: 'Image displayed on the right side of the about text.',
-              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
+              name: 'imageRightSlides',
+              title: 'Right Slideshow Images',
+              type: 'array',
+              description: 'Images for the right side slideshow. Add multiple images to enable auto-sliding (right to left, 8s per slide).',
+              of: [
+                defineArrayMember({
+                  type: 'image',
+                  options: {hotspot: true},
+                  fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+                }),
+              ],
             }),
             defineField({
               name: 'imageAspectRatio',
@@ -232,7 +252,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -272,7 +292,7 @@ export const homePage = defineType({
                       type: 'string',
                       validation: (r) => r.required(),
                     }),
-                    defineField({name: 'description', title: 'Description', type: 'text', rows: 2}),
+                    defineField({name: 'description', title: 'Description', type: 'simpleRichText'}),
                   ],
                   preview: {
                     select: {title: 'title', subtitle: 'stepNumber'},
@@ -298,7 +318,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -314,6 +334,26 @@ export const homePage = defineType({
           name: 'homeTestimonials',
           title: 'Testimonials',
           fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'e.g. "What Our Clients Say"'}),
+            defineField({
+              name: 'testimonials',
+              title: 'Testimonials',
+              type: 'array',
+              description: 'Drag to reorder. The order here is reflected on the website.',
+              of: [
+                defineArrayMember({
+                  type: 'reference',
+                  to: [{type: 'testimonial'}],
+                }),
+              ],
+            }),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',
@@ -322,7 +362,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -397,7 +437,7 @@ export const homePage = defineType({
                 }),
               ],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -414,7 +454,7 @@ export const homePage = defineType({
           title: 'Call to Action',
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
-            defineField({name: 'text', title: 'Supporting Text', type: 'text', rows: 2}),
+            defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
             defineField({
               name: 'buttons',
               title: 'Buttons',
@@ -430,7 +470,7 @@ export const homePage = defineType({
               options: {hotspot: true},
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'}), defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
             }),
-            bgColorField,
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {

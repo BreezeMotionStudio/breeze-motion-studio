@@ -38,6 +38,15 @@ export const contactPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            defineField({
+              name: 'heroImage',
+              title: 'Hero Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Displayed in the diagonal frame on the right side of the hero.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -54,6 +63,7 @@ export const contactPage = defineType({
           title: 'Intro Text',
           fields: [
             defineField({name: 'content', title: 'Content', type: 'blockContent'}),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -76,7 +86,15 @@ export const contactPage = defineType({
               validation: (r) => r.required().email(),
             }),
             defineField({name: 'phone', title: 'Phone / WhatsApp', type: 'string'}),
+            defineField({name: 'note', title: 'Contact Note', type: 'text', rows: 3, description: 'Short note shown below the email/phone, above the form.'}),
             defineField({name: 'formHeading', title: 'Form Heading', type: 'string'}),
+            defineField({name: 'namePlaceholder', title: 'Name Field Placeholder', type: 'string', initialValue: 'Your name'}),
+            defineField({name: 'emailPlaceholder', title: 'Email Field Placeholder', type: 'string', initialValue: 'Your email'}),
+            defineField({name: 'companyPlaceholder', title: 'Company Field Placeholder', type: 'string', initialValue: 'Company / Organisation (optional)'}),
+            defineField({name: 'messagePlaceholder', title: 'Message Field Placeholder', type: 'string', initialValue: 'Tell us about your project'}),
+            defineField({name: 'submitLabel', title: 'Submit Button Label', type: 'string', description: 'Text on the form submit button, e.g. "Send Message".', initialValue: 'Send Message'}),
+            defineField({name: 'formBg', title: 'Form Container Background', type: 'sectionBackground'}),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {

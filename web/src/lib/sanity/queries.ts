@@ -7,6 +7,7 @@ export const HOME_PAGE_QUERY = defineQuery(
     sections[disabled != true]{
       ...,
       bgImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+      sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
       imageLeftSlides[]{asset->{url}, alt},
       imageRightSlides[]{asset->{url}, alt},
       sectionImage{asset->{url}, alt},
@@ -32,7 +33,6 @@ export const ABOUT_PAGE_QUERY = defineQuery(
     sections[disabled != true]{
       ...,
       heroImage{asset->{url}, alt},
-      bgImage{asset->{url}, alt},
       image{asset->{url}, alt},
       studioImage{asset->{url}, alt},
       founderImage{asset->{url}, alt},
@@ -40,7 +40,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(
       overviewImage{asset->{url}, alt},
       founderCard{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{asset->{url}, alt} },
       studioCard{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{asset->{url}, alt} },
-      missionBgImage{asset->{url}, alt},
+      sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
       values[]{_key, title, description},
       steps[]{_key, title, description},
       buttons[]{_key, label, url, style, topSpacing, bottomSpacing},
@@ -56,6 +56,7 @@ export const CONTACT_PAGE_QUERY = defineQuery(
       ...,
       heroImage{asset->{url}, alt},
       formBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
+      sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
     },
     seoTitle,
     seoDescription

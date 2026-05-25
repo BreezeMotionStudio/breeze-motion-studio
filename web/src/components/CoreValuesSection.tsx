@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { getBgStyle, getTextClass } from '@/lib/sectionColors'
+import { resolveBg, toColor } from '@/lib/sectionBackground'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
 type Value = { _key?: string; title: string; description?: any }
@@ -34,7 +34,7 @@ type PathState = {
   valueTriggerMs: number[]
 } | null
 
-export function CoreValuesSection({ values, bgColor }: { values: Value[]; bgColor?: string }) {
+export function CoreValuesSection({ values, bgColor, sectionBg }: { values: Value[]; bgColor?: string; sectionBg?: any }) {
   const sectionRef    = useRef<HTMLElement>(null)
   const headingRef    = useRef<HTMLSpanElement>(null)
   const gridRef       = useRef<HTMLDivElement>(null)
@@ -255,13 +255,13 @@ export function CoreValuesSection({ values, bgColor }: { values: Value[]; bgColo
   }
 
   const offset    = active || done ? 0 : (path?.len ?? 9999)
-  const coverFill = bgColor || '#FFFFFF'
+  const coverFill = toColor(sectionBg?.bgType === 'solid' ? sectionBg?.bgColor : bgColor) || '#FFFFFF'
 
   return (
     <section
       ref={sectionRef}
       className={`relative overflow-hidden bg-white py-20`}
-      style={getBgStyle(bgColor)}
+      style={resolveBg(sectionBg, bgColor)}
     >
       {path && (
         <svg

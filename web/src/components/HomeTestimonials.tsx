@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { getBgStyle, getTextClass, isLightBg } from '@/lib/sectionColors'
+import { resolveBg, resolveTextClass, resolveIsLight } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
 
 type Testimonial = {
@@ -50,12 +50,12 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
   }
 
   const translatePct = idx * 100 / count
-  const onDark = !isLightBg(s.bgColor)
+  const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
 
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
       {s.bgVideoUrl && (
         <video className="absolute inset-0 w-full h-full object-cover" src={s.bgVideoUrl} autoPlay muted loop playsInline />

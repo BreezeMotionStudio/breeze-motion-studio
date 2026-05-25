@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { sectionBgStyle as cardBgStyleFn, toColor } from "@/lib/sectionBackground";
+import { sectionBgStyle as cardBgStyleFn, resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 import { client } from "@/lib/sanity/client";
 import { ABOUT_PAGE_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
-import { getBgStyle, getTextClass } from "@/lib/sectionColors";
 import { CoreValuesSection } from "@/components/CoreValuesSection";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { AboutMission } from "@/components/AboutMission";
@@ -28,9 +27,15 @@ export async function generateMetadata(): Promise<Metadata> {
 function AboutHero({ s }: { s: Section }) {
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24 md:py-32`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24 md:py-32`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide leading-none">
@@ -45,9 +50,15 @@ function AboutIntro({ s }: { s: Section }) {
   if (!s.text) return null;
   return (
     <section
-      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${getTextClass(s.bgColor, true)}`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${resolveTextClass(s.sectionBg, s.bgColor, true)}`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />
@@ -63,9 +74,15 @@ function AboutOverview({ s }: { s: Section }) {
   if (!s.overview && !s.mission) return null;
   return (
     <section
-      className={`relative overflow-hidden bg-white ${getTextClass(s.bgColor, true)} py-20`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-white ${resolveTextClass(s.sectionBg, s.bgColor, true)} py-20`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:items-stretch">
           {s.mission && (
@@ -151,16 +168,22 @@ function AboutOverview({ s }: { s: Section }) {
 
 function AboutValues({ s }: { s: Section }) {
   if (!s.values || s.values.length === 0) return null;
-  return <CoreValuesSection values={s.values} bgColor={s.bgColor} />;
+  return <CoreValuesSection values={s.values} bgColor={s.bgColor} sectionBg={s.sectionBg} />;
 }
 
 function AboutHowWeWork({ s }: { s: Section }) {
   if (!s.steps || s.steps.length === 0) return null;
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-20`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-20`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h2 className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest text-bms-grey-400 mb-12">
           How We Work
@@ -194,17 +217,18 @@ function AboutHowWeWork({ s }: { s: Section }) {
 }
 
 function AboutCta({ s }: { s: Section }) {
-  const hasBgImage = !!s.bgImage?.asset?.url
+  const bgImg = s.sectionBg?.bgType === 'image' ? s.sectionBg?.bgImage : s.bgImage
+  const hasBgImage = !!bgImg?.asset?.url
   return (
     <section
-      className={`relative overflow-hidden py-24 ${getTextClass(s.bgColor)} ${!s.bgColor ? 'bg-[#2A3137]' : ''}`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden py-24 ${resolveTextClass(s.sectionBg, s.bgColor)} ${!s.sectionBg?.bgType && !s.bgColor ? 'bg-[#2A3137]' : ''}`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
       {hasBgImage && (
         <>
           <img
-            src={`${s.bgImage.asset.url}?w=1920&auto=format&q=80`}
-            alt={s.bgImage.alt || ''}
+            src={`${bgImg.asset.url}?w=1920&auto=format&q=80`}
+            alt={bgImg.alt || ''}
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
           />

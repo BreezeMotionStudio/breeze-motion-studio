@@ -11,7 +11,7 @@ import { HowWeWorkSection } from "@/components/HowWeWorkSection";
 import { HomeTestimonials } from "@/components/HomeTestimonials";
 import { HomeClientLogos } from "@/components/HomeClientLogos";
 import { AboutSlideshow } from "@/components/AboutSlideshow";
-import { getBgStyle, getTextClass, isLightBg } from "@/lib/sectionColors";
+import { resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
 import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
 
@@ -102,11 +102,11 @@ function SectionBg({ videoUrl, image, priority = false }: { videoUrl?: string; i
 }
 
 function HomeHero({ s }: { s: Section }) {
-  const onDark = !isLightBg(s.bgColor)
+  const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   return (
     <section
-      className={`relative z-10 flex items-center justify-center min-h-screen bg-black ${getTextClass(s.bgColor)} overflow-hidden`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative z-10 flex items-center justify-center min-h-screen bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} overflow-hidden`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} priority />
       {(s.title || s.subtitle || s.buttons?.length > 0) && (
@@ -153,8 +153,8 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
   const ytEmbed = s.videoUrl ? getYouTubeEmbedUrl(s.videoUrl) : null;
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} -mt-[62px]`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} -mt-[62px]`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
       {s.videoUrl && (
         ytEmbed ? (
@@ -263,12 +263,12 @@ const ABOUT_ASPECT_CLASS: Record<string, string> = {
 }
 
 function HomeAbout({ s }: { s: Section }) {
-  const onDark = !isLightBg(s.bgColor)
+  const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   const aspectClass = ABOUT_ASPECT_CLASS[s.imageAspectRatio ?? '1:1'] ?? 'aspect-square'
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="scroll-catchup relative z-10 max-w-6xl mx-auto px-6">
@@ -327,11 +327,11 @@ function HomeAbout({ s }: { s: Section }) {
 }
 
 function HomeCta({ s }: { s: Section }) {
-  const onDark = !isLightBg(s.bgColor)
+  const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   return (
     <section
-      className={`relative overflow-hidden bg-bms-dark-400 ${getTextClass(s.bgColor)} py-24`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-bms-dark-400 ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">

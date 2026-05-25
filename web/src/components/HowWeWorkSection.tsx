@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { isLightBg } from '@/lib/sectionColors'
+import { resolveBg, resolveIsLight } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
 import { btnSpacingClass } from '@/lib/buttonSpacing'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
@@ -13,6 +14,7 @@ type SectionData = {
   bgVideoUrl?: string
   bgImage?: { asset?: { url: string }; alt?: string }
   bgColor?: string
+  sectionBg?: any
   steps?: Step[]
   sectionImage?: { asset?: { url: string }; alt?: string }
   buttons?: CtaButton[]
@@ -51,8 +53,8 @@ function pathFractionToTime(p: number): number {
 
 export function HowWeWorkSection({ s }: { s: SectionData }) {
   const hasMediaBg = !!(s.bgVideoUrl || s.bgImage?.asset?.url)
-  // Treat a custom dark bgColor the same as a media background (dark section)
-  const isOnDarkBg = hasMediaBg || (!!s.bgColor && !isLightBg(s.bgColor))
+  // Treat a custom dark bgColor / sectionBg the same as a media background (dark section)
+  const isOnDarkBg = hasMediaBg || (s.sectionBg?.bgType && !resolveIsLight(s.sectionBg)) || (!s.sectionBg?.bgType && !!s.bgColor && !isLightBg(s.bgColor))
   const hasBg = isOnDarkBg
 
   const sectionRef      = useRef<HTMLElement>(null)
@@ -279,7 +281,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
 
   const offset      = active || done ? 0 : (path?.len ?? 9999)
   const strokeColor = hasBg ? 'rgba(255,255,255,0.5)' : '#535D66'
-  const coverFill   = hasBg ? 'transparent' : (s.bgColor || '#ffffff')
+  const coverFill   = hasBg ? 'transparent' : (s.sectionBg?.bgType === 'solid' ? (s.sectionBg?.bgColor || '#ffffff') : (s.bgColor || '#ffffff'))
 
   const sectionBgClass = hasMediaBg
     ? 'bg-black'
@@ -292,7 +294,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
     <section
       ref={sectionRef}
       className={`relative overflow-hidden py-24 ${sectionBgClass} ${sectionTextClass}`}
-      style={s.bgColor && !hasMediaBg ? {backgroundColor: s.bgColor} : undefined}
+      style={resolveBg(s.sectionBg, s.bgColor && !hasMediaBg ? s.bgColor : undefined)}
     >
       {s.bgVideoUrl && (
         <video className="absolute inset-0 w-full h-full object-cover" src={s.bgVideoUrl} autoPlay muted loop playsInline />

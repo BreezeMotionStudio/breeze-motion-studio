@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
-import { getBgStyle, getTextClass } from "@/lib/sectionColors";
-import { sectionBgStyle } from "@/lib/sectionBackground";
+import { sectionBgStyle, resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 import { Button } from "@/components/ui/Button";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 
@@ -24,9 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
 function ContactHero({ s }: { s: Section }) {
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24 md:py-32`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24 md:py-32`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
@@ -41,9 +46,15 @@ function ContactIntro({ s }: { s: Section }) {
   if (!s.content) return null;
   return (
     <section
-      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${getTextClass(s.bgColor, true)}`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${resolveTextClass(s.sectionBg, s.bgColor, true)}`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <PortableTextContent
           value={s.content}
@@ -69,9 +80,15 @@ function ContactDetailsForm({
 
   return (
     <section
-      className={`relative overflow-hidden bg-white ${getTextClass(s.bgColor, true)} py-20`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-white ${resolveTextClass(s.sectionBg, s.bgColor, true)} py-20`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 md:gap-16">
         <div>
           <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-8">

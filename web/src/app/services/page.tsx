@@ -8,6 +8,7 @@ import { ServiceCategoriesGrid } from "@/components/ServiceCategoriesGrid";
 import { ServiceCombinationsSection } from "@/components/ServiceCombinationsSection";
 import { MissionReveal } from "@/components/MissionReveal";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
+import { resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 
 export const revalidate = 0;
 
@@ -34,7 +35,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function ServicesHero({ s }: { s: Section }) {
   return (
-    <section className="relative overflow-hidden bg-black text-white py-24 md:py-32">
+    <section
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24 md:py-32`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
+    >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
@@ -48,8 +58,17 @@ function ServicesHero({ s }: { s: Section }) {
 function ServicesIntro({ s }: { s: Section }) {
   if (!s.text) return null;
   return (
-    <section className="bg-white border-b border-[#E6E6E6]">
-      <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
+    <section
+      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${resolveTextClass(s.sectionBg, s.bgColor, true)}`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
+    >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />
         </p>
@@ -59,14 +78,19 @@ function ServicesIntro({ s }: { s: Section }) {
 }
 
 function ServicesCta({ s }: { s: Section }) {
+  const bgImg = s.sectionBg?.bgType === 'image' ? s.sectionBg?.bgImage : s.bgImage
+  const hasBgImage = !!bgImg?.asset?.url
   return (
-    <section className="relative bg-black text-white py-24 overflow-hidden">
+    <section
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
+    >
       <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
-      {s.bgImage?.asset?.url && (
+      {hasBgImage && (
         <>
           <img
-            src={s.bgImage.asset.url}
-            alt={s.bgImage.alt || ''}
+            src={bgImg.asset.url}
+            alt={bgImg.alt || ''}
             className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/70" />
@@ -138,14 +162,19 @@ export default async function ServicesPage() {
                 buttonUrl={section.buttonUrl}
               />
             );
-          case "servicesStrip":
+          case "servicesStrip": {
+            const stripBgImg = section.sectionBg?.bgType === 'image' ? section.sectionBg?.bgImage : section.bgImage
             return (
-              <section key={section._key} className="relative overflow-hidden bg-black py-20">
-                {section.bgImage?.asset?.url && (
+              <section
+                key={section._key}
+                className={`relative overflow-hidden bg-black py-20 ${resolveTextClass(section.sectionBg, section.bgColor)}`}
+                style={resolveBg(section.sectionBg, section.bgColor)}
+              >
+                {stripBgImg?.asset?.url && (
                   <>
                     <img
-                      src={section.bgImage.asset.url}
-                      alt={section.bgImage.alt || ""}
+                      src={stripBgImg.asset.url}
+                      alt={stripBgImg.alt || ""}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/65" />
@@ -161,6 +190,7 @@ export default async function ServicesPage() {
                 </div>
               </section>
             );
+          }
           case "serviceCombinations":
             return (
               <ServiceCombinationsSection

@@ -8,8 +8,7 @@ import {
   STUDIOS_LATEST_PROJECTS_QUERY,
   STUDIOS_BTS_QUERY,
 } from '@/lib/sanity/queries'
-import { getBgStyle, getTextClass } from '@/lib/sectionColors'
-import { sectionBgStyle } from '@/lib/sectionBackground'
+import { sectionBgStyle, resolveBg, resolveTextClass } from '@/lib/sectionBackground'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { StudiosHighlights } from '@/components/StudiosHighlights'
@@ -47,9 +46,15 @@ export async function generateMetadata(): Promise<Metadata> {
 function StudiosHero({ s }: { s: Section }) {
   return (
     <section
-      className={`relative overflow-hidden bg-black ${getTextClass(s.bgColor)} py-24 md:py-32`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24 md:py-32`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
@@ -64,9 +69,15 @@ function StudiosIntro({ s }: { s: Section }) {
   if (!s.text) return null
   return (
     <section
-      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${getTextClass(s.bgColor, true)}`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-white border-b border-[#E6E6E6] ${resolveTextClass(s.sectionBg, s.bgColor, true)}`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
     >
+      {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
+        <>
+          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />

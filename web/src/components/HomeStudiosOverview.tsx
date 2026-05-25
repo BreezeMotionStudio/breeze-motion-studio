@@ -4,7 +4,7 @@ import {useState, useCallback} from 'react'
 import {StudioCard} from '@/components/StudioCard'
 import {Button} from '@/components/ui/Button'
 import {btnSpacingClass} from '@/lib/buttonSpacing'
-import {getBgStyle, getTextClass, isLightBg} from '@/lib/sectionColors'
+import {resolveBg, resolveTextClass, resolveIsLight} from '@/lib/sectionBackground'
 import {SimpleRichText} from '@/components/ui/SimpleRichText'
 
 type CtaButton = {_key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string}
@@ -83,12 +83,12 @@ export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) 
       if (card.studioId) cardMediaMap[card.studioId] = card
     }
   }
-  const onDark = !isLightBg(s.bgColor)
+  const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
 
   return (
     <section
-      className={`relative overflow-hidden bg-bms-dark-500 ${getTextClass(s.bgColor)} py-24`}
-      style={getBgStyle(s.bgColor)}
+      className={`relative overflow-hidden bg-bms-dark-500 ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
+      style={resolveBg(s.sectionBg, s.bgColor)}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >

@@ -38,6 +38,15 @@ export const servicesPage = defineType({
               type: 'string',
               validation: (r) => r.required(),
             }),
+            defineField({
+              name: 'heroImage',
+              title: 'Hero Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Displayed in the diagonal frame on the right side of the hero.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -53,7 +62,8 @@ export const servicesPage = defineType({
           name: 'servicesIntro',
           title: 'Intro Text',
           fields: [
-            defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            defineField({name: 'text', title: 'Text', type: 'simpleRichText'}),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
@@ -69,7 +79,104 @@ export const servicesPage = defineType({
           name: 'servicesCategories',
           title: 'Service Categories',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+            defineField({name: 'sectionBg', title: 'Section Background', type: 'sectionBackground'}),
+            defineField({
+              name: 'orderedCategories',
+              title: 'Services (Drag to Reorder)',
+              type: 'array',
+              description: 'Drag items to reorder. Click any service to edit its title, description, and service list.',
+              of: [defineArrayMember({type: 'reference', to: [{type: 'serviceCategory'}]})],
+            }),
+            defineField({
+              name: 'sectionTitle',
+              title: 'Section Heading',
+              type: 'string',
+              description: 'Heading displayed above the service cards.',
+            }),
+            defineField({
+              name: 'sectionTitleColor',
+              title: 'Section Title Color',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'White', value: '#ffffff'},
+                  {title: 'Black', value: '#000000'},
+                  {title: 'Light Grey', value: '#E6E6E6'},
+                  {title: 'Dark Grey', value: '#535D66'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: '#ffffff',
+            }),
+            defineField({
+              name: 'stripImage',
+              title: 'Strip Image',
+              type: 'image',
+              options: {hotspot: true},
+              fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
+              description: 'Optional image displayed inside the horizontal accent strip.',
+            }),
+            defineField({
+              name: 'stripColor',
+              title: 'Accent Strip Color',
+              type: 'string',
+              description: 'Color overlay on the strip (or solid color if no strip image).',
+              options: {
+                list: [
+                  {title: 'White', value: '#ffffff'},
+                  {title: 'Black', value: '#000000'},
+                  {title: 'Light Grey', value: '#E6E6E6'},
+                  {title: 'Dark Grey', value: '#535D66'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: '#ffffff',
+            }),
+            defineField({
+              name: 'stripOpacity',
+              title: 'Accent Strip Opacity',
+              type: 'number',
+              description: 'Opacity of the strip color from 0 (invisible) to 100 (fully opaque).',
+              validation: (r) => r.min(0).max(100),
+              initialValue: 15,
+            }),
+            defineField({
+              name: 'collageImages',
+              title: 'Collage Background Images (4)',
+              type: 'array',
+              of: [defineArrayMember({
+                type: 'object',
+                name: 'collageSlot',
+                fields: [
+                  defineField({
+                    name: 'image',
+                    title: 'Image',
+                    type: 'image',
+                    options: { hotspot: true },
+                    fields: [defineField({ name: 'alt', title: 'Alt text', type: 'string' })],
+                  }),
+                ],
+                preview: {
+                  select: { media: 'image' },
+                  prepare({ media }) {
+                    return { title: 'Panel Image', media }
+                  },
+                },
+              })],
+              validation: (r) => r.max(4),
+              description: 'Upload up to 4 images. Drag rows to reorder — position 1 fills panel 1, position 2 fills panel 2, etc. Rearranging changes which image appears in which shaped section of the collage.',
+            }),
+            defineField({
+              name: 'buttonLabel',
+              title: 'Button Label',
+              type: 'string',
+              description: 'Label for the button below the cards (e.g. "Get In Touch").',
+            }),
+            defineField({
+              name: 'buttonUrl',
+              title: 'Button URL',
+              type: 'string',
+            }),
             disabledField,
           ],
           preview: {
@@ -82,11 +189,84 @@ export const servicesPage = defineType({
 
         defineArrayMember({
           type: 'object',
+          name: 'servicesStrip',
+          title: 'Statement Strip',
+          fields: [
+            defineField({
+              name: 'text',
+              title: 'Statement Text',
+              type: 'simpleRichText',
+              validation: (r) => r.required(),
+            }),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
+            disabledField,
+          ],
+          preview: {
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Statement Strip' : 'Statement Strip'}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'serviceCombinations',
+          title: 'Service Combinations',
+          fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+            defineField({name: 'intro', title: 'Intro Text', type: 'simpleRichText'}),
+            defineField({name: 'sectionBg', title: 'Section Background', type: 'sectionBackground'}),
+            defineField({
+              name: 'collageImages',
+              title: 'Collage Background Images (4)',
+              type: 'array',
+              of: [defineArrayMember({
+                type: 'object',
+                name: 'collageSlot',
+                fields: [
+                  defineField({
+                    name: 'image',
+                    title: 'Image',
+                    type: 'image',
+                    options: { hotspot: true },
+                    fields: [defineField({ name: 'alt', title: 'Alt text', type: 'string' })],
+                  }),
+                ],
+                preview: {
+                  select: { media: 'image' },
+                  prepare({ media }) {
+                    return { title: 'Panel Image', media }
+                  },
+                },
+              })],
+              validation: (r) => r.max(4),
+              description: 'Upload up to 4 images. Drag rows to reorder — position 1 fills panel 1, position 2 fills panel 2, etc. Rearranging changes which image appears in which shaped section of the collage.',
+            }),
+            defineField({
+              name: 'combinations',
+              title: 'Combinations',
+              type: 'array',
+              description: 'Select and reorder combinations from the content library. Edit each combination under Content Library → Service Combinations.',
+              of: [defineArrayMember({type: 'reference', to: [{type: 'serviceCombination'}]})],
+            }),
+            disabledField,
+          ],
+          preview: {
+            select: {disabled: 'disabled'},
+            prepare({disabled}) {
+              return {title: disabled ? '[HIDDEN] Service Combinations' : 'Service Combinations'}
+            },
+          },
+        }),
+
+        defineArrayMember({
+          type: 'object',
           name: 'servicesCta',
           title: 'Call to Action',
           fields: [
             defineField({name: 'heading', title: 'Heading', type: 'string'}),
-            defineField({name: 'text', title: 'Supporting Text', type: 'text', rows: 2}),
+            defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
             defineField({
               name: 'buttons',
               title: 'Buttons',
@@ -94,6 +274,7 @@ export const servicesPage = defineType({
               description: 'Add, remove, or reorder CTA buttons.',
               of: [defineArrayMember({type: 'ctaButton'})],
             }),
+            defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
             disabledField,
           ],
           preview: {
