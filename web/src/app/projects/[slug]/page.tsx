@@ -35,6 +35,13 @@ export default async function ProjectPage({ params }: Props) {
   const hasBts = !!(project.btsNote || project.btsImages?.length || btsVideos.length)
   const hasCaseStudy = !!(project.caseStudyOverview || project.caseStudyChallenge || project.caseStudyApproach || project.caseStudyOutcome)
 
+  // Sort media sections by their configured order (defaults: videos=1, images=2, bts=3)
+  const mediaSections = [
+    { order: project.sectionOrderVideos ?? 1, key: 'videos' },
+    { order: project.sectionOrderImages ?? 2, key: 'images' },
+    { order: project.sectionOrderBts ?? 3, key: 'bts' },
+  ].sort((a, b) => a.order - b.order)
+
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
@@ -125,109 +132,117 @@ export default async function ProjectPage({ params }: Props) {
         </section>
       )}
 
-      {/* ── Deliverables — images ────────────────────────────────────────────── */}
-      {deliverableImages.length > 0 && (
-        <section className="bg-[#F5F5F5] py-16">
-          <div className="max-w-5xl mx-auto px-6">
-            <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-              Deliverables
-            </span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {deliverableImages.map((item, i) => (
-                <div key={i}>
-                  {item.asset?.url && (
-                    <div className="aspect-[4/3] overflow-hidden rounded-sm">
-                      <img
-                        src={`${item.asset.url}?w=900&auto=format&q=80`}
-                        alt={item.alt || ''}
-                        className="w-full h-full object-cover"
-                      />
+      {/* ── Media sections in configured order ──────────────────────────────── */}
+      {mediaSections.map(({ key }) => {
+        if (key === 'videos' && deliverableVideos.length > 0) {
+          return (
+            <section key="videos" className="bg-black py-16">
+              <div className="max-w-5xl mx-auto px-6">
+                <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
+                  Deliverables
+                </span>
+                <div className="flex flex-col gap-10">
+                  {deliverableVideos.map((item) => (
+                    <div key={item._key}>
+                      {item.url && <VideoEmbed url={item.url} platform={item.platform} title={item.title} />}
+                      {item.title && (
+                        <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-3">
+                          {item.title}
+                        </p>
+                      )}
                     </div>
-                  )}
-                  {item.caption && (
-                    <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
-                      {item.caption}
-                    </p>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Deliverables — videos ────────────────────────────────────────────── */}
-      {deliverableVideos.length > 0 && (
-        <section className="bg-black py-16">
-          <div className="max-w-5xl mx-auto px-6">
-            <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-              {deliverableImages.length > 0 ? 'Video' : 'Deliverables'}
-            </span>
-            <div className="flex flex-col gap-10">
-              {deliverableVideos.map((item) => (
-                <div key={item._key}>
-                  {item.url && <VideoEmbed url={item.url} platform={item.platform} title={item.title} />}
-                  {item.title && (
-                    <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-3">
-                      {item.title}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Behind the Scenes ────────────────────────────────────────────────── */}
-      {hasBts && (
-        <section className="bg-[#F5F5F5] py-16">
-          <div className="max-w-5xl mx-auto px-6">
-            <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-              Behind the Scenes
-            </span>
-            {project.btsNote && (
-              <p className="font-[family-name:var(--font-body)] text-base text-[#4B4B4B] leading-relaxed max-w-2xl mb-10">
-                {project.btsNote}
-              </p>
-            )}
-            {btsVideos.length > 0 && (
-              <div className="flex flex-col gap-10 mb-10">
-                {btsVideos.map((v) => (
-                  <div key={v._key}>
-                    {v.url && <VideoEmbed url={v.url} platform={v.platform} title={v.title} />}
-                    {v.title && (
-                      <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-3">{v.title}</p>
-                    )}
-                  </div>
-                ))}
               </div>
-            )}
-            {project.btsImages?.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {project.btsImages.map((img: { asset?: { url: string }; alt?: string; caption?: string }, i: number) => (
-                  <div key={i}>
-                    {img.asset?.url && (
-                      <div className="aspect-[4/3] overflow-hidden rounded-sm">
-                        <img
-                          src={`${img.asset.url}?w=900&auto=format&q=80`}
-                          alt={img.alt || `Behind the scenes ${i + 1}`}
-                          className="w-full h-full object-cover"
-                        />
+            </section>
+          )
+        }
+
+        if (key === 'images' && deliverableImages.length > 0) {
+          return (
+            <section key="images" className="bg-[#F5F5F5] py-16">
+              <div className="max-w-5xl mx-auto px-6">
+                <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
+                  {deliverableVideos.length > 0 ? 'Gallery' : 'Deliverables'}
+                </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {deliverableImages.map((item, i) => (
+                    <div key={i}>
+                      {item.asset?.url && (
+                        <div className="aspect-[4/3] overflow-hidden rounded-sm">
+                          <img
+                            src={`${item.asset.url}?w=900&auto=format&q=80`}
+                            alt={item.alt || ''}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      {item.caption && (
+                        <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
+                          {item.caption}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )
+        }
+
+        if (key === 'bts' && hasBts) {
+          return (
+            <section key="bts" className="bg-[#F5F5F5] py-16">
+              <div className="max-w-5xl mx-auto px-6">
+                <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
+                  Behind the Scenes
+                </span>
+                {project.btsNote && (
+                  <p className="font-[family-name:var(--font-body)] text-base text-[#4B4B4B] leading-relaxed max-w-2xl mb-10">
+                    {project.btsNote}
+                  </p>
+                )}
+                {btsVideos.length > 0 && (
+                  <div className="flex flex-col gap-10 mb-10">
+                    {btsVideos.map((v) => (
+                      <div key={v._key}>
+                        {v.url && <VideoEmbed url={v.url} platform={v.platform} title={v.title} />}
+                        {v.title && (
+                          <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-3">{v.title}</p>
+                        )}
                       </div>
-                    )}
-                    {img.caption && (
-                      <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
-                        {img.caption}
-                      </p>
-                    )}
+                    ))}
                   </div>
-                ))}
+                )}
+                {project.btsImages?.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {project.btsImages.map((img: { asset?: { url: string }; alt?: string; caption?: string }, i: number) => (
+                      <div key={i}>
+                        {img.asset?.url && (
+                          <div className="aspect-[4/3] overflow-hidden rounded-sm">
+                            <img
+                              src={`${img.asset.url}?w=900&auto=format&q=80`}
+                              alt={img.alt || `Behind the scenes ${i + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        {img.caption && (
+                          <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400 mt-2">
+                            {img.caption}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </section>
-      )}
+            </section>
+          )
+        }
+
+        return null
+      })}
 
       {/* ── Case Study narrative ─────────────────────────────────────────────── */}
       {hasCaseStudy && (

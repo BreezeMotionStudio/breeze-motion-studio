@@ -15,7 +15,7 @@ export function VideoEmbed({ url, platform, title }: { url: string; platform?: s
     return (
       <div className="aspect-video w-full overflow-hidden rounded-sm">
         <iframe
-          src={`https://www.youtube.com/embed/${id}`}
+          src={`https://www.youtube.com/embed/${id}?vq=hd1080&rel=0`}
           title={title || 'Video'}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -30,7 +30,7 @@ export function VideoEmbed({ url, platform, title }: { url: string; platform?: s
     return (
       <div className="aspect-video w-full overflow-hidden rounded-sm">
         <iframe
-          src={`https://player.vimeo.com/video/${id}`}
+          src={`https://player.vimeo.com/video/${id}?quality=1080p`}
           title={title || 'Video'}
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
