@@ -55,7 +55,7 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
 
       {/* Title */}
-      <h3 className="font-[family-name:var(--font-brand)] text-xl uppercase tracking-wide leading-tight transition-colors text-white group-hover:text-bms-accent">
+      <h3 className="font-[family-name:var(--font-brand)] text-xl uppercase tracking-wide leading-tight text-white">
         {project.title}
       </h3>
 

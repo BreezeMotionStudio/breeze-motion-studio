@@ -10,7 +10,7 @@ import { MissionReveal } from "@/components/MissionReveal";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 type Section = Record<string, any> & { _type: string; _key: string };
 type CtaButton = { _key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string };

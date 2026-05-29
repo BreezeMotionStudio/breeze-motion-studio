@@ -14,7 +14,7 @@ import { StudiosLatestProjects } from '@/components/StudiosLatestProjects'
 import { Button } from '@/components/ui/Button'
 import { btnSpacingClass } from '@/lib/buttonSpacing'
 
-export const revalidate = 0
+export const revalidate = 60
 
 type Section = Record<string, any> & { _type: string; _key: string }
 type CtaButton = { _key?: string; label?: string; url?: string; topSpacing?: string; bottomSpacing?: string }

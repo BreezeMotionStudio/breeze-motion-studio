@@ -84,7 +84,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
         {(heading || intro) && (
           <div className="max-w-2xl mb-4">
             {heading && (
-              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white/80">
+              <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white">
                 {heading}
               </h2>
             )}

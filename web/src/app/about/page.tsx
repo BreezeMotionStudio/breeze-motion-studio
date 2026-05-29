@@ -10,7 +10,7 @@ import { AboutMission } from "@/components/AboutMission";
 import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 type Section = Record<string, any> & { _type: string; _key: string };
 

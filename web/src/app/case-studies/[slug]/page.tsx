@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { client } from "@/lib/sanity/client";
-import { CASE_STUDY_BY_SLUG_QUERY } from "@/lib/sanity/queries";
+import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_PAGE_TEMPLATE_QUERY } from "@/lib/sanity/queries";
+import { resolveBg } from "@/lib/sectionBackground";
 import PortableTextContent from "@/components/ui/PortableTextContent";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
+import { Button } from "@/components/ui/Button";
 import { notFound } from "next/navigation";
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 type Props = { params: Promise<{ slug: string }> };
-
 type DeliverableImage = { asset?: { url: string }; alt?: string; caption?: string }
 type DeliverableVideo = { _key: string; title?: string; platform?: string; url?: string }
 
@@ -25,7 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
-  const cs = await client.fetch(CASE_STUDY_BY_SLUG_QUERY, { slug }).catch(() => null);
+  const [cs, tmpl] = await Promise.all([
+    client.fetch(CASE_STUDY_BY_SLUG_QUERY, { slug }).catch(() => null),
+    client.fetch(CASE_STUDY_PAGE_TEMPLATE_QUERY).catch(() => null),
+  ]);
 
   if (!cs) return notFound();
 
@@ -35,22 +39,38 @@ export default async function CaseStudyPage({ params }: Props) {
   const hasBts = !!(cs.btsNote || cs.btsImages?.length || btsVideos.length)
   const hasCaseStudyNarrative = !!(cs.caseStudyOverview || cs.caseStudyChallenge || cs.caseStudyApproach || cs.caseStudyOutcome)
 
-  // Sort media sections by their configured order (defaults: videos=1, images=2, bts=3)
   const mediaSections = [
     { order: cs.sectionOrderVideos ?? 1, key: 'videos' },
     { order: cs.sectionOrderImages ?? 2, key: 'images' },
     { order: cs.sectionOrderBts ?? 3, key: 'bts' },
   ].sort((a, b) => a.order - b.order)
 
+  const showCoverImage = tmpl?.heroShowCoverImage ?? true
+  const coverOpacity = (tmpl?.heroCoverImageOpacity ?? 20) / 100
+
+  const videoLabel = tmpl?.videoSectionLabel || 'Video Gallery'
+  const imageLabel = tmpl?.imageSectionLabel || 'Image Gallery'
+  const btsLabel = tmpl?.btsSectionLabel || 'Behind the Scenes'
+  const narrativeLabel = tmpl?.narrativeLabel || 'Case Study'
+
+  const ctaHeading = tmpl?.ctaHeading || 'Start a Project'
+  const ctaText = tmpl?.ctaText || "Every project begins with a conversation. Tell me what you're building."
+  const ctaButtonLabel = tmpl?.ctaButtonLabel || 'Get in Touch'
+  const ctaButtonUrl = tmpl?.ctaButtonUrl || '/contact'
+
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="relative bg-black text-white py-24 md:py-40 overflow-hidden">
-        {cs.coverImage?.asset?.url && (
+      <section
+        className="relative bg-black text-white py-24 md:py-40 overflow-hidden"
+        style={resolveBg(tmpl?.heroSectionBg)}
+      >
+        {showCoverImage && cs.coverImage?.asset?.url && (
           <img
             src={cs.coverImage.asset.url}
             alt={cs.coverImage.alt || cs.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: coverOpacity }}
           />
         )}
         <div className="relative max-w-5xl mx-auto px-6">
@@ -90,7 +110,10 @@ export default async function CaseStudyPage({ params }: Props) {
 
       {/* ── Summary + description ────────────────────────────────────────────── */}
       {(cs.summary || cs.description) && (
-        <section className="bg-white text-black py-16 border-b border-[#E6E6E6]">
+        <section
+          className="bg-white text-black py-16 border-b border-[#E6E6E6]"
+          style={resolveBg(tmpl?.summarySectionBg)}
+        >
           <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-12 items-start">
             {cs.coverImage?.asset?.url && (
               <div className="aspect-[4/3] overflow-hidden rounded-sm">
@@ -134,12 +157,11 @@ export default async function CaseStudyPage({ params }: Props) {
             supportingVideos.length === 2 ? 'grid-cols-2 max-w-2xl' :
             'grid-cols-3'
           return (
-            <section key="videos" className="bg-black py-16">
+            <section key="videos" className="bg-black py-16" style={resolveBg(tmpl?.videoSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-                  Video Gallery
+                  {videoLabel}
                 </span>
-                {/* Featured video — full width */}
                 <div className={supportingVideos.length > 0 ? 'mb-8' : ''}>
                   {featuredVideo.url && <VideoEmbed url={featuredVideo.url} platform={featuredVideo.platform} title={featuredVideo.title} />}
                   {featuredVideo.title && (
@@ -148,7 +170,6 @@ export default async function CaseStudyPage({ params }: Props) {
                     </p>
                   )}
                 </div>
-                {/* Supporting videos — smaller grid, centered */}
                 {supportingVideos.length > 0 && (
                   <div className={`grid gap-4 mx-auto ${supportingGridCols}`}>
                     {supportingVideos.map((item) => (
@@ -170,10 +191,10 @@ export default async function CaseStudyPage({ params }: Props) {
 
         if (key === 'images' && deliverableImages.length > 0) {
           return (
-            <section key="images" className="bg-[#F5F5F5] py-16">
+            <section key="images" className="bg-[#F5F5F5] py-16" style={resolveBg(tmpl?.imageSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-                  Image Gallery
+                  {imageLabel}
                 </span>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {deliverableImages.map((item, i) =>
@@ -202,10 +223,10 @@ export default async function CaseStudyPage({ params }: Props) {
 
         if (key === 'bts' && hasBts) {
           return (
-            <section key="bts" className="bg-black py-16">
+            <section key="bts" className="bg-black py-16" style={resolveBg(tmpl?.btsSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-10">
-                  Behind the Scenes
+                  {btsLabel}
                 </span>
                 {cs.btsNote && (
                   <p className="font-[family-name:var(--font-body)] text-base text-white/70 leading-relaxed max-w-2xl mb-10">
@@ -256,18 +277,16 @@ export default async function CaseStudyPage({ params }: Props) {
 
       {/* ── Case Study narrative ─────────────────────────────────────────────── */}
       {hasCaseStudyNarrative && (
-        <section className="bg-white text-black py-20">
+        <section className="bg-white text-black py-20" style={resolveBg(tmpl?.narrativeSectionBg)}>
           <div className="max-w-3xl mx-auto px-6">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-12">
-              Case Study
+              {narrativeLabel}
             </span>
-
             {cs.caseStudyOverview && (
               <p className="font-[family-name:var(--font-body)] text-xl text-[#4B4B4B] leading-relaxed mb-14">
                 {cs.caseStudyOverview}
               </p>
             )}
-
             {cs.caseStudyChallenge && (
               <div className="mb-12">
                 <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-5">
@@ -276,7 +295,6 @@ export default async function CaseStudyPage({ params }: Props) {
                 <PortableTextContent value={cs.caseStudyChallenge} className="text-[#4B4B4B] [&_p]:leading-relaxed" />
               </div>
             )}
-
             {cs.caseStudyApproach && (
               <div className="mb-12">
                 <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-5">
@@ -285,7 +303,6 @@ export default async function CaseStudyPage({ params }: Props) {
                 <PortableTextContent value={cs.caseStudyApproach} className="text-[#4B4B4B] [&_p]:leading-relaxed" />
               </div>
             )}
-
             {cs.caseStudyOutcome && (
               <div className="mb-12">
                 <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-5">
@@ -300,7 +317,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
       {/* ── Testimonial ──────────────────────────────────────────────────────── */}
       {cs.testimonial?.quote && (
-        <section className="bg-black text-white py-20">
+        <section className="bg-black text-white py-20" style={resolveBg(tmpl?.testimonialSectionBg)}>
           <div className="max-w-3xl mx-auto px-6 text-center">
             <blockquote>
               <p className="font-[family-name:var(--font-body)] text-xl italic text-bms-grey-200 mb-6 leading-relaxed">
@@ -314,6 +331,21 @@ export default async function CaseStudyPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* ── CTA ──────────────────────────────────────────────────────────────── */}
+      <section className="bg-[#2A3137] text-white py-20" style={resolveBg(tmpl?.ctaSectionBg)}>
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
+            {ctaHeading}
+          </h2>
+          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
+            {ctaText}
+          </p>
+          <Button variant="white" size="lg" href={ctaButtonUrl}>
+            {ctaButtonLabel}
+          </Button>
+        </div>
+      </section>
 
       {/* ── Back link ────────────────────────────────────────────────────────── */}
       <div className="bg-white border-t border-[#E6E6E6] py-8">

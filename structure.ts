@@ -14,6 +14,8 @@ import {
   ArchiveIcon,
   SparklesIcon,
   FolderIcon,
+  ControlsIcon,
+  WarningOutlineIcon,
 } from '@sanity/icons'
 import {CaseStudyPane} from './components/CaseStudyPane'
 
@@ -26,6 +28,8 @@ const SINGLETONS = [
   'servicesPage',
   'studiosPage',
   'caseStudiesPage',
+  'projectPageTemplate',
+  'caseStudyPageTemplate',
 ]
 
 export const structure: StructureResolver = (S) =>
@@ -92,6 +96,37 @@ export const structure: StructureResolver = (S) =>
                     .schemaType('caseStudiesPage')
                     .documentId('caseStudiesPage')
                     .title('Case Studies Page'),
+                ),
+
+              S.divider(),
+
+              S.listItem()
+                .title('Sub Page Templates')
+                .icon(ControlsIcon)
+                .child(
+                  S.list()
+                    .title('Sub Page Templates')
+                    .items([
+                      S.listItem()
+                        .title('Project Page Template')
+                        .icon(ControlsIcon)
+                        .child(
+                          S.document()
+                            .schemaType('projectPageTemplate')
+                            .documentId('projectPageTemplate')
+                            .title('Project Page Template'),
+                        ),
+
+                      S.listItem()
+                        .title('Case Study Page Template')
+                        .icon(ControlsIcon)
+                        .child(
+                          S.document()
+                            .schemaType('caseStudyPageTemplate')
+                            .documentId('caseStudyPageTemplate')
+                            .title('Case Study Page Template'),
+                        ),
+                    ]),
                 ),
             ]),
         ),
@@ -195,6 +230,26 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentTypeList('serviceCombination').title('Services Combination Examples'),
                 ),
+
+              S.divider(),
+
+              // Archive
+              S.listItem()
+                .title('Archive — Pending Migration')
+                .icon(WarningOutlineIcon)
+                .child(
+                  S.list()
+                    .title('Archive — Pending Migration')
+                    .items([
+                      S.listItem()
+                        .title('Case Studies (Old System)')
+                        .icon(DocumentTextIcon)
+                        .child(
+                          S.documentTypeList('caseStudy')
+                            .title('Case Studies — Migrate to Projects'),
+                        ),
+                    ]),
+                ),
             ]),
         ),
 
@@ -214,7 +269,7 @@ export const structure: StructureResolver = (S) =>
         return (
           id !== undefined &&
           !SINGLETONS.includes(id) &&
-          !['studio', 'project', 'client', 'testimonial', 'serviceCategory', 'serviceCombination'].includes(
+          !['studio', 'project', 'client', 'testimonial', 'serviceCategory', 'serviceCombination', 'caseStudy'].includes(
             id,
           )
         )

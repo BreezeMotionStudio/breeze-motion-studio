@@ -7,7 +7,7 @@ import PortableTextContent from '@/components/ui/PortableTextContent'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
 import { Button } from '@/components/ui/Button'
 
-export const revalidate = 0
+export const revalidate = 60
 
 type Props = { params: Promise<{ slug: string }> }
 

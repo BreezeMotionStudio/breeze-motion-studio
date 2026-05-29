@@ -1,10 +1,11 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {DocumentTextIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {MigrationBanner} from './components/MigrationBanner'
 
 export const caseStudy = defineType({
   name: 'caseStudy',
-  title: 'Case Study',
+  title: 'Case Study [MIGRATE]',
   type: 'document',
   icon: DocumentTextIcon,
   groups: [
@@ -14,6 +15,13 @@ export const caseStudy = defineType({
     {name: 'seo', title: 'SEO'},
   ],
   fields: [
+    defineField({
+      name: 'migrationNotice',
+      title: 'Migration Notice',
+      type: 'string',
+      readOnly: true,
+      components: {input: MigrationBanner as any},
+    }),
     defineField({
       name: 'title',
       title: 'Case Study Title',
@@ -143,6 +151,13 @@ export const caseStudy = defineType({
       title: 'title',
       subtitle: 'client.name',
       media: 'coverImage',
+    },
+    prepare({title, subtitle, media}: any) {
+      return {
+        title,
+        subtitle: `⚠ Migrate to Project${subtitle ? ` — ${subtitle}` : ''}`,
+        media,
+      }
     },
   },
 })

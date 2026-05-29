@@ -69,7 +69,7 @@ function HighlightCard({ project }: { project: Project }) {
         </span>
       </div>
 
-      <h3 className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight transition-colors text-white group-hover:text-bms-accent">
+      <h3 className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight text-white">
         {project.title}
       </h3>
 

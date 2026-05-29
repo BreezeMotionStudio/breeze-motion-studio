@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {DeliverablesInput} from './components/DeliverablesInput'
 
 export const project = defineType({
   name: 'project',
@@ -83,7 +84,16 @@ export const project = defineType({
       title: 'Project Description',
       type: 'blockContent',
       group: 'basics',
-      description: 'Full project intro — shown at the top of the project detail page',
+      description: 'Full project narrative — shown on the Case Study page only, not on the project page.',
+    }),
+    defineField({
+      name: 'deliverables',
+      title: 'Deliverables',
+      type: 'array',
+      group: 'deliverables',
+      description: 'Type any deliverable or pick from the suggestions — press Enter or click Add to confirm.',
+      components: {input: DeliverablesInput as any},
+      of: [defineArrayMember({type: 'string'})],
     }),
     defineField({
       name: 'coverImage',

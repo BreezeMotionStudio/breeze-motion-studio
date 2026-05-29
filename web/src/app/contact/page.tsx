@@ -6,7 +6,7 @@ import { sectionBgStyle, resolveBg, resolveTextClass } from "@/lib/sectionBackgr
 import { Button } from "@/components/ui/Button";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 type Section = Record<string, any> & { _type: string; _key: string };
 

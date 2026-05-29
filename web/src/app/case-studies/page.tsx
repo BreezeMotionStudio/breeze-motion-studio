@@ -3,7 +3,7 @@ import Link from "next/link";
 import { client } from "@/lib/sanity/client";
 import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY } from "@/lib/sanity/queries";
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 type Section = Record<string, any> & { _type: string; _key: string };
 type CaseStudy = {

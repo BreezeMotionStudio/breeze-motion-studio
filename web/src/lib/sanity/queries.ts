@@ -38,6 +38,7 @@ export const ABOUT_PAGE_QUERY = defineQuery(
       founderImage{asset->{url}, alt},
       founderImage2{asset->{url}, alt},
       overviewImage{asset->{url}, alt},
+      bgImage { asset->{ url }, alt },
       founderCard{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{asset->{url}, alt} },
       studioCard{ bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage{asset->{url}, alt} },
       sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
@@ -237,7 +238,6 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(
     coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
     deliverableImages[]{asset->{_id, url, metadata{lqip, dimensions}}, alt, caption},
     deliverableVideos[]{_key, platform, url, title},
-    btsNote,
     btsImages[]{asset->{_id, url, metadata{lqip, dimensions}}, alt, caption},
     btsVideos[]{_key, platform, url, title},
     sectionOrderVideos,
@@ -248,6 +248,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(
     caseStudyChallenge,
     caseStudyApproach,
     caseStudyOutcome,
+    deliverables,
     services[]->{_id, title},
     client->{name, industry, logo{asset->{url}, alt}},
     studio->{title, slug},
@@ -315,6 +316,50 @@ export const CASE_STUDY_BY_SLUG_QUERY = defineQuery(
     seoDescription
   }`
 );
+
+// — Page Templates —
+
+const sectionBgFragment = `bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt }`
+
+export const PROJECT_PAGE_TEMPLATE_QUERY = defineQuery(
+  `*[_id == "projectPageTemplate"][0]{
+    heroSectionBg { ${sectionBgFragment} },
+    heroShowCoverImage,
+    heroCoverImageOpacity,
+    overviewSectionBg { ${sectionBgFragment} },
+    videoSectionBg { ${sectionBgFragment} },
+    videoSectionLabel,
+    imageSectionBg { ${sectionBgFragment} },
+    imageSectionLabel,
+    btsSectionBg { ${sectionBgFragment} },
+    btsSectionLabel,
+    testimonialSectionBg { ${sectionBgFragment} },
+    caseStudySectionBg { ${sectionBgFragment} }
+  }`
+)
+
+export const CASE_STUDY_PAGE_TEMPLATE_QUERY = defineQuery(
+  `*[_id == "caseStudyPageTemplate"][0]{
+    heroSectionBg { ${sectionBgFragment} },
+    heroShowCoverImage,
+    heroCoverImageOpacity,
+    summarySectionBg { ${sectionBgFragment} },
+    videoSectionBg { ${sectionBgFragment} },
+    videoSectionLabel,
+    imageSectionBg { ${sectionBgFragment} },
+    imageSectionLabel,
+    btsSectionBg { ${sectionBgFragment} },
+    btsSectionLabel,
+    testimonialSectionBg { ${sectionBgFragment} },
+    narrativeSectionBg { ${sectionBgFragment} },
+    narrativeLabel,
+    ctaSectionBg { ${sectionBgFragment} },
+    ctaHeading,
+    ctaText,
+    ctaButtonLabel,
+    ctaButtonUrl
+  }`
+)
 
 // — Testimonials —
 
