@@ -30,6 +30,7 @@ const SINGLETONS = [
   'caseStudiesPage',
   'projectPageTemplate',
   'caseStudyPageTemplate',
+  'studioPageTemplate',
 ]
 
 export const structure: StructureResolver = (S) =>
@@ -125,6 +126,16 @@ export const structure: StructureResolver = (S) =>
                             .schemaType('caseStudyPageTemplate')
                             .documentId('caseStudyPageTemplate')
                             .title('Case Study Page Template'),
+                        ),
+
+                      S.listItem()
+                        .title('Studio Page Template')
+                        .icon(ControlsIcon)
+                        .child(
+                          S.document()
+                            .schemaType('studioPageTemplate')
+                            .documentId('studioPageTemplate')
+                            .title('Studio Page Template'),
                         ),
                     ]),
                 ),

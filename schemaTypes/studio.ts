@@ -36,18 +36,19 @@ export const studio = defineType({
     }),
     defineField({
       name: 'purpose',
-      title: 'Purpose',
+      title: 'Overview',
       type: 'text',
       rows: 3,
       group: 'content',
-      description: 'What this studio does — shown on the studios overview page',
+      description: 'Overview paragraph shown on the individual studio page and the studios overview page.',
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'description',
-      title: 'Full Description',
+      title: 'Specializations',
       type: 'blockContent',
       group: 'content',
+      description: 'List of specializations only — each item should be a bold title.',
     }),
     defineField({
       name: 'industriesServed',

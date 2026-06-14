@@ -1,13 +1,51 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
-import { STUDIO_BY_SLUG_QUERY } from '@/lib/sanity/queries'
+import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { notFound } from 'next/navigation'
 import PortableTextContent from '@/components/ui/PortableTextContent'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
 import { Button } from '@/components/ui/Button'
+import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
 
 export const revalidate = 60
+
+type DescriptionBlock = Record<string, any>
+
+function parseSpecializations(blocks: DescriptionBlock[]): {
+  introBlocks: DescriptionBlock[]
+  specTitles: string[]
+} {
+  if (!blocks?.length) return { introBlocks: [], specTitles: [] }
+
+  const introBlocks: DescriptionBlock[] = []
+  const specTitles: string[] = []
+  let foundFirstSpec = false
+  let specsDone = false
+
+  for (const block of blocks) {
+    if (specsDone) break
+
+    if (!foundFirstSpec && block._type === 'block') {
+      const text = (block.children ?? []).map((c: any) => c.text ?? '').join('').toLowerCase()
+      if (text.trimStart().startsWith('we specialize in')) continue
+    }
+
+    const isSpecBlock =
+      block._type === 'block' && block.children?.[0]?.marks?.includes('strong')
+
+    if (isSpecBlock) {
+      foundFirstSpec = true
+      specTitles.push(block.children[0].text as string)
+    } else if (foundFirstSpec) {
+      specsDone = true
+    } else {
+      introBlocks.push(block)
+    }
+  }
+
+  return { introBlocks, specTitles }
+}
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -33,14 +71,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function StudioPage({ params }: Props) {
   const { slug } = await params
-  const studio = await client.fetch(STUDIO_BY_SLUG_QUERY, { slug }).catch(() => null)
+  const [studio, tmpl] = await Promise.all([
+    client.fetch(STUDIO_BY_SLUG_QUERY, { slug }).catch(() => null),
+    client.fetch(STUDIO_PAGE_TEMPLATE_QUERY).catch(() => null),
+  ])
 
   if (!studio) return notFound()
+
+  const specTitles: string[] = studio.description
+    ? (studio.description as DescriptionBlock[])
+        .filter((b) => b._type === 'block' && b.children?.[0]?.marks?.includes('strong'))
+        .map((b) => b.children[0].text as string)
+    : []
 
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-black text-white py-24 md:py-32 overflow-hidden">
+      <section
+        className={`relative bg-black overflow-hidden py-24 md:py-32 ${resolveTextClass(tmpl?.heroSectionBg)}`}
+        style={resolveBg(tmpl?.heroSectionBg)}
+      >
         <HeroImageFrame url={studio.heroImage?.asset?.url} alt={studio.heroImage?.alt || studio.title} />
         <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
           <Link
@@ -53,7 +103,7 @@ export default async function StudioPage({ params }: Props) {
             {studio.title}
           </h1>
           {studio.tagline && (
-            <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)] max-w-xl">
+            <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)]">
               {studio.tagline}
             </p>
           )}
@@ -62,27 +112,43 @@ export default async function StudioPage({ params }: Props) {
 
       {/* Purpose / Description */}
       {(studio.purpose || studio.description) && (
-        <section className="bg-white border-b border-[#E6E6E6]">
+        <section
+          className={`bg-white border-b border-[#E6E6E6] ${resolveTextClass(tmpl?.overviewSectionBg, undefined, true)}`}
+          style={resolveBg(tmpl?.overviewSectionBg)}
+        >
           <div className="scroll-catchup max-w-5xl mx-auto px-6 py-12 md:py-16">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-6">
               Studio Overview
             </span>
-            {studio.description ? (
-              <PortableTextContent
-                value={studio.description}
-                className="text-[#4B4B4B] max-w-2xl [&_p]:text-lg [&_p]:leading-relaxed"
-              />
-            ) : (
-              <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
-                {studio.purpose}
-              </p>
+            <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
+              {studio.purpose}
+            </p>
+            {specTitles.length > 0 && (
+              <div className="mt-8 pt-8 border-t border-[#E6E6E6]">
+                <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-4">
+                  Specializations
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {specTitles.map((title, i) => (
+                    <span
+                      key={i}
+                      className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white bg-black border border-black px-3 py-1.5 rounded-sm"
+                    >
+                      {title}
+                    </span>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </section>
       )}
 
       {/* Projects */}
-      <section className="bg-black text-white py-16 pb-28">
+      <section
+        className={`bg-black py-16 pb-28 ${resolveTextClass(tmpl?.projectsSectionBg)}`}
+        style={resolveBg(tmpl?.projectsSectionBg)}
+      >
         <div className="max-w-5xl mx-auto px-6">
           <div className="scroll-catchup flex items-center gap-6 mb-14">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
@@ -150,16 +216,40 @@ export default async function StudioPage({ params }: Props) {
       </section>
 
       {/* CTA strip */}
-      <section className="bg-[#2A3137] text-white py-20">
-        <div className="scroll-catchup max-w-3xl mx-auto px-6 text-center">
+      <section
+        className={`relative overflow-hidden bg-bms-dark-400 text-white py-24 ${resolveTextClass(tmpl?.ctaSectionBg)}`}
+        style={resolveBg(tmpl?.ctaSectionBg)}
+      >
+        {tmpl?.ctaSectionBg?.bgType === 'image' && tmpl.ctaSectionBg.bgImage?.asset?.url ? (
+          <>
+            <img
+              src={`${tmpl.ctaSectionBg.bgImage.asset.url}?w=1920&auto=format&q=80`}
+              alt={tmpl.ctaSectionBg.bgImage.alt || ''}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-black/55" />
+          </>
+        ) : (
+          <>
+            <img
+              src="https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg?w=1920&auto=format&q=80"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-black/55" />
+          </>
+        )}
+        <div className="scroll-catchup relative z-10 max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
-            Start a Project
+            {tmpl?.ctaHeading || 'Start a Project'}
           </h2>
           <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
-            Every project begins with a conversation. Tell me what you're building.
+            {tmpl?.ctaText || "Every project begins with a conversation. Tell me what you're building."}
           </p>
-          <Button variant="white" size="lg" href="/contact">
-            Get in Touch
+          <Button variant="white" size="lg" href={tmpl?.ctaButtonUrl || '/contact'}>
+            {tmpl?.ctaButtonLabel || 'Get in Touch'}
           </Button>
         </div>
       </section>

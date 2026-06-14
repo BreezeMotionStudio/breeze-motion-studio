@@ -57,10 +57,6 @@ export default async function ProjectPage({ params }: Props) {
   const caseStudyBgImg = caseStudyBg?.bgType === 'image' ? caseStudyBg?.bgImage : null
   const hasCaseStudyBgImage = !!caseStudyBgImg?.asset?.url
 
-  const testimonialBg = tmpl?.testimonialSectionBg
-  const testimonialBgImg = testimonialBg?.bgType === 'image' ? testimonialBg?.bgImage : null
-  const hasTestimonialBgImage = !!testimonialBgImg?.asset?.url
-
   return (
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
@@ -86,14 +82,9 @@ export default async function ProjectPage({ params }: Props) {
             </Link>
           )}
           <div className="flex flex-wrap gap-3 mb-4">
-            {project.client?.name && (
+            {project.title && (
               <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-black text-white px-3 py-1">
-                {project.client.name}
-              </span>
-            )}
-            {project.client?.industry && (
-              <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-black text-white px-3 py-1">
-                {project.client.industry}
+                {project.title}
               </span>
             )}
             {project.year && (
@@ -103,7 +94,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
           </div>
           <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide text-black">
-            {project.title}
+            {project.client?.name || project.title}
           </h1>
         </div>
       </section>
@@ -142,18 +133,6 @@ export default async function ProjectPage({ params }: Props) {
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-              {project.services?.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {project.services.map((svc: { _id: string; title: string }) => (
-                    <span
-                      key={svc._id}
-                      className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest bg-black text-white px-3 py-1"
-                    >
-                      {svc.title}
-                    </span>
-                  ))}
                 </div>
               )}
             </div>
@@ -255,10 +234,10 @@ export default async function ProjectPage({ params }: Props) {
         return null
       })}
 
-      {/* ── Case Study ───────────────────────────────────────────────────────── */}
+      {/* ── View Case Study ──────────────────────────────────────────────────── */}
       {hasCaseStudy && (
         <section
-          className="relative overflow-hidden bg-white py-32"
+          className="relative overflow-hidden bg-black text-white py-24"
           style={resolveBg(caseStudyBg)}
         >
           {hasCaseStudyBgImage && (
@@ -271,39 +250,10 @@ export default async function ProjectPage({ params }: Props) {
               <div className="absolute inset-0 bg-black/65" />
             </>
           )}
-          <div className="relative z-10 flex items-center gap-6 max-w-3xl mx-auto px-6">
-            <div className="flex-grow h-px bg-black/20" />
-            <Button variant="black" size="lg" href={`/case-studies/${project.slug?.current}`}>
+          <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+            <Button variant="white" size="lg" href={`/case-studies/${project.slug?.current}`}>
               View Case Study
             </Button>
-            <div className="flex-grow h-px bg-black/20" />
-          </div>
-        </section>
-      )}
-
-      {/* ── Testimonial ──────────────────────────────────────────────────────── */}
-      {project.testimonial?.quote && (
-        <section className="relative overflow-hidden bg-black text-white py-20" style={resolveBg(testimonialBg)}>
-          {hasTestimonialBgImage && (
-            <>
-              <img
-                src={`${testimonialBgImg!.asset.url}?w=1920&auto=format&q=80`}
-                alt={testimonialBgImg!.alt || ''}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/65" />
-            </>
-          )}
-          <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-            <blockquote>
-              <p className="font-[family-name:var(--font-body)] text-xl italic text-bms-grey-200 mb-6 leading-relaxed">
-                &ldquo;{project.testimonial.quote}&rdquo;
-              </p>
-              <footer className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-                — {project.testimonial.attribution}
-                {project.testimonial.role && `, ${project.testimonial.role}`}
-              </footer>
-            </blockquote>
           </div>
         </section>
       )}

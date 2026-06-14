@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-05-25 (Session 29)
+**Last Updated:** 2026-06-14 (Session 30)
 
 ---
 
@@ -34,6 +34,53 @@
 ---
 
 ## Development Log
+
+### 2026-06-14 (Session 30) — Services CTA Fix, Studio Sub-Pages Redesign & Project Page Template
+
+**Services page — CTA background:**
+- ✅ Removed `bg-gradient-to-b from-black to-transparent` top gradient overlay from `ServicesCta`
+- ✅ Removed redundant `bg-black/70` overlay; re-added `bg-black/65` to match studios CTA standard
+- ✅ Final state: `bg-black` fallback + standard CTA background image + `bg-black/65` overlay (matches homepage/studios CTA)
+
+**Studio sub-pages (`/studios/[slug]`) — full redesign:**
+- ✅ Specializations redesigned from `PortableTextContent` block to compact pill tags — `font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white bg-black border border-black px-3 py-1.5 rounded-sm`
+- ✅ Specializations extracted from `description` field via inline filter (bold-first-child blocks only)
+- ✅ Overview section always renders `studio.purpose` as plain text (was conditionally rendering PortableText)
+- ✅ Tagline `<p>` had `max-w-xl` removed — prevents multi-line wrapping on all studio taglines
+- ✅ CTA section: `bg-bms-dark-400` fallback + standard CTA background image (`05b32c4153168a8465c443af641d1859f9389cac`) + `bg-black/55` overlay — matches homepage CTA exactly
+- ✅ All 4 sections template-driven via `STUDIO_PAGE_TEMPLATE_QUERY` / `studioPageTemplate` singleton
+- ✅ Unused `parseSpecializations()` helper retained but simplified; final extraction is a single inline filter
+
+**New `studioPageTemplate` schema and singleton:**
+- ✅ New file `schemaTypes/studioPageTemplate.ts` — fields: `heroSectionBg`, `overviewSectionBg`, `projectsSectionBg`, `ctaSectionBg`, `ctaHeading`, `ctaText`, `ctaButtonLabel`, `ctaButtonUrl`
+- ✅ Registered in `schemaTypes/index.ts` and `structure.ts` (SINGLETONS array + "Studio Page Template" item under Sub Page Templates)
+- ✅ `STUDIO_PAGE_TEMPLATE_QUERY` added to `web/src/lib/sanity/queries.ts` using `*[_id == "studioPageTemplate"][0]`
+- ✅ Schema deployed
+
+**Studio schema field renames (Sanity Studio labels only):**
+- ✅ `purpose` field title: "Purpose" → **"Overview"**
+- ✅ `description` field title: "Full Description" → **"Specializations"**; description updated to "List of specializations only — each item should be a bold title"
+
+**Studio content updates (Sanity):**
+- ✅ Machine Studio: specializations set to 7 tags — Factory Showcases, Machine Showcases, Digital and Simulation Showcases, Events and Tradeshows, Training & Instructional Media, Industrial 3D Model Collaborations, Turnkey Project Showcases
+- ✅ Commercial Studio: specializations set to 6 tags — Brand Identity & Visual Systems, Campaign Photography & Videography, Commercial Product Showcases, Retail & Lifestyle Content, Broadcast & Social Media Reels, Strategic Brand Consulting
+- ✅ Creative Studio: specializations set to 6 tags — Documentary Cinematography, Music & Artist Content, Independent Film & Narrative Projects, Fine Art Photography, Creative Direction & Concept Development, Personal Brand & Signature Storytelling
+- ✅ Commercial Studio description fixed: "We deliver" → "Breeze Motion Studio delivers" (brand voice rule)
+- ✅ Creative Studio description fixed: "we tailor" → "projects are tailored" (brand voice rule)
+- ✅ All documents published
+
+**Project page (`/projects/[slug]`) — final template redesign:**
+- ✅ Hero: project title + year as black tag pills (removed client name from pills)
+- ✅ Hero h1: `project.client?.name || project.title` — client name is the primary heading
+- ✅ Removed client industry tag; removed services tags block below deliverables
+- ✅ Removed testimonial section entirely
+- ✅ Removed white-background inline case study section
+- ✅ New "View Case Study" section: `bg-black`, only shown when `hasCaseStudy` is true; image background support via `caseStudySectionBg` from template; white `Button` centered
+- ✅ Cleaned up all removed variables (`testimonialBg`, `testimonialBgImg`, `hasTestimonialBgImage`)
+- ✅ `PROJECT_PAGE_TEMPLATE_QUERY` already existed and fetches `caseStudySectionBg`; `projectPageTemplate` singleton confirmed in Sanity with section backgrounds configured
+- ✅ All new projects added via Sanity automatically inherit the full template — no per-project wiring required
+
+---
 
 ### 2026-05-25 (Session 29) — Studios Page Fixes, Service Combinations Styling & BTS Image Labels
 
@@ -1016,18 +1063,16 @@
 
 ## Next Steps (Priority Order)
 
-1. **Upload parent logo** — Add `parentLogo` in Sanity → Home Page → Studios Overview; the connector tree renders below it linking to the three sub-studio cards
-2. **Upload About section slideshow images** — Add images to `imageLeftSlides` and `imageRightSlides` in Sanity → Home Page → About; multiple images per side enable auto-sliding; `imageAspectRatio` controls both containers simultaneously
-3. **Upload How We Work section image** — Add `sectionImage` in Sanity → Home Page → How We Work; renders between steps and the View Services button
-4. **Populate studio card media** — Add `cardImage` or `cardVideoUrl` per studio inside Home Page → Studios Overview → Studio Card Media in Sanity
-5. **Re-enable Featured Work** — Either populate with real content and re-enable, or replace section with something else; currently disabled in CMS
-6. **Add images to case studies** — Upload cover images and gallery images for all 12 case studies
-7. **Build studio sub-pages** — `/studios/[slug]` with project grids
-8. **Build case study detail pages** — `/case-studies/[slug]` narrative view
-9. **Add project content** — Create actual portfolio projects with real images and videos
-10. **Contact form** — Form implementation + email routing to rebekah@breezemotionstudio.com
-11. **SEO implementation** — Meta tags, OG images, sitemap.xml, structured data
-12. **Domain + deployment** — DNS config, Vercel production deployment
+1. **Add real project content** — Create `project` documents in Sanity → Content Library → Projects; fill client, year, cover image, deliverables, media; project pages auto-inherit the locked template
+2. **Upload parent logo** — Add `parentLogo` in Sanity → Home Page → Studios Overview; the connector tree renders below it linking to the three sub-studio cards
+3. **Upload About section slideshow images** — Add images to `imageLeftSlides` and `imageRightSlides` in Sanity → Home Page → About
+4. **Upload How We Work section image** — Add `sectionImage` in Sanity → Home Page → How We Work
+5. **Populate studio card media** — Add `cardImage` or `cardVideoUrl` per studio inside Home Page → Studios Overview → Studio Card Media
+6. **Re-enable Featured Work** — Populate with real content and re-enable, or replace section; currently disabled in CMS
+7. **Build case study detail pages** — `/case-studies/[slug]` narrative view
+8. **Contact form** — Form implementation + email routing to rebekah@breezemotionstudio.com
+9. **SEO implementation** — Meta tags, OG images, sitemap.xml, structured data
+10. **Domain + deployment** — DNS config, Vercel production deployment
 
 ---
 

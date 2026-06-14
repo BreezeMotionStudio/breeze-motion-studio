@@ -361,6 +361,19 @@ export const CASE_STUDY_PAGE_TEMPLATE_QUERY = defineQuery(
   }`
 )
 
+export const STUDIO_PAGE_TEMPLATE_QUERY = defineQuery(
+  `*[_id == "studioPageTemplate"][0]{
+    heroSectionBg { ${sectionBgFragment} },
+    overviewSectionBg { ${sectionBgFragment} },
+    projectsSectionBg { ${sectionBgFragment} },
+    ctaSectionBg { ${sectionBgFragment} },
+    ctaHeading,
+    ctaText,
+    ctaButtonLabel,
+    ctaButtonUrl
+  }`
+)
+
 // — Testimonials —
 
 export const TESTIMONIALS_QUERY = defineQuery(

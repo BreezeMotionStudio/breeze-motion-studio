@@ -85,7 +85,6 @@ function ServicesCta({ s }: { s: Section }) {
       className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
       style={resolveBg(s.sectionBg, s.bgColor)}
     >
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black to-transparent pointer-events-none z-20" />
       {hasBgImage && (
         <>
           <img
@@ -93,7 +92,7 @@ function ServicesCta({ s }: { s: Section }) {
             alt={bgImg.alt || ''}
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-black/65" />
         </>
       )}
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
