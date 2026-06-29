@@ -77,6 +77,9 @@ export function ServiceCategoriesGrid({
   stripOpacity,
   buttonLabel,
   buttonUrl,
+  readMoreLabel,
+  servicesIncludeLabel,
+  closeLabel,
 }: {
   categories: Category[]
   sectionBg?: any
@@ -88,6 +91,9 @@ export function ServiceCategoriesGrid({
   stripOpacity?: number
   buttonLabel?: string
   buttonUrl?: string
+  readMoreLabel?: string
+  servicesIncludeLabel?: string
+  closeLabel?: string
 }) {
   const [open, setOpen] = useState<Category | null>(null)
 
@@ -185,7 +191,7 @@ export function ServiceCategoriesGrid({
                     className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-[#535D66] hover:text-black transition-colors cursor-pointer"
                     onClick={(e) => { e.stopPropagation(); setOpen(cat) }}
                   >
-                    Read More
+                    {readMoreLabel || 'Read More'}
                   </button>
                 </div>
               </div>
@@ -240,7 +246,7 @@ export function ServiceCategoriesGrid({
               {(open.serviceGroups?.length ?? 0) > 0 && (
                 <div className="mb-10">
                   <p className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-widest text-[#535D66] mb-6 text-center">
-                    Services Include:
+                    {servicesIncludeLabel || 'Services Include:'}
                   </p>
                   {open.serviceGroups!.map((group) => (
                     <div key={group._key} className="mb-12 last:mb-0 text-center">
@@ -277,7 +283,7 @@ export function ServiceCategoriesGrid({
                 onClick={() => setOpen(null)}
                 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-black text-white px-6 py-3 rounded-md transition-transform duration-200 hover:scale-[1.06] cursor-pointer"
               >
-                Close
+                {closeLabel || 'Close'}
               </button>
             </div>
           </div>

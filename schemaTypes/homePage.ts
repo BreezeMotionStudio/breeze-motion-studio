@@ -65,6 +65,7 @@ export const homePage = defineType({
           name: 'homeFeaturedWork',
           title: 'Featured Work',
           fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Heading above the project grid. Default: "Featured Work".', initialValue: 'Featured Work'}),
             defineField({name: 'videoUrl', title: 'Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',

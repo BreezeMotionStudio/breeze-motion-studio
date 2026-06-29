@@ -17,8 +17,11 @@ type FooterProps = {
   phone?: string;
   footerLinks?: FooterLink[];
   socialLinks?: SocialLink[];
-  plainLogo?: LogoSettings;
-  roundLogo?: LogoSettings;
+  plainLogo?: LogoSettings & { logoImage?: { asset?: { url: string } } };
+  roundLogo?: LogoSettings & { logoImage?: { asset?: { url: string } } };
+  footerLinksHeading?: string;
+  footerContactHeading?: string;
+  footerFollowHeading?: string;
 };
 
 const defaultFooterLinks: FooterLink[] = [
@@ -53,6 +56,9 @@ export default function Footer({
   socialLinks,
   plainLogo,
   roundLogo,
+  footerLinksHeading,
+  footerContactHeading,
+  footerFollowHeading,
 }: FooterProps) {
   const links =
     footerLinks && footerLinks.length > 0 ? footerLinks : defaultFooterLinks;
@@ -79,8 +85,8 @@ export default function Footer({
                 style={{ width: roundSize, height: roundSize }}
               >
                 <Image
-                  src="/logo-roundcrop.png"
-                  alt="Breeze Motion Studio"
+                  src={roundLogo?.logoImage?.asset?.url || "/logo-roundcrop.png"}
+                  alt={siteTitle || "Breeze Motion Studio"}
                   width={roundSize}
                   height={roundSize}
                   className="w-full h-full object-cover"
@@ -88,8 +94,8 @@ export default function Footer({
               </div>
             ) : showPlain ? (
               <Image
-                src="/logo.png"
-                alt="Breeze Motion Studio"
+                src={plainLogo?.logoImage?.asset?.url || "/logo.png"}
+                alt={siteTitle || "Breeze Motion Studio"}
                 width={plainSize}
                 height={plainSize}
                 style={{ height: plainSize, width: "auto" }}
@@ -110,7 +116,7 @@ export default function Footer({
         {/* Col 2 — Quick Links */}
         <div>
           <h3 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-5">
-            Quick Links
+            {footerLinksHeading || 'Quick Links'}
           </h3>
           <ul className="flex flex-col gap-3">
             {links.map(({ label, href }) => (
@@ -129,7 +135,7 @@ export default function Footer({
         {/* Col 3 — Get In Touch */}
         <div>
           <h3 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-5">
-            Get In Touch
+            {footerContactHeading || 'Get In Touch'}
           </h3>
           <ul className="flex flex-col gap-3">
             {email && (
@@ -159,7 +165,7 @@ export default function Footer({
         {socialLinks && socialLinks.length > 0 && (
           <div>
             <h3 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-5">
-              Follow
+              {footerFollowHeading || 'Follow'}
             </h3>
             <ul className="flex flex-col gap-3">
               {socialLinks.map(({ platform, url }) => (

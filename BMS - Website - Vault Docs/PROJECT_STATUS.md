@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-06-14 (Session 30)
+**Last Updated:** 2026-06-29 (Session 31)
 
 ---
 
@@ -34,6 +34,47 @@
 ---
 
 ## Development Log
+
+### 2026-06-29 (Session 31) — Full CMS Editability Audit & Fix
+
+**Goal:** Complete 100% Sanity editability — no hardcoded labels, headings, or UI text anywhere on the site.
+
+**Schema additions (20 new fields across 8 schema files):**
+- ✅ `homePage.ts` — `homeFeaturedWork.heading` ("Featured Work")
+- ✅ `caseStudiesPage.ts` — top-level `listingCtaLabel` ("Read Case Study →")
+- ✅ `aboutPage.ts` — `aboutValues.heading` ("Core Values")
+- ✅ `servicesPage.ts` — `servicesStrip.heading`; `servicesCategories.readMoreLabel`, `servicesIncludeLabel`, `closeLabel`; `serviceCombinations.typicallyIncludesLabel`, `viewCaseStudyLabel`
+- ✅ `siteSettings.ts` — footer column headings: `footerLinksHeading`, `footerContactHeading`, `footerFollowHeading`; `footerPlainLogo.logoImage` and `footerRoundLogo.logoImage` image fields; site `description` field
+- ✅ `caseStudyPageTemplate.ts` — `backLabel` ("← Case Studies")
+- ✅ `studioPageTemplate.ts` — `backLabel` ("← Studios")
+- ✅ `projectPageTemplate.ts` — `deliverablesLabel`, `viewCaseStudyLabel`
+- ✅ `studiosPage.ts` — `studiosGrid.exploreLabel` ("Explore Studio →")
+- ✅ `contactPage.ts` — `contactDetails.getInTouchLabel`, `emailLabel`, `phoneLabel`
+- ✅ Schema deployed
+
+**Frontend wiring (11 pages/components updated):**
+- ✅ `web/src/app/layout.tsx` — converted static `metadata` export to async `generateMetadata()` fetching site title + description from Sanity; passes footer heading props to Footer
+- ✅ `web/src/components/layout/Footer.tsx` — footer column headings and logo image URLs from Sanity (fallback `/logo.png`)
+- ✅ `web/src/app/page.tsx` — `homeFeaturedWork` heading wired
+- ✅ `web/src/app/case-studies/page.tsx` — `listingCtaLabel` wired into `CaseStudiesListings`
+- ✅ `web/src/app/case-studies/[slug]/page.tsx` — `backLabel` wired
+- ✅ `web/src/app/studios/[slug]/page.tsx` — `backLabel`, `overviewLabel`, `overviewSubtext`, `projectsLabel` wired; CDN fallback image pattern fixed (solid/gradient via `resolveBg`, image via manual img+overlay)
+- ✅ `web/src/app/projects/[slug]/page.tsx` — `deliverablesLabel`, `viewCaseStudyLabel` wired; same CDN fallback fix
+- ✅ `web/src/app/studios/page.tsx` — `exploreLabel` wired into `StudiosGrid`
+- ✅ `web/src/app/about/page.tsx` — values heading, how-we-work heading, founder/studio card headings wired
+- ✅ `web/src/app/contact/page.tsx` — `getInTouchLabel`, `emailLabel`, `phoneLabel` wired
+- ✅ `web/src/app/services/page.tsx` — all new label props wired into `ServiceCategoriesGrid` and `ServiceCombinationsSection`
+- ✅ `web/src/components/CoreValuesSection.tsx` — accepts `heading?` prop
+- ✅ `web/src/components/ServiceCategoriesGrid.tsx` — accepts `readMoreLabel?`, `servicesIncludeLabel?`, `closeLabel?`
+- ✅ `web/src/components/ServiceCombinationsSection.tsx` — accepts `typicallyIncludesLabel?`, `viewCaseStudyLabel?`
+
+**Also completed (carried forward from Session 30):**
+- ✅ `PROJECT_PAGE_TEMPLATE_QUERY` updated with `deliverablesLabel`, `viewCaseStudyLabel`
+- ✅ `STUDIO_PAGE_TEMPLATE_QUERY` includes `backLabel`, `overviewLabel`, `overviewSubtext`, `projectsLabel`
+- ✅ `CASE_STUDY_PAGE_TEMPLATE_QUERY` includes `backLabel`
+- ✅ `SITE_SETTINGS_QUERY` includes `description`, footer headings, logo image URLs
+
+---
 
 ### 2026-06-14 (Session 30) — Services CTA Fix, Studio Sub-Pages Redesign & Project Page Template
 

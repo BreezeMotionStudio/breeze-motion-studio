@@ -180,14 +180,6 @@ export const project = defineType({
 
     // ─── Behind the Scenes ─────────────────────────────────────────────────────
     defineField({
-      name: 'btsNote',
-      title: 'Behind the Scenes Note',
-      type: 'text',
-      rows: 3,
-      group: 'bts',
-      description: 'Optional paragraph about process, context, or making-of',
-    }),
-    defineField({
       name: 'btsImages',
       title: 'Behind the Scenes Images',
       type: 'array',
@@ -283,16 +275,40 @@ export const project = defineType({
       group: 'caseStudy',
     }),
     defineField({
+      name: 'caseStudyChallengeImage',
+      title: 'The Challenge — Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'caseStudy',
+      fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
+    }),
+    defineField({
       name: 'caseStudyApproach',
       title: 'The Approach',
       type: 'blockContent',
       group: 'caseStudy',
     }),
     defineField({
+      name: 'caseStudyApproachImage',
+      title: 'The Approach — Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'caseStudy',
+      fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
+    }),
+    defineField({
       name: 'caseStudyOutcome',
       title: 'The Outcome',
       type: 'blockContent',
       group: 'caseStudy',
+    }),
+    defineField({
+      name: 'caseStudyOutcomeImage',
+      title: 'The Outcome — Image',
+      type: 'image',
+      options: {hotspot: true},
+      group: 'caseStudy',
+      fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
     }),
     defineField({
       name: 'testimonial',

@@ -94,7 +94,7 @@ function AboutOverview({ s }: { s: Section }) {
                 )}
               </div>
               <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-                The Founder
+                {s.founderHeading || 'The Founder'}
               </h2>
               {s.founderImage?.asset?.url && (
                 <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
@@ -132,7 +132,7 @@ function AboutOverview({ s }: { s: Section }) {
                 )}
               </div>
               <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-                The Studio
+                {s.studioHeading || 'The Studio'}
               </h2>
               {s.studioImage?.asset?.url && (
                 <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
@@ -168,7 +168,7 @@ function AboutOverview({ s }: { s: Section }) {
 
 function AboutValues({ s }: { s: Section }) {
   if (!s.values || s.values.length === 0) return null;
-  return <CoreValuesSection values={s.values} bgColor={s.bgColor} sectionBg={s.sectionBg} />;
+  return <CoreValuesSection values={s.values} bgColor={s.bgColor} sectionBg={s.sectionBg} heading={s.heading} />;
 }
 
 function AboutHowWeWork({ s }: { s: Section }) {
@@ -186,7 +186,7 @@ function AboutHowWeWork({ s }: { s: Section }) {
       )}
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h2 className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest text-bms-grey-400 mb-12">
-          How We Work
+          {s.heading || 'How We Work'}
         </h2>
         {s.intro && (
           <PortableTextContent

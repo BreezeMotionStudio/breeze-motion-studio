@@ -92,12 +92,12 @@ function ContactDetailsForm({
       <div className="relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 md:gap-16">
         <div>
           <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-8">
-            Get In Touch
+            {s.getInTouchLabel || 'Get In Touch'}
           </h2>
           <ul className="flex flex-col gap-5">
             <li>
               <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-1">
-                Email
+                {s.emailLabel || 'Email'}
               </span>
               <a
                 href={`mailto:${email}`}
@@ -109,7 +109,7 @@ function ContactDetailsForm({
             {phone && (
               <li>
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-1">
-                  Phone / WhatsApp
+                  {s.phoneLabel || 'Phone / WhatsApp'}
                 </span>
                 <a
                   href={`tel:${phone}`}

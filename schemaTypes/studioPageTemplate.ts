@@ -15,6 +15,14 @@ export const studioPageTemplate = defineType({
   fields: [
     // ─── Hero ──────────────────────────────────────────────────────────────────
     defineField({
+      name: 'backLabel',
+      title: 'Back Navigation Label',
+      type: 'string',
+      group: 'hero',
+      description: 'Text for the "← back" link at the top of each studio page. Default: "← Studios".',
+      placeholder: '← Studios',
+    }),
+    defineField({
       name: 'heroSectionBg',
       title: 'Hero Background',
       type: 'sectionBackground',
@@ -30,6 +38,22 @@ export const studioPageTemplate = defineType({
       group: 'overview',
       description: 'Default: white. Section showing the studio description and specialization tags.',
     }),
+    defineField({
+      name: 'overviewLabel',
+      title: 'Overview Section Label',
+      type: 'string',
+      group: 'overview',
+      description: 'Small uppercase label above the studio description. Default: "Studio Overview".',
+      placeholder: 'Studio Overview',
+    }),
+    defineField({
+      name: 'overviewSubtext',
+      title: 'Overview Subtext',
+      type: 'string',
+      group: 'overview',
+      description: 'Short line shown below the studio description. Default: "View the projects below."',
+      placeholder: 'View the projects below.',
+    }),
 
     // ─── Projects ──────────────────────────────────────────────────────────────
     defineField({
@@ -38,6 +62,14 @@ export const studioPageTemplate = defineType({
       type: 'sectionBackground',
       group: 'projects',
       description: 'Default: black. Section showing the project grid.',
+    }),
+    defineField({
+      name: 'projectsLabel',
+      title: 'Projects Section Label',
+      type: 'string',
+      group: 'projects',
+      description: 'Small uppercase label above the project grid. Default: "Projects".',
+      placeholder: 'Projects',
     }),
 
     // ─── CTA ───────────────────────────────────────────────────────────────────

@@ -66,6 +66,14 @@ export const caseStudiesPage = defineType({
       ],
     }),
 
+    defineField({
+      name: 'listingCtaLabel',
+      title: 'Listing Card CTA Text',
+      type: 'string',
+      group: 'sections',
+      description: 'Text shown at the bottom of each case study card. Default: "Read Case Study →".',
+      placeholder: 'Read Case Study →',
+    }),
     ...seoFields,
   ],
   preview: {

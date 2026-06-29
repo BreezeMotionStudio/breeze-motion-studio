@@ -6,14 +6,19 @@ import { ScrollObserver } from "@/components/ScrollObserver";
 import { client } from "@/lib/sanity/client";
 import { SITE_SETTINGS_QUERY, STUDIOS_QUERY } from "@/lib/sanity/queries";
 
-export const metadata: Metadata = {
-  title: {
-    default: "Breeze Motion Studio",
-    template: "%s | Breeze Motion Studio",
-  },
-  description:
-    "High-end audio-visual content and structured digital solutions for corporate, commercial, industrial, and creative clients.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await client.fetch(SITE_SETTINGS_QUERY).catch(() => null)
+  const siteTitle = settings?.siteTitle || 'Breeze Motion Studio'
+  return {
+    title: {
+      default: siteTitle,
+      template: `%s | ${siteTitle}`,
+    },
+    description:
+      settings?.description ||
+      'High-end audio-visual content and structured digital solutions for corporate, commercial, industrial, and creative clients.',
+  }
+}
 
 export const revalidate = 60;
 
@@ -50,6 +55,9 @@ export default async function RootLayout({
           socialLinks={settings?.socialLinks}
           plainLogo={settings?.footerPlainLogo}
           roundLogo={settings?.footerRoundLogo}
+          footerLinksHeading={settings?.footerLinksHeading}
+          footerContactHeading={settings?.footerContactHeading}
+          footerFollowHeading={settings?.footerFollowHeading}
         />
       </body>
     </html>

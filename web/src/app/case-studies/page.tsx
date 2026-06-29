@@ -51,7 +51,7 @@ function CaseStudiesIntro({ s }: { s: Section }) {
   );
 }
 
-function CaseStudiesListings({ caseStudies }: { caseStudies: CaseStudy[] }) {
+function CaseStudiesListings({ caseStudies, listingCtaLabel }: { caseStudies: CaseStudy[]; listingCtaLabel?: string }) {
   return (
     <section className="bg-white text-black py-20">
       <div className="max-w-5xl mx-auto px-6">
@@ -99,7 +99,7 @@ function CaseStudiesListings({ caseStudies }: { caseStudies: CaseStudy[] }) {
                     </p>
                   )}
                   <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-accent">
-                    Read Case Study →
+                    {listingCtaLabel || 'Read Case Study →'}
                   </span>
                 </div>
               </Link>
@@ -146,7 +146,7 @@ export default async function CaseStudiesPage() {
         }
       })}
       {/* Listings always appear after sections */}
-      <CaseStudiesListings caseStudies={caseStudies} />
+      <CaseStudiesListings caseStudies={caseStudies} listingCtaLabel={page?.listingCtaLabel} />
     </div>
   );
 }

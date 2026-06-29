@@ -53,8 +53,7 @@ export default async function ProjectPage({ params }: Props) {
   const imageLabel = tmpl?.imageSectionLabel || 'Image Gallery'
   const btsLabel = tmpl?.btsSectionLabel || 'Behind the Scenes'
 
-  const caseStudyBg = tmpl?.caseStudySectionBg
-  const caseStudyBgImg = caseStudyBg?.bgType === 'image' ? caseStudyBg?.bgImage : null
+  const caseStudyBgImg = tmpl?.caseStudySectionBg?.bgType === 'image' ? tmpl.caseStudySectionBg.bgImage : null
   const hasCaseStudyBgImage = !!caseStudyBgImg?.asset?.url
 
   return (
@@ -124,7 +123,7 @@ export default async function ProjectPage({ params }: Props) {
               {project.deliverables?.length > 0 && (
                 <div className="mb-8">
                   <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-grey-400 block mb-4">
-                    Deliverables
+                    {tmpl?.deliverablesLabel || 'Deliverables'}
                   </span>
                   <ul className="list-disc pl-5 space-y-2">
                     {project.deliverables.filter((item: string) => item?.trim()).map((item: string, i: number) => (
@@ -150,7 +149,7 @@ export default async function ProjectPage({ params }: Props) {
             supportingVideos.length === 2 ? 'grid-cols-2 max-w-2xl' :
             'grid-cols-3'
           return (
-            <section key="videos" className="bg-black py-16" style={resolveBg(tmpl?.videoSectionBg)}>
+            <section key="videos" id="videos" className="bg-black py-16" style={resolveBg(tmpl?.videoSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">
                 <div className="flex items-center gap-4 mb-10">
                   <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 shrink-0">
@@ -187,7 +186,7 @@ export default async function ProjectPage({ params }: Props) {
 
         if (key === 'images' && deliverableImages.length > 0) {
           return (
-            <section key="images" className="bg-[#F5F5F5] py-16" style={resolveBg(tmpl?.imageSectionBg)}>
+            <section key="images" id="images" className="bg-[#F5F5F5] py-16" style={resolveBg(tmpl?.imageSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">
                 <div className="flex items-center gap-4 mb-10">
                   <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 shrink-0">
@@ -203,7 +202,7 @@ export default async function ProjectPage({ params }: Props) {
 
         if (key === 'bts' && hasBts) {
           return (
-            <section key="bts" className="bg-black py-16" style={resolveBg(tmpl?.btsSectionBg)}>
+            <section key="bts" id="bts" className="bg-black py-16" style={resolveBg(tmpl?.btsSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">
                 <div className="flex items-center gap-4 mb-10">
                   <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 shrink-0">
@@ -238,21 +237,24 @@ export default async function ProjectPage({ params }: Props) {
       {hasCaseStudy && (
         <section
           className="relative overflow-hidden bg-black text-white py-24"
-          style={resolveBg(caseStudyBg)}
+          style={tmpl?.caseStudySectionBg?.bgType && tmpl.caseStudySectionBg.bgType !== 'image' ? resolveBg(tmpl.caseStudySectionBg) : {}}
         >
-          {hasCaseStudyBgImage && (
+          {(!tmpl?.caseStudySectionBg?.bgType || tmpl.caseStudySectionBg.bgType === 'image') && (
             <>
               <img
-                src={`${caseStudyBgImg!.asset.url}?w=1920&auto=format&q=80`}
-                alt={caseStudyBgImg!.alt || ''}
+                src={hasCaseStudyBgImage
+                  ? `${caseStudyBgImg!.asset.url}?w=1920&auto=format&q=80`
+                  : 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg?w=1920&auto=format&q=80'}
+                alt=""
                 className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-black/65" />
+              <div className="absolute inset-0 bg-black/55" />
             </>
           )}
           <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
             <Button variant="white" size="lg" href={`/case-studies/${project.slug?.current}`}>
-              View Case Study
+              {tmpl?.viewCaseStudyLabel || 'View Case Study'}
             </Button>
           </div>
         </section>

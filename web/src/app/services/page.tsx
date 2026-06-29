@@ -159,6 +159,9 @@ export default async function ServicesPage() {
                 stripOpacity={section.stripOpacity}
                 buttonLabel={section.buttonLabel}
                 buttonUrl={section.buttonUrl}
+                readMoreLabel={section.readMoreLabel}
+                servicesIncludeLabel={section.servicesIncludeLabel}
+                closeLabel={section.closeLabel}
               />
             );
           case "servicesStrip": {
@@ -182,7 +185,7 @@ export default async function ServicesPage() {
 <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-10 items-start">
                   <div>
                     <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-                      Services
+                      {section.heading || 'Services'}
                     </h2>
                   </div>
                   {section.text && <MissionReveal text={section.text} />}
@@ -199,6 +202,8 @@ export default async function ServicesPage() {
                 combinations={section.combinations}
                 collageImages={section.collageImages}
                 sectionBg={section.sectionBg}
+                typicallyIncludesLabel={section.typicallyIncludesLabel}
+                viewCaseStudyLabel={section.viewCaseStudyLabel}
               />
             );
           case "servicesCta":

@@ -16,6 +16,14 @@ export const caseStudyPageTemplate = defineType({
   fields: [
     // ─── Hero ──────────────────────────────────────────────────────────────────
     defineField({
+      name: 'backLabel',
+      title: 'Back Navigation Label',
+      type: 'string',
+      group: 'hero',
+      description: 'Text for the "← back" link at the top of the page. Default: "← Case Studies".',
+      placeholder: '← Case Studies',
+    }),
+    defineField({
       name: 'heroSectionBg',
       title: 'Hero Background',
       type: 'sectionBackground',
@@ -110,7 +118,7 @@ export const caseStudyPageTemplate = defineType({
       title: 'Case Study Narrative Background',
       type: 'sectionBackground',
       group: 'narrative',
-      description: 'Default: white. The Challenge / Approach / Outcome section.',
+      description: 'Default: dark gradient (black → steel blue). The Challenge / Approach / Outcome section.',
     }),
     defineField({
       name: 'narrativeLabel',
@@ -119,6 +127,46 @@ export const caseStudyPageTemplate = defineType({
       group: 'narrative',
       description: 'Small uppercase label at the top of the narrative. Default: "Case Study".',
       placeholder: 'Case Study',
+    }),
+    defineField({
+      name: 'overviewHeading',
+      title: 'Overview Panel Heading',
+      type: 'string',
+      group: 'narrative',
+      description: 'Heading inside the dark overview panel. Default: "Project Overview".',
+      placeholder: 'Project Overview',
+    }),
+    defineField({
+      name: 'deliverablesLabel',
+      title: 'Deliverables Label',
+      type: 'string',
+      group: 'narrative',
+      description: 'Label above the deliverables list in the overview panel. Default: "Deliverables".',
+      placeholder: 'Deliverables',
+    }),
+    defineField({
+      name: 'challengeLabel',
+      title: 'Challenge Section Heading',
+      type: 'string',
+      group: 'narrative',
+      description: 'Default: "The Challenge".',
+      placeholder: 'The Challenge',
+    }),
+    defineField({
+      name: 'approachLabel',
+      title: 'Approach Section Heading',
+      type: 'string',
+      group: 'narrative',
+      description: 'Default: "The Approach".',
+      placeholder: 'The Approach',
+    }),
+    defineField({
+      name: 'outcomeLabel',
+      title: 'Outcome Section Heading',
+      type: 'string',
+      group: 'narrative',
+      description: 'Default: "The Outcome".',
+      placeholder: 'The Outcome',
     }),
 
     // ─── CTA Footer ────────────────────────────────────────────────────────────

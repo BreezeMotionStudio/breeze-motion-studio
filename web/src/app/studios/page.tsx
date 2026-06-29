@@ -84,7 +84,7 @@ function StudiosIntro({ s }: { s: Section }) {
   )
 }
 
-function StudiosGrid({ studios, sectionBg }: { studios: Studio[]; sectionBg?: any }) {
+function StudiosGrid({ studios, sectionBg, exploreLabel }: { studios: Studio[]; sectionBg?: any; exploreLabel?: string }) {
   const bgStyle = sectionBg ? sectionBgStyle(sectionBg) : undefined
   if (!studios.length) {
     return (
@@ -133,7 +133,7 @@ function StudiosGrid({ studios, sectionBg }: { studios: Studio[]; sectionBg?: an
                 </p>
               )}
               <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-accent group-hover:tracking-[0.18em] transition-all duration-300">
-                Explore Studio →
+                {exploreLabel || 'Explore Studio →'}
               </span>
             </div>
           </Link>
@@ -315,16 +315,16 @@ export default async function StudiosPage() {
       {/* Intro / page description — from Sanity */}
       {introSection && <StudiosIntro s={introSection} />}
 
-      {/* Highlights strip — always visible, sits above the studio cards */}
+      {/* Studios grid — uses configured cards with overrides, falls back to all studios */}
+      {!gridDisabled && <StudiosGrid studios={gridStudios} sectionBg={gridSection?.sectionBg} exploreLabel={gridSection?.exploreLabel} />}
+
+      {/* Highlights strip — sits between studio cards and BTS */}
       {!highlightsDisabled && (
         <StudiosHighlights
           s={highlightsSection ?? {}}
           projects={highlights}
         />
       )}
-
-      {/* Studios grid — uses configured cards with overrides, falls back to all studios */}
-      {!gridDisabled && <StudiosGrid studios={gridStudios} sectionBg={gridSection?.sectionBg} />}
 
       {/* Behind the Scenes — always visible, config from Sanity when present */}
       {!btsDisabled && (

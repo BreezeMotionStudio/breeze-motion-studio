@@ -10,43 +10,6 @@ import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
 
 export const revalidate = 60
 
-type DescriptionBlock = Record<string, any>
-
-function parseSpecializations(blocks: DescriptionBlock[]): {
-  introBlocks: DescriptionBlock[]
-  specTitles: string[]
-} {
-  if (!blocks?.length) return { introBlocks: [], specTitles: [] }
-
-  const introBlocks: DescriptionBlock[] = []
-  const specTitles: string[] = []
-  let foundFirstSpec = false
-  let specsDone = false
-
-  for (const block of blocks) {
-    if (specsDone) break
-
-    if (!foundFirstSpec && block._type === 'block') {
-      const text = (block.children ?? []).map((c: any) => c.text ?? '').join('').toLowerCase()
-      if (text.trimStart().startsWith('we specialize in')) continue
-    }
-
-    const isSpecBlock =
-      block._type === 'block' && block.children?.[0]?.marks?.includes('strong')
-
-    if (isSpecBlock) {
-      foundFirstSpec = true
-      specTitles.push(block.children[0].text as string)
-    } else if (foundFirstSpec) {
-      specsDone = true
-    } else {
-      introBlocks.push(block)
-    }
-  }
-
-  return { introBlocks, specTitles }
-}
-
 type Props = { params: Promise<{ slug: string }> }
 
 type Project = {
@@ -78,11 +41,6 @@ export default async function StudioPage({ params }: Props) {
 
   if (!studio) return notFound()
 
-  const specTitles: string[] = studio.description
-    ? (studio.description as DescriptionBlock[])
-        .filter((b) => b._type === 'block' && b.children?.[0]?.marks?.includes('strong'))
-        .map((b) => b.children[0].text as string)
-    : []
 
   return (
     <div>
@@ -97,7 +55,7 @@ export default async function StudioPage({ params }: Props) {
             href="/studios"
             className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white/40 hover:text-white/70 transition-colors mb-8 inline-block"
           >
-            ← Studios
+            {tmpl?.backLabel || '← Studios'}
           </Link>
           <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-4">
             {studio.title}
@@ -118,28 +76,14 @@ export default async function StudioPage({ params }: Props) {
         >
           <div className="scroll-catchup max-w-5xl mx-auto px-6 py-12 md:py-16">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-6">
-              Studio Overview
+              {tmpl?.overviewLabel || 'Studio Overview'}
             </span>
             <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
               {studio.purpose}
             </p>
-            {specTitles.length > 0 && (
-              <div className="mt-8 pt-8 border-t border-[#E6E6E6]">
-                <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-4">
-                  Specializations
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {specTitles.map((title, i) => (
-                    <span
-                      key={i}
-                      className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white bg-black border border-black px-3 py-1.5 rounded-sm"
-                    >
-                      {title}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            <p className="font-[family-name:var(--font-body)] text-base text-bms-grey-400 leading-relaxed mt-6">
+              {tmpl?.overviewSubtext || 'View the projects below.'}
+            </p>
           </div>
         </section>
       )}
@@ -152,7 +96,7 @@ export default async function StudioPage({ params }: Props) {
         <div className="max-w-5xl mx-auto px-6">
           <div className="scroll-catchup flex items-center gap-6 mb-14">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-              Projects
+              {tmpl?.projectsLabel || 'Projects'}
             </span>
             <div className="flex-grow h-px bg-white/10" />
           </div>
@@ -191,7 +135,7 @@ export default async function StudioPage({ params }: Props) {
                       </div>
                     )}
                   </div>
-                  <h3 className="font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-wide mb-1 text-white group-hover:text-bms-accent transition-colors">
+                  <h3 className="font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-wide mb-1 text-white group-hover:underline decoration-white/40 decoration-1 underline-offset-2">
                     {project.title}
                   </h3>
                   <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400">
@@ -218,22 +162,14 @@ export default async function StudioPage({ params }: Props) {
       {/* CTA strip */}
       <section
         className={`relative overflow-hidden bg-bms-dark-400 text-white py-24 ${resolveTextClass(tmpl?.ctaSectionBg)}`}
-        style={resolveBg(tmpl?.ctaSectionBg)}
+        style={tmpl?.ctaSectionBg?.bgType && tmpl.ctaSectionBg.bgType !== 'image' ? resolveBg(tmpl.ctaSectionBg) : {}}
       >
-        {tmpl?.ctaSectionBg?.bgType === 'image' && tmpl.ctaSectionBg.bgImage?.asset?.url ? (
+        {(!tmpl?.ctaSectionBg?.bgType || tmpl.ctaSectionBg.bgType === 'image') && (
           <>
             <img
-              src={`${tmpl.ctaSectionBg.bgImage.asset.url}?w=1920&auto=format&q=80`}
-              alt={tmpl.ctaSectionBg.bgImage.alt || ''}
-              className="absolute inset-0 w-full h-full object-cover"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-black/55" />
-          </>
-        ) : (
-          <>
-            <img
-              src="https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg?w=1920&auto=format&q=80"
+              src={tmpl?.ctaSectionBg?.bgType === 'image' && tmpl.ctaSectionBg.bgImage?.asset?.url
+                ? `${tmpl.ctaSectionBg.bgImage.asset.url}?w=1920&auto=format&q=80`
+                : 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg?w=1920&auto=format&q=80'}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
               loading="lazy"
@@ -246,10 +182,10 @@ export default async function StudioPage({ params }: Props) {
             {tmpl?.ctaHeading || 'Start a Project'}
           </h2>
           <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
-            {tmpl?.ctaText || "Every project begins with a conversation. Tell me what you're building."}
+            {tmpl?.ctaText || 'Get in touch to discuss your project.'}
           </p>
           <Button variant="white" size="lg" href={tmpl?.ctaButtonUrl || '/contact'}>
-            {tmpl?.ctaButtonLabel || 'Get in Touch'}
+            {tmpl?.ctaButtonLabel || 'Contact'}
           </Button>
         </div>
       </section>

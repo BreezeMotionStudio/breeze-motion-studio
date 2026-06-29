@@ -114,6 +114,8 @@ export const aboutPage = defineType({
               description: 'Large image displayed below the Studio and Founder columns.',
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
+            defineField({name: 'founderHeading', title: 'Founder Card Heading', type: 'string', description: 'Heading above the founder card. Default: "The Founder".', initialValue: 'The Founder'}),
+            defineField({name: 'studioHeading', title: 'Studio Card Heading', type: 'string', description: 'Heading above the studio card. Default: "The Studio".', initialValue: 'The Studio'}),
             defineField({name: 'founderCard', title: 'Founder Card Background', type: 'sectionBackground'}),
             defineField({name: 'studioCard', title: 'Studio Card Background', type: 'sectionBackground'}),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
@@ -163,6 +165,7 @@ export const aboutPage = defineType({
           name: 'aboutValues',
           title: 'Core Values',
           fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Heading above the values grid. Default: "Core Values".', initialValue: 'Core Values'}),
             defineField({
               name: 'values',
               title: 'Values',
@@ -223,6 +226,7 @@ export const aboutPage = defineType({
           name: 'aboutHowWeWork',
           title: 'How We Work',
           fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Label shown above the steps. Default: "How We Work".', initialValue: 'How We Work'}),
             defineField({name: 'intro', title: 'Intro', type: 'blockContent'}),
             defineField({
               name: 'steps',

@@ -180,7 +180,7 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
       {projects && projects.length > 0 && (
         <div className={`scroll-catchup relative z-10 max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
           <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
-            Featured Work
+            {s.heading || 'Featured Work'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project: any) => (

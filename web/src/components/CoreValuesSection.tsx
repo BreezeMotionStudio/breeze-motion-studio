@@ -34,7 +34,7 @@ type PathState = {
   valueTriggerMs: number[]
 } | null
 
-export function CoreValuesSection({ values, bgColor, sectionBg }: { values: Value[]; bgColor?: string; sectionBg?: any }) {
+export function CoreValuesSection({ values, bgColor, sectionBg, heading }: { values: Value[]; bgColor?: string; sectionBg?: any; heading?: string }) {
   const sectionRef    = useRef<HTMLElement>(null)
   const headingRef    = useRef<HTMLSpanElement>(null)
   const gridRef       = useRef<HTMLDivElement>(null)
@@ -314,7 +314,7 @@ export function CoreValuesSection({ values, bgColor, sectionBg }: { values: Valu
             className="inline-block transition-transform duration-500 ease-out"
             style={headingLit ? { transform: 'scale(1.04)' } : undefined}
           >
-            Core Values
+            {heading || 'Core Values'}
           </span>
         </h2>
         <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16">

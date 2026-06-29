@@ -118,6 +118,22 @@ export const projectPageTemplate = defineType({
       group: 'media',
       description: 'Background for the "View Case Study" button section. Set to an image to match the About page mission section aesthetic.',
     }),
+    defineField({
+      name: 'deliverablesLabel',
+      title: 'Deliverables Label',
+      type: 'string',
+      group: 'overview',
+      description: 'Label above the deliverables list. Default: "Deliverables".',
+      placeholder: 'Deliverables',
+    }),
+    defineField({
+      name: 'viewCaseStudyLabel',
+      title: 'View Case Study Button',
+      type: 'string',
+      group: 'media',
+      description: 'Text on the button linking to the case study. Default: "View Case Study".',
+      placeholder: 'View Case Study',
+    }),
 
     ...seoFields,
   ],

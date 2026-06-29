@@ -27,6 +27,8 @@ type Props = {
   combinations?: Combination[]
   collageImages?: { asset?: { url: string }; alt?: string }[]
   sectionBg?: any
+  typicallyIncludesLabel?: string
+  viewCaseStudyLabel?: string
 }
 
 function ImagePlaceholder() {
@@ -65,7 +67,7 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
   )
 }
 
-export function ServiceCombinationsSection({ heading, intro, combinations, collageImages, sectionBg }: Props) {
+export function ServiceCombinationsSection({ heading, intro, combinations, collageImages, sectionBg, typicallyIncludesLabel, viewCaseStudyLabel }: Props) {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
 
   if (!combinations?.length) return null
@@ -170,7 +172,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                   {combo.items && combo.items.length > 0 && (
                     <div className="mb-8">
                       <p className="font-[family-name:var(--font-brand)] font-bold text-sm uppercase tracking-widest text-white mb-4">
-                        Typically Includes
+                        {typicallyIncludesLabel || 'Typically Includes'}
                       </p>
                       <ul className="space-y-2">
                         {combo.items.map((item, i) => (
@@ -191,14 +193,14 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                         href={`/case-studies/${combo.caseStudySlug}`}
                         className="inline-flex items-center gap-2 font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-[#ffffff] text-black px-5 py-2.5 rounded-md hover:scale-[1.05] transition-transform duration-200 cursor-pointer"
                       >
-                        View Case Study
+                        {viewCaseStudyLabel || 'View Case Study'}
                       </Link>
                     ) : (
                       <button
                         disabled
                         className="inline-flex items-center gap-2 font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-[#ffffff] text-black px-5 py-2.5 rounded-md opacity-80 cursor-not-allowed"
                       >
-                        View Case Study
+                        {viewCaseStudyLabel || 'View Case Study'}
                       </button>
                     )}
                   </div>

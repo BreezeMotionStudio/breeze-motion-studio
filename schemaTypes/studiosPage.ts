@@ -156,6 +156,13 @@ export const studiosPage = defineType({
               description: 'Solid color, gradient, or image. Defaults to black when left blank.',
             }),
             defineField({
+              name: 'exploreLabel',
+              title: 'Card CTA Text',
+              type: 'string',
+              description: 'Text shown at the bottom of each studio card. Default: "Explore Studio →".',
+              placeholder: 'Explore Studio →',
+            }),
+            defineField({
               name: 'cards',
               title: 'Studio Cards',
               type: 'array',

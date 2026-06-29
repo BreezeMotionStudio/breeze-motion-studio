@@ -166,6 +166,9 @@ export const servicesPage = defineType({
               validation: (r) => r.max(4),
               description: 'Upload up to 4 images. Drag rows to reorder — position 1 fills panel 1, position 2 fills panel 2, etc. Rearranging changes which image appears in which shaped section of the collage.',
             }),
+            defineField({name: 'readMoreLabel', title: '"Read More" Button Label', type: 'string', description: 'Text on the expand button of each service card. Default: "Read More".', initialValue: 'Read More'}),
+            defineField({name: 'servicesIncludeLabel', title: '"Services Include" Modal Heading', type: 'string', description: 'Heading inside the service details modal. Default: "Services Include:".', initialValue: 'Services Include:'}),
+            defineField({name: 'closeLabel', title: 'Modal Close Button Label', type: 'string', description: 'Text on the close button inside the modal. Default: "Close".', initialValue: 'Close'}),
             defineField({
               name: 'buttonLabel',
               title: 'Button Label',
@@ -192,6 +195,7 @@ export const servicesPage = defineType({
           name: 'servicesStrip',
           title: 'Statement Strip',
           fields: [
+            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Heading shown to the left of the statement text. Default: "Services".', initialValue: 'Services'}),
             defineField({
               name: 'text',
               title: 'Statement Text',
@@ -216,6 +220,8 @@ export const servicesPage = defineType({
           fields: [
             defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
             defineField({name: 'intro', title: 'Intro Text', type: 'simpleRichText'}),
+            defineField({name: 'typicallyIncludesLabel', title: '"Typically Includes" Label', type: 'string', description: 'Label above each combination\'s item list. Default: "Typically Includes".', initialValue: 'Typically Includes'}),
+            defineField({name: 'viewCaseStudyLabel', title: '"View Case Study" Button Label', type: 'string', description: 'Text on the button linking to each combination\'s case study. Default: "View Case Study".', initialValue: 'View Case Study'}),
             defineField({name: 'sectionBg', title: 'Section Background', type: 'sectionBackground'}),
             defineField({
               name: 'collageImages',

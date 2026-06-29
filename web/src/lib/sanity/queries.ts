@@ -168,6 +168,7 @@ export const STUDIOS_BTS_QUERY = defineQuery(
 export const CASE_STUDIES_PAGE_QUERY = defineQuery(
   `*[_type == "caseStudiesPage"][0]{
     sections[disabled != true]{...},
+    listingCtaLabel,
     seoTitle,
     seoDescription
   }`
@@ -182,8 +183,12 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     plainLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
     roundLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
     iconLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
-    footerPlainLogo{enabled, sizePreset, customSize},
-    footerRoundLogo{enabled, sizePreset, customSize},
+    description,
+    footerPlainLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
+    footerRoundLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
+    footerLinksHeading,
+    footerContactHeading,
+    footerFollowHeading,
     footerTagline,
     footerLinks[]{label, href},
     footerText,
@@ -294,24 +299,17 @@ export const CASE_STUDY_BY_SLUG_QUERY = defineQuery(
     summary,
     description,
     year,
-    coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    deliverableImages[]{asset->{_id, url, metadata{lqip, dimensions}}, alt, caption},
-    deliverableVideos[]{_key, platform, url, title},
-    btsNote,
-    btsImages[]{asset->{_id, url, metadata{lqip, dimensions}}, alt, caption},
-    btsVideos[]{_key, platform, url, title},
-    sectionOrderVideos,
-    sectionOrderImages,
-    sectionOrderBts,
-    showAsCaseStudy,
+    coverImage{asset->{url}, alt},
     caseStudyOverview,
     caseStudyChallenge,
+    caseStudyChallengeImage{asset->{url}, alt},
     caseStudyApproach,
+    caseStudyApproachImage{asset->{url}, alt},
     caseStudyOutcome,
-    services[]->{_id, title},
-    client->{name, industry, logo{asset->{url}, alt}},
-    studio->{title, slug},
-    testimonial->{quote, attribution, role},
+    caseStudyOutcomeImage{asset->{url}, alt},
+    deliverables,
+    client->{name},
+    testimonial->{quote, attribution, role, client->{name}},
     seoTitle,
     seoDescription
   }`
@@ -334,12 +332,15 @@ export const PROJECT_PAGE_TEMPLATE_QUERY = defineQuery(
     btsSectionBg { ${sectionBgFragment} },
     btsSectionLabel,
     testimonialSectionBg { ${sectionBgFragment} },
-    caseStudySectionBg { ${sectionBgFragment} }
+    caseStudySectionBg { ${sectionBgFragment} },
+    deliverablesLabel,
+    viewCaseStudyLabel
   }`
 )
 
 export const CASE_STUDY_PAGE_TEMPLATE_QUERY = defineQuery(
   `*[_id == "caseStudyPageTemplate"][0]{
+    backLabel,
     heroSectionBg { ${sectionBgFragment} },
     heroShowCoverImage,
     heroCoverImageOpacity,
@@ -353,6 +354,11 @@ export const CASE_STUDY_PAGE_TEMPLATE_QUERY = defineQuery(
     testimonialSectionBg { ${sectionBgFragment} },
     narrativeSectionBg { ${sectionBgFragment} },
     narrativeLabel,
+    overviewHeading,
+    deliverablesLabel,
+    challengeLabel,
+    approachLabel,
+    outcomeLabel,
     ctaSectionBg { ${sectionBgFragment} },
     ctaHeading,
     ctaText,
@@ -363,9 +369,13 @@ export const CASE_STUDY_PAGE_TEMPLATE_QUERY = defineQuery(
 
 export const STUDIO_PAGE_TEMPLATE_QUERY = defineQuery(
   `*[_id == "studioPageTemplate"][0]{
+    backLabel,
     heroSectionBg { ${sectionBgFragment} },
     overviewSectionBg { ${sectionBgFragment} },
+    overviewLabel,
+    overviewSubtext,
     projectsSectionBg { ${sectionBgFragment} },
+    projectsLabel,
     ctaSectionBg { ${sectionBgFragment} },
     ctaHeading,
     ctaText,

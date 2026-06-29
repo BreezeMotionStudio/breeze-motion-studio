@@ -261,6 +261,14 @@ export const siteSettings = defineType({
           initialValue: true,
         }),
         defineField({
+          name: 'logoImage',
+          title: 'Logo Image',
+          type: 'image',
+          description: 'Upload a logo for the footer. Falls back to /public/logo.png if left blank.',
+          options: {hotspot: true},
+          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', initialValue: false})],
+        }),
+        defineField({
           name: 'sizePreset',
           title: 'Size Preset',
           type: 'string',
@@ -300,6 +308,14 @@ export const siteSettings = defineType({
           initialValue: false,
         }),
         defineField({
+          name: 'logoImage',
+          title: 'Logo Image',
+          type: 'image',
+          description: 'Upload a round crop logo for the footer. Falls back to /public/logo-roundcrop.png if left blank.',
+          options: {hotspot: true},
+          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', initialValue: false})],
+        }),
+        defineField({
           name: 'sizePreset',
           title: 'Size Preset',
           type: 'string',
@@ -324,6 +340,9 @@ export const siteSettings = defineType({
       ],
     }),
 
+    defineField({name: 'footerLinksHeading', title: 'Links Column Heading', type: 'string', group: 'footer', description: 'Heading above the quick links column. Default: "Quick Links".', initialValue: 'Quick Links'}),
+    defineField({name: 'footerContactHeading', title: 'Contact Column Heading', type: 'string', group: 'footer', description: 'Heading above the contact column. Default: "Get In Touch".', initialValue: 'Get In Touch'}),
+    defineField({name: 'footerFollowHeading', title: 'Social Column Heading', type: 'string', group: 'footer', description: 'Heading above the social media column. Default: "Follow".', initialValue: 'Follow'}),
     defineField({
       name: 'footerTagline',
       title: 'Footer Tagline',

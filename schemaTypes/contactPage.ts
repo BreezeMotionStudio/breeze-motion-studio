@@ -79,6 +79,9 @@ export const contactPage = defineType({
           name: 'contactDetails',
           title: 'Contact Details & Form',
           fields: [
+            defineField({name: 'getInTouchLabel', title: 'Section Heading', type: 'string', description: 'Heading above the contact details. Default: "Get In Touch".', initialValue: 'Get In Touch'}),
+            defineField({name: 'emailLabel', title: 'Email Field Label', type: 'string', description: 'Label above the email address. Default: "Email".', initialValue: 'Email'}),
+            defineField({name: 'phoneLabel', title: 'Phone Field Label', type: 'string', description: 'Label above the phone number. Default: "Phone / WhatsApp".', initialValue: 'Phone / WhatsApp'}),
             defineField({
               name: 'email',
               title: 'Email',
