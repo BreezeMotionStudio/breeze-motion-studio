@@ -1,8 +1,29 @@
 "use client";
 
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { urlFor } from "@/lib/sanity/image";
 
 const components: PortableTextComponents = {
+  types: {
+    image: ({ value }) => {
+      if (!value?.asset) return null;
+      const url = urlFor(value).width(1200).fit("max").auto("format").url();
+      return (
+        <figure className="my-8">
+          <img
+            src={url}
+            alt={value.alt || ""}
+            className={`w-full ${value.roundCrop ? "rounded-full aspect-square object-cover max-w-md mx-auto" : ""}`}
+          />
+          {value.caption && (
+            <figcaption className="text-sm text-bms-grey-400 mt-2 text-center">
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+    },
+  },
   block: {
     normal: ({ children }) => (
       <p className="font-[family-name:var(--font-body)] text-base leading-relaxed mb-4">

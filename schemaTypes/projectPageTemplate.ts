@@ -2,14 +2,6 @@ import {defineField, defineType} from 'sanity'
 import {ControlsIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 
-const bgField = (name: string, description?: string) =>
-  defineField({
-    name,
-    title: 'Background',
-    type: 'sectionBackground',
-    description: description ?? 'Solid color, gradient, or image.',
-  })
-
 export const projectPageTemplate = defineType({
   name: 'projectPageTemplate',
   title: 'Project Page Template',

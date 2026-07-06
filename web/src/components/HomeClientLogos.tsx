@@ -16,7 +16,6 @@ const LOGO_AUTO_MS = 3000
 
 export function HomeClientLogos({ s }: { s: any }) {
   const logos: ClientLogo[] = s.clientLogos || []
-  if (logos.length === 0) return null
 
   const count    = logos.length
   const maxIdx   = Math.max(0, count - LOGO_VISIBLE)
@@ -43,13 +42,17 @@ export function HomeClientLogos({ s }: { s: any }) {
   }, [maxIdx])
 
   const advanceRef = useRef(advance)
-  advanceRef.current = advance
+  useEffect(() => {
+    advanceRef.current = advance
+  }, [advance])
 
   useEffect(() => {
     if (count <= LOGO_VISIBLE) return
     const id = setInterval(() => { if (!pausedRef.current) advanceRef.current() }, LOGO_AUTO_MS)
     return () => clearInterval(id)
   }, [count])
+
+  if (count === 0) return null
 
   return (
     <section

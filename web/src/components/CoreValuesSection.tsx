@@ -61,20 +61,22 @@ export function CoreValuesSection({ values, bgColor, sectionBg, heading }: { val
   const onEnterRef = useRef<() => void>(() => {})
   const onLeaveRef = useRef<() => void>(() => {})
 
-  onEnterRef.current = () => {
-    clearStepTimeouts()
-    setLitValues(new Set())
-    setDone(false)
-    setVisible(true)
-    setActive(true)
-  }
-  onLeaveRef.current = () => {
-    clearStepTimeouts()
-    setActive(false)
-    setVisible(false)
-    setLitValues(new Set())
-    setHeadingLit(false)
-  }
+  useEffect(() => {
+    onEnterRef.current = () => {
+      clearStepTimeouts()
+      setLitValues(new Set())
+      setDone(false)
+      setVisible(true)
+      setActive(true)
+    }
+    onLeaveRef.current = () => {
+      clearStepTimeouts()
+      setActive(false)
+      setVisible(false)
+      setLitValues(new Set())
+      setHeadingLit(false)
+    }
+  })
 
   const buildPath = useCallback(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {

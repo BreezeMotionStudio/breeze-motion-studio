@@ -15,13 +15,12 @@ type Testimonial = {
 const VISIBLE = 3
 
 export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Testimonial[] }) {
-  if (!testimonials || testimonials.length === 0) return null
-
-  const count      = testimonials.length
+  const list = testimonials || []
+  const count      = list.length
   const maxIdx     = Math.max(0, count - VISIBLE)
   const canScroll  = count > VISIBLE
 
-  const cardWidthPct  = count > VISIBLE ? 100 / VISIBLE : 100 / count
+  const cardWidthPct  = count > VISIBLE ? 100 / VISIBLE : 100 / Math.max(count, 1)
   const trackWidthPct = count * cardWidthPct
 
   const [idx, setIdx]         = useState(0)
@@ -51,6 +50,8 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
 
   const translatePct = idx * 100 / count
   const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
+
+  if (count === 0) return null
 
   return (
     <section
@@ -96,7 +97,7 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
                 transition: transit ? 'transform 0.6s ease-in-out' : 'none',
               }}
             >
-              {testimonials.map((t, i) => (
+              {list.map((t, i) => (
                 <div
                   key={t._id}
                   style={{ width: `${100 / count}%` }}

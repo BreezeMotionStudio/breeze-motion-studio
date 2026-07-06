@@ -1,6 +1,7 @@
 'use client'
 
 import {useState, useCallback} from 'react'
+import Link from 'next/link'
 import {StudioCard} from '@/components/StudioCard'
 import {Button} from '@/components/ui/Button'
 import {btnSpacingClass} from '@/lib/buttonSpacing'
@@ -105,9 +106,9 @@ export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) 
 
         {s.parentLogo?.asset?.url ? (
           <div className="flex flex-col items-center mt-6">
-            <a href="/studios" className={`block w-40 h-40 overflow-hidden bg-[#111111] border border-white/15 flex items-center justify-center transition-transform duration-300 hover:scale-105${s.parentLogo.roundCrop ? ' rounded-full' : ' rounded-lg'}`}>
+            <Link href="/studios" className={`block w-40 h-40 overflow-hidden bg-[#111111] border border-white/15 flex items-center justify-center transition-transform duration-300 hover:scale-105${s.parentLogo.roundCrop ? ' rounded-full' : ' rounded-lg'}`}>
               <img src={s.parentLogo.asset.url} alt={s.parentLogo.alt || ''} className="w-full h-full object-cover" />
-            </a>
+            </Link>
             {/* Connector tree — desktop only */}
             <div className="w-full hidden lg:block">
               <svg viewBox="0 0 1000 96" preserveAspectRatio="none" className="w-full" style={{height: '96px', overflow: 'visible'}} fill="none">

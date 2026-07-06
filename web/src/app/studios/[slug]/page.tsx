@@ -81,6 +81,11 @@ export default async function StudioPage({ params }: Props) {
             <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
               {studio.purpose}
             </p>
+            {studio.description && (
+              <div className="max-w-2xl mt-6 text-[#4B4B4B]">
+                <PortableTextContent value={studio.description} />
+              </div>
+            )}
             <p className="font-[family-name:var(--font-body)] text-base text-bms-grey-400 leading-relaxed mt-6">
               {tmpl?.overviewSubtext || 'View the projects below.'}
             </p>
