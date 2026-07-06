@@ -192,6 +192,40 @@
 
 **Implementation:** See `DESIGN_SYSTEM.md → Motion & Animation → SVG Connector Tree Animation` for full technical spec.
 
+### 15. Automated Bug-Prevention System (Session 32)
+
+**Decision:** A husky + lint-staged pre-commit hook and a GitHub Actions CI workflow both run lint (and CI also runs a full production build) on every commit/push, catching real bugs — hook-order violations, refs mutated during render, etc. — before they ship.
+
+**Rationale:** Several real bugs (React Rules-of-Hooks violations, refs set synchronously during render) had shipped silently in past sessions. A repo with two separate apps (Sanity Studio at root, Next.js in `web/`) needs both lint configs to run against only their own codebase, or one config's rules get wrongly applied to the other app's files.
+
+**Implementation:**
+- `.husky/pre-commit` runs `npx lint-staged`; `.lintstagedrc.mjs` (repo root) routes root-level TS files through the root eslint config and `web/src/**` files through `npm --prefix web run lint -- --fix` (so `web/eslint.config.mjs`'s Next.js-specific rules apply, not the Studio's).
+- `.github/workflows/ci.yml` — two jobs, `studio` (root lint) and `website` (web lint + `next build`), run on every push/PR to `master`.
+- Root `eslint.config.mjs` has `{ignores: ['web/**']}` — without it, root lint sweeps the entire Next.js app (and its `node_modules`) under the Sanity Studio ruleset, producing thousands of irrelevant errors.
+- Two Next.js lint rules are deliberately downgraded from error → warn in `web/eslint.config.mjs`: `@typescript-eslint/no-explicit-any` (CMS section-data props are intentionally loosely typed throughout this codebase) and `react-hooks/set-state-in-effect` (the DOM-measurement-driven SVG line animations in `CoreValuesSection.tsx`/`HowWeWorkSection.tsx` legitimately need this pattern).
+
+### 16. Portable-Text Style Marks — Sanity-Editable Color/Font/Size (Session 32)
+
+**Decision:** Instead of a bespoke "styled string" type, three custom portable-text annotation types (`textColor`, `textFont`, `textSize`) were added to the existing shared `simpleRichText` and `blockContent` types' `marks.annotations`. Any field using either shared type automatically gains per-selection color/font/size controls, on top of the existing bold/italic/underline decorators — no per-field schema work required.
+
+**Rationale:** Rebekah wanted every heading/label/paragraph across the site to support color, brand-font choice (Cormorant SC / Arial / Calibri only), size, and bold/italic — matching the toolbar already seen on the Contact page's intro text field. Piloted on Contact + Case Studies pages first, then rolled out sitewide once confirmed. Button labels, nav links, and form placeholders were explicitly excluded — those stay plain strings, locked to the coded design.
+
+**Implementation:**
+- `schemaTypes/shared/textMarks.ts` — the three annotation object types, plus `textStyle` (a plain, non-rich-text color/font/size object for fields whose value also drives behavior, e.g. Contact page `email`/`phone`, which stay plain strings with sibling `emailStyle`/`phoneStyle` fields rather than becoming portable text).
+- `schemaTypes/shared/portableTextPreview.ts` — `plainTextFromBlocks()`, used inside `preview.prepare()` wherever a converted field used to show as a Studio list-view subtitle (a raw portable-text array renders as blank otherwise).
+- `web/src/lib/textMarkStyles.ts` — `MARK_FONT_VARS`, `MARK_SIZE_VALUES`, `resolveMarkColor()`, `textStyleToCss()`; `SimpleRichText.tsx` and `PortableTextContent.tsx` both render the three new marks plus `underline` (previously defined in the schema decorators but never actually rendered on the frontend).
+- Converting an existing populated `string`/`text` field to `simpleRichText` requires a one-time Sanity patch to wrap the old value as a portable-text block array, or the Studio's rich-text input won't display the existing content correctly.
+- One deliberate exception: `aboutPage.aboutValues.values[].title` stayed a plain string — `CoreValuesSection.tsx` splits it into per-word stacked `<span>` lines, which conflicts with portable text (would break the layout or silently drop per-word formatting).
+
+### 17. Content Override Patterns — Auto-Pull With Per-Page Manual Control (Session 32)
+
+**Decision:** Two patterns, chosen by scope, for letting content that's automatically pulled from a source be swapped out or hidden per-page without touching the source:
+
+- **Pattern A ("replace-if-populated")** — for same-document, small curated sets (e.g. a project's own image gallery feeding its own case-study slider). A second array field of the same shape; frontend does `doc.override?.length > 0 ? doc.override : doc.source`. Empty = full auto-pull; populated = full manual replacement. Used by `studiosGrid.cards` (pre-existing) and the new `project.caseStudySliderImages` (falls back to `project.deliverableImages`).
+- **Pattern B (toggle + override array with auto-sync)** — for cross-document aggregation (e.g. every project's BTS image pulled onto the shared Studios page). A managed array with `enabled`/override per entry; a custom Studio input component (`BtsImagesInput.tsx`) auto-detects and patches in new source documents on mount; frontend also merges in anything not yet synced as a fallback. Used by `studiosBts`, `studiosHighlights`, `studiosLatestProjects`, `homeClientLogos`.
+
+**Rule of thumb:** same-document + small set → Pattern A. Cross-document aggregation + potentially-growing set → Pattern B.
+
 ---
 
 ## Data Flow

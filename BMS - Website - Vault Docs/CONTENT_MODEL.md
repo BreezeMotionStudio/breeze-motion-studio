@@ -99,7 +99,7 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 |-------------|--------|
 | `servicesHero` | heading, heroImage{alt} *(diagonal frame)* |
 | `servicesIntro` | text |
-| `servicesCategories` | orderedCategories[] *(drag-to-reorder references to `serviceCategory` — preferred over global query)*, bgImage{alt} *(current live background: same wide panoramic image as homepage studios section)*, sectionTitle, sectionTitleColor *(radio: white/black/grey/dark-grey)*, collageImages[] *(exists in schema — currently unused; populate to restore irregular collage)*, stripImage{alt} *(optional base layer for horizontal accent strip)*, stripColor *(radio)*, stripOpacity *(0–100)*, buttonLabel, buttonUrl |
+| `servicesCategories` | orderedCategories[] *(drag-to-reorder references to `serviceCategory` — preferred over global query)*, bgImage{alt} *(current live background: same wide panoramic image as homepage studios section)*, sectionTitle, sectionTitleColor *(radio: white/black/grey/dark-grey)*, collageImages[] *(exists in schema — currently unused; populate to restore irregular collage)*, buttonLabel, buttonUrl. *(`stripImage`/`stripColor`/`stripOpacity` removed Session 32 — the "accent strip" they backed was never actually rendered on the frontend since the fields were first added; confirmed no real content had ever been set, so removed rather than left inert.)* |
 | `servicesStrip` | text *(MissionReveal-style animated statement strip between categories and combinations)*, bgImage{alt} *(full-bleed background for the strip section)*, disabled |
 | `serviceCombinations` | heading, intro, combinations[] *(drag-to-reorder references to `serviceCombination` documents — edit content under Content Library → Services Combination Examples)*, collageImages[] *(exists in schema — currently unused; populate to restore irregular collage)* |
 | `servicesCta` | heading, text *(short description below heading)*, buttons[]{label, url, style}, bgImage{alt} |
@@ -141,14 +141,15 @@ Auto-population: `BtsImagesInput` custom component queries all projects with `co
 
 ### 6. `caseStudiesPage` — Case Studies Page (Singleton)
 
-**Top-level fields:** `sections[]`, `seoTitle`, `seoDescription`
+**Top-level fields:** `sections[]`, `listingCtaLabel` *(text on each listing card, default "Read Case Study →")*, `listingSectionBg` *(sectionBackground — Session 32, background for the listing cards themselves)*, `seoTitle`, `seoDescription`
 
 | Section Type | Fields |
 |-------------|--------|
 | `caseStudiesHero` | heading |
 | `caseStudiesIntro` | text |
+| `caseStudiesCta` | heading, text, buttons[], sectionBg *(Session 32 — always renders at the very bottom of the page, below the listings, regardless of position in the sections array)* |
 
-**Note:** The case studies listing is always rendered after the sections (not a removable section).
+**Note:** The case studies listing is always rendered after the sections (not a removable section). Listing cards (Session 32 redesign) show image / title / client / year only — no index number, no category, no hover backdrop; cover image corners slightly rounded; CTA text black + underlined, lightens on hover.
 
 ---
 
@@ -223,6 +224,9 @@ Fields are organised into groups in Sanity Studio: **Basics**, **Deliverables**,
 | caseStudyApproach | blockContent | The Approach narrative |
 | caseStudyOutcome | blockContent | The Outcome narrative |
 | testimonial | reference → testimonial | Client testimonial linked to this project |
+| caseStudySliderImages | array of image | *(Session 32)* "Custom Selection" override for the image slider at the bottom of the case study page. Empty = slider auto-shows every `deliverableImages` image (Content Override Pattern A — see `ARCHITECTURE.md` decision 17). Populated = fully replaces the automatic pull for the slider only; `deliverableImages` itself is never affected. |
+
+**Case study detail page image slider (Session 32):** `CaseStudyImageSlider.tsx`, rendered before the CTA section. Flush-packed, fixed-height carousel, 4 images visible at a time, auto-advances every 4s, chevron arrows for manual scroll, click-to-enlarge via the shared `ImageLightbox` component.
 
 **Note on Case Study visibility:**
 - **Sanity sidebar** auto-populates the Case Studies section for any project with at least one `caseStudy*` content field filled — no toggle required
@@ -424,8 +428,30 @@ Standard Portable Text configuration supporting:
 - Paragraphs, headings (H2, H3, H4)
 - Bold, italic, underline
 - Links (internal + external)
-- Images (inline)
+- Images (inline) — rendered via `PortableTextContent.tsx`'s `types.image` (added Session 32; images inserted into rich text previously vanished on the frontend since no renderer existed for them)
 - Block quotes
+- Text color / font / size marks (Session 32 — see below)
+
+### `simpleRichText` — Single-Style Rich Text
+
+Lighter-weight Portable Text config (`schemaTypes/shared/simpleRichText.ts`) for headings, labels, and short paragraphs — single block style (no H2/H3/lists), decorators: bold, italic, underline, plus the text color/font/size marks below. Used across most page schemas for any heading/label field that needs the same rich-text toolbar as `blockContent` without full formatting power. Rendered via `web/src/components/ui/SimpleRichText.tsx`, which returns a bare fragment (no wrapping `<p>`) so it can sit inside an existing `<h1>`/`<h2>`/`<span>` etc.
+
+### Text Style Marks — `textColor` / `textFont` / `textSize` / `textStyle` (Session 32)
+
+Added to both `simpleRichText` and `blockContent`'s `marks.annotations`, so any field using either type automatically gets per-selection color/font/size controls in the Studio toolbar, with zero additional per-field schema work. Defined in `schemaTypes/shared/textMarks.ts`.
+
+| Type | Kind | Purpose |
+|------|------|---------|
+| `textColor` | portable-text annotation | Wraps selected text in a color, chosen from the same `COLOR_LIST` used by `sectionBackground` |
+| `textFont` | portable-text annotation | Wraps selected text in one of the 3 brand fonts only — Cormorant SC (`brand`), Arial (`functional`), Calibri (`body`) |
+| `textSize` | portable-text annotation | Wraps selected text in a size, from a fixed scale (`xs` through `7xl`) |
+| `textStyle` | plain object (not rich text) | Same 3 controls (no bold/italic) for fields whose *value* also drives behavior — e.g. Contact page `email`/`phone`, which stay plain strings (for `mailto:`/`tel:` links + validation) with sibling `emailStyle`/`phoneStyle` fields instead of being converted to portable text |
+
+**Frontend:** `web/src/lib/textMarkStyles.ts` (`MARK_FONT_VARS`, `MARK_SIZE_VALUES`, `resolveMarkColor()`, `textStyleToCss()`) is the single source of truth for the font-var/size-value mappings — keep in sync with `textMarks.ts`'s option lists if either changes. Both `SimpleRichText.tsx` and `PortableTextContent.tsx` render all three marks plus `underline`.
+
+**Studio list-view previews:** any field converted from `string`/`text` to `simpleRichText` that was referenced in a `preview.select` (for the collapsed section's subtitle in Studio) needs `plainTextFromBlocks()` from `schemaTypes/shared/portableTextPreview.ts` inside `prepare()` — a raw portable-text array renders as blank/garbage in that context otherwise.
+
+**Rollout scope (Session 32):** headings, section labels, and paragraphs across every page. Deliberately excluded: button labels (`ctaButton.label`), nav links, and form placeholders — those stay plain strings, locked to the coded design. One further exception: `aboutValues.values[].title` stayed a plain string because `CoreValuesSection.tsx` splits it into per-word stacked lines, which conflicts with portable text.
 
 ### `ctaButton` — Call to Action Object
 

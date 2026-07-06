@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-06-29 (Session 31)
+**Last Updated:** 2026-07-06 (Session 32)
 
 ---
 
@@ -24,7 +24,9 @@
 | Design system (partial) | 🔄 In Progress | Colors + fonts configured in Tailwind |
 | Schema deployment | ✅ Done | Deployed to Sanity Cloud with `npx sanity schema deploy` |
 | Content population | ✅ Done | All foundational content published (75+ documents) |
-| Component library | 🔄 In Progress | Nav, Footer, StudioCard, HowWeWorkSection, HomeStudiosOverview, HomeTestimonials, HomeClientLogos built |
+| Component library | 🔄 In Progress | Nav, Footer, StudioCard, HowWeWorkSection, HomeStudiosOverview, HomeTestimonials, HomeClientLogos, CaseStudyImageSlider built |
+| Automated bug prevention | ✅ Done | Session 32 — pre-commit hook (husky+lint-staged) + GitHub Actions CI, both apps |
+| Sanity text styling system | ✅ Done | Session 32 — color/font/size + bold/italic/underline on headings/labels/paragraphs sitewide |
 | SEO implementation | Not Started | Meta tags, structured data, sitemap |
 | Contact form integration | Not Started | Form + email routing |
 | Performance optimization | Not Started | Image optimization, lazy loading |
@@ -34,6 +36,52 @@
 ---
 
 ## Development Log
+
+### 2026-07-06 (Session 32) — Bug Prevention System, Case Studies Redesign, Sitewide Text Styling, Case Study Image Slider
+
+**Bug audit & fixes:**
+- ✅ `HomeClientLogos.tsx`, `HomeTestimonials.tsx` — hooks (`useState`/`useRef`/`useCallback`) were declared *after* an early `return null`, violating React's Rules of Hooks (crash risk if data went empty↔populated between renders); moved all hook declarations before any early return
+- ✅ `HomeClientLogos.tsx`, `CoreValuesSection.tsx`, and (found later in the same session) `HowWeWorkSection.tsx`, `StudiosHighlights.tsx` — the "latest ref" pattern (`someRef.current = fn`) was set synchronously during render; moved into a bare `useEffect` (React-legal, same effective timing)
+- ✅ `PortableTextContent.tsx` — no `types.image` renderer existed, so any image inserted into a rich-text field (about/contact/studio/case-study/service pages, via the shared `blockContent` type) silently never appeared on the site; added, using the existing `urlFor()` helper
+- ✅ `HomeStudiosOverview.tsx` — internal `/studios` link used a plain `<a>` instead of `next/link`, forcing a full page reload
+- ✅ `ServiceCategoriesGrid.tsx` — `stripImage`/`stripColor`/`stripOpacity` fields accepted and even pre-computed but never rendered anywhere, confirmed via git history to have been true since the fields were first added (not a regression) and confirmed via Sanity that no real content had ever been set; removed the fields from schema, GROQ query, `services/page.tsx`, and the component, and cleared/republished the live document
+- ⚠️ Correction: `studio.description` ("Specializations" field) was initially wired up as a "missing content" fix, then reverted at Rebekah's request — it was intentionally not meant to display (see [[feedback_unrendered_fields_not_always_bugs]] session memory: an unrendered-but-populated field is not automatically a bug)
+
+**Automated bug-prevention system (see `ARCHITECTURE.md` decision 15):**
+- ✅ `.husky/pre-commit` + `.lintstagedrc.mjs` — lints/auto-fixes staged files on every commit, routed through the correct app's own eslint config (root Studio vs `web/`)
+- ✅ `.github/workflows/ci.yml` — lint + full `next build` on every push/PR, as a second line of defense
+- ✅ Root `eslint.config.mjs` scoped away from `web/**` (was previously applying the Studio ruleset to the entire Next.js app)
+- ✅ Two Next.js rules downgraded error→warn to avoid blocking on intentional existing patterns: `@typescript-eslint/no-explicit-any`, `react-hooks/set-state-in-effect`
+
+**Studio pages — design simplification (Rebekah's design call, not a bug fix):**
+- ✅ Removed the "Specializations" list render from studio pages (see correction above)
+- ✅ Removed the project-summary paragraph from project cards in the studio-page Projects grid — cards now show image/title/client/year only
+
+**Case Studies listing page redesign:**
+- ✅ Removed the "01" index number and category/industry tag from each card; replaced category with project year
+- ✅ Removed the off-white hover backdrop on the whole card row
+- ✅ Cover image container corners slightly rounded (`rounded-sm`)
+- ✅ "Read Case Study" CTA text: black + underlined, lightens (`text-black/60`) on hover
+- ✅ Description text lightened to `text-bms-grey-400`; title no longer changes color on hover
+- ✅ New `listingSectionBg` field (sectionBackground type) — the listing cards section itself is now Sanity-editable (color/gradient/image), matching every other page section
+- ✅ New `caseStudiesCta` section type — heading, text, buttons[], sectionBg; always renders at the very bottom of the page below the listings regardless of position in the sections array; populated with a live "Start a Project" default and the same standard CTA background image used on About/Studios CTAs
+- ✅ Fixed the same CTA's image background not rendering — `resolveBg()` returns `{}` for `bgType: 'image'` by design (see `ARCHITECTURE.md` decision 14); needed the manual `<img>` + overlay pattern already used on `AboutCta`
+
+**Sitewide text-styling system — Sanity-editable color/font/size (see `ARCHITECTURE.md` decision 16, `CONTENT_MODEL.md` "Text Style Marks"):**
+- ✅ Piloted on Contact + Case Studies pages first, then rolled out to Home, About, Studios (listing + `[slug]` template), Services, and the Project/Case Study/Studio page templates
+- ✅ New shared types `textColor`/`textFont`/`textSize` (portable-text annotations, added to both `simpleRichText` and `blockContent`) and `textStyle` (plain object, for value-driving fields like Contact's `email`/`phone`)
+- ✅ Scope: headings, section labels, and paragraphs only — button labels, nav links, and form placeholders intentionally left as plain strings (locked to the coded design), per explicit decision
+- ✅ One further exception: `aboutValues.values[].title` stayed a plain string (conflicts with `CoreValuesSection.tsx`'s per-word stacked-line layout)
+- ✅ All existing live string content migrated into portable-text-array shape via Sanity patches so no copy was lost; republished
+- ✅ Schema deployed each phase
+
+**Case study image slider (see `ARCHITECTURE.md` decision 17, `CONTENT_MODEL.md` section 8):**
+- ✅ New `CaseStudyImageSlider.tsx` — flush-packed, fixed-height carousel before the CTA on every case study page; 4 images visible at a time, auto-advances every 4s, chevron arrows, click-to-enlarge via the existing `ImageLightbox`; same carousel architecture as `StudiosHighlights`/`HomeClientLogos`
+- ✅ Images auto-pulled from `project.deliverableImages` by default
+- ✅ New `project.caseStudySliderImages` field — populate to fully replace the automatic pull for the slider only, without touching `deliverableImages` (Content Override Pattern A)
+- ✅ Documented the two established "auto-pull with per-page override" patterns (same-document replace-if-populated vs. cross-document toggle+override-array) as a standing rule for future pages, per Rebekah's request for a consistent approach
+
+---
 
 ### 2026-06-29 (Session 31) — Full CMS Editability Audit & Fix
 
