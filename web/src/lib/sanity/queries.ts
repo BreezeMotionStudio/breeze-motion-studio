@@ -222,7 +222,6 @@ export const STUDIO_BY_SLUG_QUERY = defineQuery(
       _id,
       title,
       slug,
-      summary,
       coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
       client->{name, industry},
       year

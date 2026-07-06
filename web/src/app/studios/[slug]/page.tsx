@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { client } from '@/lib/sanity/client'
 import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { notFound } from 'next/navigation'
-import PortableTextContent from '@/components/ui/PortableTextContent'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
 import { Button } from '@/components/ui/Button'
 import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
@@ -16,7 +15,6 @@ type Project = {
   _id: string
   title: string
   slug?: { current: string }
-  summary?: string
   coverImage?: { asset?: { url: string }; alt?: string }
   client?: { name: string; industry?: string }
   year?: string
@@ -69,7 +67,7 @@ export default async function StudioPage({ params }: Props) {
       </section>
 
       {/* Purpose / Description */}
-      {(studio.purpose || studio.description) && (
+      {studio.purpose && (
         <section
           className={`bg-white border-b border-[#E6E6E6] ${resolveTextClass(tmpl?.overviewSectionBg, undefined, true)}`}
           style={resolveBg(tmpl?.overviewSectionBg)}
@@ -81,11 +79,6 @@ export default async function StudioPage({ params }: Props) {
             <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
               {studio.purpose}
             </p>
-            {studio.description && (
-              <div className="max-w-2xl mt-6 text-[#4B4B4B]">
-                <PortableTextContent value={studio.description} />
-              </div>
-            )}
             <p className="font-[family-name:var(--font-body)] text-base text-bms-grey-400 leading-relaxed mt-6">
               {tmpl?.overviewSubtext || 'View the projects below.'}
             </p>
@@ -147,11 +140,6 @@ export default async function StudioPage({ params }: Props) {
                     {project.client?.name}
                     {project.year && ` — ${project.year}`}
                   </p>
-                  {project.summary && (
-                    <p className="font-[family-name:var(--font-body)] text-sm text-bms-grey-400 mt-2 leading-relaxed">
-                      {project.summary}
-                    </p>
-                  )}
                 </Link>
               ))}
             </div>
