@@ -13,8 +13,13 @@ export const simpleRichText = defineType({
         decorators: [
           {title: 'Bold', value: 'strong'},
           {title: 'Italic', value: 'em'},
+          {title: 'Underline', value: 'underline'},
         ],
-        annotations: [],
+        annotations: [
+          defineArrayMember({type: 'textColor'}),
+          defineArrayMember({type: 'textFont'}),
+          defineArrayMember({type: 'textSize'}),
+        ],
       },
     }),
   ],

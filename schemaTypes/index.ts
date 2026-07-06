@@ -3,6 +3,7 @@ import {ctaButton} from './shared/ctaButton'
 import {blockContent} from './blockContent'
 import {simpleRichText} from './shared/simpleRichText'
 import {sectionBackground} from './shared/sectionBackground'
+import {textColor, textFont, textSize, textStyle} from './shared/textMarks'
 
 // Document types
 import {siteSettings} from './siteSettings'
@@ -29,6 +30,10 @@ export const schemaTypes = [
   blockContent,
   simpleRichText,
   sectionBackground,
+  textColor,
+  textFont,
+  textSize,
+  textStyle,
 
   // Singleton pages
   siteSettings,

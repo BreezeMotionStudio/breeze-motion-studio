@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {EnvelopeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {plainTextFromBlocks} from './shared/portableTextPreview'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -35,8 +36,8 @@ export const contactPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
-              validation: (r) => r.required(),
+              type: 'simpleRichText',
+              validation: (r) => r.required().min(1),
             }),
             defineField({
               name: 'heroImage',
@@ -52,7 +53,7 @@ export const contactPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -79,18 +80,20 @@ export const contactPage = defineType({
           name: 'contactDetails',
           title: 'Contact Details & Form',
           fields: [
-            defineField({name: 'getInTouchLabel', title: 'Section Heading', type: 'string', description: 'Heading above the contact details. Default: "Get In Touch".', initialValue: 'Get In Touch'}),
-            defineField({name: 'emailLabel', title: 'Email Field Label', type: 'string', description: 'Label above the email address. Default: "Email".', initialValue: 'Email'}),
-            defineField({name: 'phoneLabel', title: 'Phone Field Label', type: 'string', description: 'Label above the phone number. Default: "Phone / WhatsApp".', initialValue: 'Phone / WhatsApp'}),
+            defineField({name: 'getInTouchLabel', title: 'Section Heading', type: 'simpleRichText', description: 'Heading above the contact details. Default: "Get In Touch".'}),
+            defineField({name: 'emailLabel', title: 'Email Field Label', type: 'simpleRichText', description: 'Label above the email address. Default: "Email".'}),
+            defineField({name: 'phoneLabel', title: 'Phone Field Label', type: 'simpleRichText', description: 'Label above the phone number. Default: "Phone / WhatsApp".'}),
             defineField({
               name: 'email',
               title: 'Email',
               type: 'string',
               validation: (r) => r.required().email(),
             }),
+            defineField({name: 'emailStyle', title: 'Email Text Style', type: 'textStyle', description: 'Color, font, and size of the displayed email address.'}),
             defineField({name: 'phone', title: 'Phone / WhatsApp', type: 'string'}),
-            defineField({name: 'note', title: 'Contact Note', type: 'text', rows: 3, description: 'Short note shown below the email/phone, above the form.'}),
-            defineField({name: 'formHeading', title: 'Form Heading', type: 'string'}),
+            defineField({name: 'phoneStyle', title: 'Phone Text Style', type: 'textStyle', description: 'Color, font, and size of the displayed phone number.'}),
+            defineField({name: 'note', title: 'Contact Note', type: 'simpleRichText', description: 'Short note shown below the email/phone, above the form.'}),
+            defineField({name: 'formHeading', title: 'Form Heading', type: 'simpleRichText'}),
             defineField({name: 'namePlaceholder', title: 'Name Field Placeholder', type: 'string', initialValue: 'Your name'}),
             defineField({name: 'emailPlaceholder', title: 'Email Field Placeholder', type: 'string', initialValue: 'Your email'}),
             defineField({name: 'companyPlaceholder', title: 'Company Field Placeholder', type: 'string', initialValue: 'Company / Organisation (optional)'}),

@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {DocumentTextIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {plainTextFromBlocks} from './shared/portableTextPreview'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -35,15 +36,15 @@ export const caseStudiesPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
-              validation: (r) => r.required(),
+              type: 'simpleRichText',
+              validation: (r) => r.required().min(1),
             }),
             disabledField,
           ],
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -53,7 +54,7 @@ export const caseStudiesPage = defineType({
           name: 'caseStudiesIntro',
           title: 'Intro Text',
           fields: [
-            defineField({name: 'text', title: 'Text', type: 'text', rows: 3}),
+            defineField({name: 'text', title: 'Text', type: 'simpleRichText'}),
             disabledField,
           ],
           preview: {
@@ -70,7 +71,7 @@ export const caseStudiesPage = defineType({
           title: 'Call to Action',
           description: 'Always appears at the very bottom of the page, below the case study listings, regardless of its position in this list.',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
             defineField({
               name: 'buttons',
@@ -90,7 +91,7 @@ export const caseStudiesPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),

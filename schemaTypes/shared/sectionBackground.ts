@@ -1,7 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
-// Brand color palette — shared by solid and gradient fields
-const COLOR_LIST = [
+// Brand color palette — shared by solid and gradient fields, and by text color marks
+export const COLOR_LIST = [
   {title: 'Pure Black', value: '#000000'},
   {title: 'Deep Black', value: '#0d0d0d'},
   {title: 'Near Black', value: '#333333'},

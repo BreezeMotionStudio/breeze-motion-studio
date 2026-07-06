@@ -2,6 +2,7 @@
 
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { urlFor } from "@/lib/sanity/image";
+import { MARK_FONT_VARS, MARK_SIZE_VALUES, resolveMarkColor } from "@/lib/textMarkStyles";
 
 const components: PortableTextComponents = {
   types: {
@@ -44,6 +45,10 @@ const components: PortableTextComponents = {
   marks: {
     strong: ({ children }) => <strong className="font-bold">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
+    underline: ({ children }) => <span style={{ textDecoration: "underline" }}>{children}</span>,
+    textColor: ({ value, children }) => <span style={{ color: resolveMarkColor(value?.color) }}>{children}</span>,
+    textFont: ({ value, children }) => <span style={{ fontFamily: value?.font ? MARK_FONT_VARS[value.font] : undefined }}>{children}</span>,
+    textSize: ({ value, children }) => <span style={{ fontSize: value?.size ? MARK_SIZE_VALUES[value.size] : undefined }}>{children}</span>,
   },
   list: {
     bullet: ({ children }) => (

@@ -37,7 +37,7 @@ function CaseStudiesHero({ s }: { s: Section }) {
     <section className="bg-black text-white py-24 md:py-32">
       <div className="max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
-          {s.heading || "Case Studies"}
+          {s.heading ? <SimpleRichText value={s.heading} /> : "Case Studies"}
         </h1>
       </div>
     </section>
@@ -50,7 +50,7 @@ function CaseStudiesIntro({ s }: { s: Section }) {
     <section className="bg-white border-b border-[#E6E6E6]">
       <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
         <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
-          {s.text}
+          <SimpleRichText value={s.text} />
         </p>
       </div>
     </section>
@@ -144,7 +144,7 @@ function CaseStudiesCta({ s }: { s: Section }) {
       )}
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6"><SimpleRichText value={s.heading} /></h2>
         )}
         {s.text && (
           <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">

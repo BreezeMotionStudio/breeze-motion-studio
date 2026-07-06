@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { client } from "@/lib/sanity/client";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
+import { SimpleRichText } from "@/components/ui/SimpleRichText";
 import { sectionBgStyle, resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 import { Button } from "@/components/ui/Button";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
+import { textStyleToCss } from "@/lib/textMarkStyles";
 
 export const revalidate = 60;
 
@@ -35,7 +37,7 @@ function ContactHero({ s }: { s: Section }) {
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
-          {s.heading || "Contact"}
+          {s.heading ? <SimpleRichText value={s.heading} /> : "Contact"}
         </h1>
       </div>
     </section>
@@ -76,7 +78,6 @@ function ContactDetailsForm({
 }) {
   const email = s.email || fallbackEmail;
   const phone = s.phone || fallbackPhone;
-  const formHeading = s.formHeading || "Send Us a Message";
 
   return (
     <section
@@ -92,16 +93,17 @@ function ContactDetailsForm({
       <div className="relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 md:gap-16">
         <div>
           <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black mb-8">
-            {s.getInTouchLabel || 'Get In Touch'}
+            {s.getInTouchLabel ? <SimpleRichText value={s.getInTouchLabel} /> : 'Get In Touch'}
           </h2>
           <ul className="flex flex-col gap-5">
             <li>
               <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-1">
-                {s.emailLabel || 'Email'}
+                {s.emailLabel ? <SimpleRichText value={s.emailLabel} /> : 'Email'}
               </span>
               <a
                 href={`mailto:${email}`}
                 className="font-[family-name:var(--font-body)] text-base text-black hover:text-bms-accent transition-colors"
+                style={textStyleToCss(s.emailStyle)}
               >
                 {email}
               </a>
@@ -109,11 +111,12 @@ function ContactDetailsForm({
             {phone && (
               <li>
                 <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-1">
-                  {s.phoneLabel || 'Phone / WhatsApp'}
+                  {s.phoneLabel ? <SimpleRichText value={s.phoneLabel} /> : 'Phone / WhatsApp'}
                 </span>
                 <a
                   href={`tel:${phone}`}
                   className="font-[family-name:var(--font-body)] text-base text-black hover:text-bms-accent transition-colors"
+                  style={textStyleToCss(s.phoneStyle)}
                 >
                   {phone}
                 </a>
@@ -122,7 +125,7 @@ function ContactDetailsForm({
           </ul>
           {s.note && (
             <p className="font-[family-name:var(--font-body)] text-[#4B4B4B] text-base leading-relaxed mt-10 max-w-[260px]">
-              {s.note}
+              <SimpleRichText value={s.note} />
             </p>
           )}
         </div>
@@ -138,7 +141,7 @@ function ContactDetailsForm({
           )}
           <div className="relative z-10">
             <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white mb-8">
-              {formHeading}
+              {s.formHeading ? <SimpleRichText value={s.formHeading} /> : "Send Us a Message"}
             </h2>
             <form className="flex flex-col gap-5">
               <input
