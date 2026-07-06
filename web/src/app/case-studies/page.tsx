@@ -124,11 +124,24 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
 
 function CaseStudiesCta({ s }: { s: Section }) {
   const onDark = !resolveIsLight(s.sectionBg);
+  const bgImg = s.sectionBg?.bgType === 'image' ? s.sectionBg?.bgImage : undefined;
+  const hasBgImage = !!bgImg?.asset?.url;
   return (
     <section
       className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg)} py-24`}
-      style={resolveBg(s.sectionBg)}
+      style={hasBgImage ? {} : resolveBg(s.sectionBg)}
     >
+      {hasBgImage && (
+        <>
+          <img
+            src={`${bgImg.asset.url}?w=1920&auto=format&q=80`}
+            alt={bgImg.alt || ''}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-black/65" />
+        </>
+      )}
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
           <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
