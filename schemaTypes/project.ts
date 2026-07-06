@@ -317,6 +317,24 @@ export const project = defineType({
       to: [{type: 'testimonial'}],
       group: 'caseStudy',
     }),
+    defineField({
+      name: 'caseStudySliderImages',
+      title: 'Case Study Image Slider — Custom Selection',
+      type: 'array',
+      group: 'caseStudy',
+      description: 'By default, the image slider at the bottom of the Case Study page automatically shows every image from "Deliverable Images" above, in the same order. To customize what appears in the slider specifically — remove an image, swap one out, add a different one, or reorder — add images here. Once this list has at least one image, it fully replaces the automatic pull for the slider only; the Deliverable Images gallery itself is never affected.',
+      options: {layout: 'grid'},
+      of: [
+        defineArrayMember({
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
+            defineField({name: 'caption', type: 'string', title: 'Caption'}),
+          ],
+        }),
+      ],
+    }),
 
     // ─── Settings ──────────────────────────────────────────────────────────────
     defineField({

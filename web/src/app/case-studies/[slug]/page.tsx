@@ -7,6 +7,7 @@ import PortableTextContent from '@/components/ui/PortableTextContent'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { Button } from '@/components/ui/Button'
 import { AnimatedLine } from '@/components/AnimatedLine'
+import { CaseStudyImageSlider } from '@/components/CaseStudyImageSlider'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 60
@@ -78,6 +79,8 @@ export default async function CaseStudyPage({ params }: Props) {
   const ctaBg = tmpl?.ctaSectionBg
   const ctaBgImageUrl = ctaBg?.bgType === 'image' ? ctaBg?.bgImage?.asset?.url : null
   const fallbackCtaImageUrl = 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg'
+
+  const sliderImages = cs.caseStudySliderImages?.length > 0 ? cs.caseStudySliderImages : (cs.deliverableImages ?? [])
 
   return (
     <div>
@@ -284,6 +287,9 @@ export default async function CaseStudyPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* ── Image Slider ─────────────────────────────────────────────────────── */}
+      {sliderImages.length > 0 && <CaseStudyImageSlider images={sliderImages} />}
 
       {/* ── CTA ──────────────────────────────────────────────────────────────── */}
       <section
