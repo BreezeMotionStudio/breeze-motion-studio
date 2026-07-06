@@ -69,7 +69,7 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
                 className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 py-14"
               >
                 <div>
-                  <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide group-hover:text-bms-accent transition-colors mb-3">
+                  <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide mb-3">
                     {cs.title}
                   </h2>
                   <div className="flex flex-col gap-1">
@@ -96,7 +96,7 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
                     </div>
                   )}
                   {cs.summary && (
-                    <p className="font-[family-name:var(--font-body)] text-sm text-[#4B4B4B] leading-relaxed">
+                    <p className="font-[family-name:var(--font-body)] text-sm text-bms-grey-400 leading-relaxed">
                       {cs.summary}
                     </p>
                   )}
