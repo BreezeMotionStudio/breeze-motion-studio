@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {HomeIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {plainTextFromBlocks} from './shared/portableTextPreview'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -32,7 +33,7 @@ export const homePage = defineType({
           name: 'homeHero',
           title: 'Hero',
           fields: [
-            defineField({name: 'title', title: 'Title', type: 'string'}),
+            defineField({name: 'title', title: 'Title', type: 'simpleRichText'}),
             defineField({name: 'subtitle', title: 'Subtitle', type: 'simpleRichText'}),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
@@ -55,7 +56,7 @@ export const homePage = defineType({
           preview: {
             select: {title: 'title', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -65,7 +66,7 @@ export const homePage = defineType({
           name: 'homeFeaturedWork',
           title: 'Featured Work',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Heading above the project grid. Default: "Featured Work".', initialValue: 'Featured Work'}),
+            defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText', description: 'Heading above the project grid. Default: "Featured Work".'}),
             defineField({name: 'videoUrl', title: 'Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',
@@ -90,7 +91,7 @@ export const homePage = defineType({
           name: 'homeStudiosOverview',
           title: 'Studios Overview',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'description', title: 'Description', type: 'simpleRichText', description: 'Short description shown below the section heading.'}),
             defineField({
               name: 'parentLogo',
@@ -171,7 +172,7 @@ export const homePage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Studios Overview' : 'Studios Overview', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Studios Overview' : 'Studios Overview', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -181,7 +182,7 @@ export const homePage = defineType({
           name: 'homeAbout',
           title: 'About',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'text', title: 'Body Text', type: 'simpleRichText'}),
             defineField({
               name: 'imageLeftSlides',
@@ -259,7 +260,7 @@ export const homePage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] About' : 'About', subtitle: title}
+              return {title: disabled ? '[HIDDEN] About' : 'About', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -269,7 +270,7 @@ export const homePage = defineType({
           name: 'homeHowWeWork',
           title: 'How We Work',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({
               name: 'sectionImage',
               title: 'Section Image',
@@ -290,15 +291,16 @@ export const homePage = defineType({
                     defineField({
                       name: 'title',
                       title: 'Title',
-                      type: 'string',
-                      validation: (r) => r.required(),
+                      type: 'simpleRichText',
+                      validation: (r) => r.required().min(1),
                     }),
                     defineField({name: 'description', title: 'Description', type: 'simpleRichText'}),
                   ],
                   preview: {
                     select: {title: 'title', subtitle: 'stepNumber'},
                     prepare({title, subtitle}) {
-                      return {title: subtitle ? `${subtitle}. ${title}` : title}
+                      const plainTitle = plainTextFromBlocks(title)
+                      return {title: subtitle ? `${subtitle}. ${plainTitle}` : plainTitle}
                     },
                   },
                 }),
@@ -325,7 +327,7 @@ export const homePage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] How We Work' : 'How We Work', subtitle: title}
+              return {title: disabled ? '[HIDDEN] How We Work' : 'How We Work', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -335,7 +337,7 @@ export const homePage = defineType({
           name: 'homeTestimonials',
           title: 'Testimonials',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'e.g. "What Our Clients Say"'}),
+            defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText', description: 'e.g. "What Our Clients Say"'}),
             defineField({
               name: 'testimonials',
               title: 'Testimonials',
@@ -454,7 +456,7 @@ export const homePage = defineType({
           name: 'homeCta',
           title: 'Call to Action',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
             defineField({
               name: 'buttons',
@@ -477,7 +479,7 @@ export const homePage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),

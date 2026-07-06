@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { sectionBgStyle } from '@/lib/sectionBackground'
 
 type BtsImage = {
@@ -14,7 +15,7 @@ type BtsImage = {
   imageCaption?: string
 }
 
-type SectionData = { heading?: string; sectionBg?: any; [key: string]: unknown }
+type SectionData = { heading?: any; sectionBg?: any; [key: string]: unknown }
 
 type LightboxState = { src: string; alt: string }
 
@@ -27,7 +28,7 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
   const labelRow = (
     <div className="max-w-5xl mx-auto px-6 mb-10 flex items-center gap-5">
       <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-        {s.heading || 'Behind the Scenes'}
+        {s.heading ? <SimpleRichText value={s.heading} /> : 'Behind the Scenes'}
       </span>
       <div className="flex-grow h-px bg-white/10" />
     </div>

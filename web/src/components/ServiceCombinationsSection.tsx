@@ -22,7 +22,7 @@ type Combination = {
 }
 
 type Props = {
-  heading?: string
+  heading?: any
   intro?: any
   combinations?: Combination[]
   collageImages?: { asset?: { url: string }; alt?: string }[]
@@ -87,7 +87,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
           <div className="max-w-2xl mb-4">
             {heading && (
               <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide mb-6 text-white">
-                {heading}
+                <SimpleRichText value={heading} />
               </h2>
             )}
             {intro && (

@@ -69,10 +69,9 @@ export const caseStudyPageTemplate = defineType({
     defineField({
       name: 'videoSectionLabel',
       title: 'Video Gallery Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'media',
       description: 'Small uppercase label above the video gallery. Default: "Video Gallery".',
-      placeholder: 'Video Gallery',
     }),
     defineField({
       name: 'imageSectionBg',
@@ -84,10 +83,9 @@ export const caseStudyPageTemplate = defineType({
     defineField({
       name: 'imageSectionLabel',
       title: 'Image Gallery Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'media',
       description: 'Small uppercase label above the image gallery. Default: "Image Gallery".',
-      placeholder: 'Image Gallery',
     }),
     defineField({
       name: 'btsSectionBg',
@@ -99,10 +97,9 @@ export const caseStudyPageTemplate = defineType({
     defineField({
       name: 'btsSectionLabel',
       title: 'Behind the Scenes Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'media',
       description: 'Small uppercase label above BTS content. Default: "Behind the Scenes".',
-      placeholder: 'Behind the Scenes',
     }),
     defineField({
       name: 'testimonialSectionBg',
@@ -123,50 +120,44 @@ export const caseStudyPageTemplate = defineType({
     defineField({
       name: 'narrativeLabel',
       title: 'Narrative Section Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'narrative',
       description: 'Small uppercase label at the top of the narrative. Default: "Case Study".',
-      placeholder: 'Case Study',
     }),
     defineField({
       name: 'overviewHeading',
       title: 'Overview Panel Heading',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'narrative',
       description: 'Heading inside the dark overview panel. Default: "Project Overview".',
-      placeholder: 'Project Overview',
     }),
     defineField({
       name: 'deliverablesLabel',
       title: 'Deliverables Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'narrative',
       description: 'Label above the deliverables list in the overview panel. Default: "Deliverables".',
-      placeholder: 'Deliverables',
     }),
     defineField({
       name: 'challengeLabel',
       title: 'Challenge Section Heading',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'narrative',
       description: 'Default: "The Challenge".',
-      placeholder: 'The Challenge',
     }),
     defineField({
       name: 'approachLabel',
       title: 'Approach Section Heading',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'narrative',
       description: 'Default: "The Approach".',
-      placeholder: 'The Approach',
     }),
     defineField({
       name: 'outcomeLabel',
       title: 'Outcome Section Heading',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'narrative',
       description: 'Default: "The Outcome".',
-      placeholder: 'The Outcome',
     }),
 
     // ─── CTA Footer ────────────────────────────────────────────────────────────
@@ -180,15 +171,14 @@ export const caseStudyPageTemplate = defineType({
     defineField({
       name: 'ctaHeading',
       title: 'CTA Heading',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'cta',
-      placeholder: 'Start a Project',
+      description: 'Default: "Start a Project".',
     }),
     defineField({
       name: 'ctaText',
       title: 'CTA Body Text',
-      type: 'text',
-      rows: 2,
+      type: 'simpleRichText',
       group: 'cta',
     }),
     defineField({

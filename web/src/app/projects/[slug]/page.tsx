@@ -4,6 +4,7 @@ import { client } from '@/lib/sanity/client'
 import { PROJECT_BY_SLUG_QUERY, PROJECT_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { resolveBg } from '@/lib/sectionBackground'
 import { VideoEmbed } from '@/components/ui/VideoEmbed'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { Button } from '@/components/ui/Button'
 import { ProjectImageGrid } from '@/components/ProjectImageGrid'
 import { notFound } from 'next/navigation'
@@ -49,9 +50,9 @@ export default async function ProjectPage({ params }: Props) {
   const showCoverImage = tmpl?.heroShowCoverImage ?? false
   const coverOpacity = (tmpl?.heroCoverImageOpacity ?? 25) / 100
 
-  const videoLabel = tmpl?.videoSectionLabel || 'Video Gallery'
-  const imageLabel = tmpl?.imageSectionLabel || 'Image Gallery'
-  const btsLabel = tmpl?.btsSectionLabel || 'Behind the Scenes'
+  const videoLabel = tmpl?.videoSectionLabel ? <SimpleRichText value={tmpl.videoSectionLabel} /> : 'Video Gallery'
+  const imageLabel = tmpl?.imageSectionLabel ? <SimpleRichText value={tmpl.imageSectionLabel} /> : 'Image Gallery'
+  const btsLabel = tmpl?.btsSectionLabel ? <SimpleRichText value={tmpl.btsSectionLabel} /> : 'Behind the Scenes'
 
   const caseStudyBgImg = tmpl?.caseStudySectionBg?.bgType === 'image' ? tmpl.caseStudySectionBg.bgImage : null
   const hasCaseStudyBgImage = !!caseStudyBgImg?.asset?.url
@@ -123,7 +124,7 @@ export default async function ProjectPage({ params }: Props) {
               {project.deliverables?.length > 0 && (
                 <div className="mb-8">
                   <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-grey-400 block mb-4">
-                    {tmpl?.deliverablesLabel || 'Deliverables'}
+                    {tmpl?.deliverablesLabel ? <SimpleRichText value={tmpl.deliverablesLabel} /> : 'Deliverables'}
                   </span>
                   <ul className="list-disc pl-5 space-y-2">
                     {project.deliverables.filter((item: string) => item?.trim()).map((item: string, i: number) => (

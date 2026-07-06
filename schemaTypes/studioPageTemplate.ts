@@ -41,18 +41,16 @@ export const studioPageTemplate = defineType({
     defineField({
       name: 'overviewLabel',
       title: 'Overview Section Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'overview',
       description: 'Small uppercase label above the studio description. Default: "Studio Overview".',
-      placeholder: 'Studio Overview',
     }),
     defineField({
       name: 'overviewSubtext',
       title: 'Overview Subtext',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'overview',
       description: 'Short line shown below the studio description. Default: "View the projects below."',
-      placeholder: 'View the projects below.',
     }),
 
     // ─── Projects ──────────────────────────────────────────────────────────────
@@ -66,10 +64,9 @@ export const studioPageTemplate = defineType({
     defineField({
       name: 'projectsLabel',
       title: 'Projects Section Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'projects',
       description: 'Small uppercase label above the project grid. Default: "Projects".',
-      placeholder: 'Projects',
     }),
 
     // ─── CTA ───────────────────────────────────────────────────────────────────
@@ -83,16 +80,14 @@ export const studioPageTemplate = defineType({
     defineField({
       name: 'ctaHeading',
       title: 'CTA Heading',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'cta',
       description: 'Default: "Start a Project".',
-      placeholder: 'Start a Project',
     }),
     defineField({
       name: 'ctaText',
       title: 'CTA Body Text',
-      type: 'text',
-      rows: 2,
+      type: 'simpleRichText',
       group: 'cta',
       description: 'Default: "Every project begins with a conversation. Tell me what you\'re building."',
     }),

@@ -48,7 +48,7 @@ function ServicesHero({ s }: { s: Section }) {
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
-          {s.heading || "Services"}
+          {s.heading ? <SimpleRichText value={s.heading} /> : "Services"}
         </h1>
       </div>
     </section>
@@ -97,7 +97,7 @@ function ServicesCta({ s }: { s: Section }) {
       )}
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         <h2 className="font-[family-name:var(--font-brand)] text-3xl md:text-4xl uppercase tracking-wide mb-6">
-          {s.heading || "Ready to work together?"}
+          {s.heading ? <SimpleRichText value={s.heading} /> : "Ready to work together?"}
         </h2>
         {s.text && (
           <p className="text-bms-grey-300 font-[family-name:var(--font-body)] text-lg mb-8">
@@ -182,7 +182,7 @@ export default async function ServicesPage() {
 <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-10 items-start">
                   <div>
                     <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-                      {section.heading || 'Services'}
+                      {section.heading ? <SimpleRichText value={section.heading} /> : 'Services'}
                     </h2>
                   </div>
                   {section.text && <MissionReveal text={section.text} />}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { sectionBgStyle } from '@/lib/sectionBackground'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
 type Project = {
   _id: string
@@ -120,7 +121,9 @@ export function StudiosHighlights({ s, projects }: Props) {
   }
 
   const handleNextRef = useRef(handleNext)
-  handleNextRef.current = handleNext
+  useEffect(() => {
+    handleNextRef.current = handleNext
+  }, [handleNext])
 
   useEffect(() => {
     if (!canScroll) return
@@ -137,7 +140,7 @@ export function StudiosHighlights({ s, projects }: Props) {
       <section className="relative bg-[#0d0d0d] py-14" style={bgStyle}>
         <div className="max-w-6xl mx-auto px-6 flex items-center gap-5">
           <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-            {s.heading || 'Highlights'}
+            {s.heading ? <SimpleRichText value={s.heading} /> : 'Highlights'}
           </span>
           <div className="flex-grow h-px bg-white/10" />
         </div>
@@ -155,7 +158,7 @@ export function StudiosHighlights({ s, projects }: Props) {
       {/* Section label */}
       <div className="max-w-6xl mx-auto px-6 mb-10 flex items-center gap-5">
         <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-          {s.heading || 'Highlights'}
+          {s.heading ? <SimpleRichText value={s.heading} /> : 'Highlights'}
         </span>
         <div className="flex-grow h-px bg-white/10" />
       </div>

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { resolveBg, resolveTextClass, resolveIsLight } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
 type Testimonial = {
   _id: string
@@ -72,7 +73,7 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
 
         {s.heading && (
           <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold text-center mb-14">
-            {s.heading}
+            <SimpleRichText value={s.heading} />
           </h2>
         )}
 

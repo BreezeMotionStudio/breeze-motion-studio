@@ -96,7 +96,7 @@ export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) 
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="scroll-catchup relative z-10 max-w-6xl mx-auto px-6">
         {s.heading && (
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-4 text-center">{s.heading}</h2>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-4 text-center"><SimpleRichText value={s.heading} /></h2>
         )}
         {s.description && (
           <p className="text-base md:text-lg text-bms-grey-300 font-[family-name:var(--font-body)] text-center max-w-2xl mx-auto mb-8">

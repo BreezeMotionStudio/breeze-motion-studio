@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {BulbOutlineIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {plainTextFromBlocks} from './shared/portableTextPreview'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -35,8 +36,8 @@ export const servicesPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
-              validation: (r) => r.required(),
+              type: 'simpleRichText',
+              validation: (r) => r.required().min(1),
             }),
             defineField({
               name: 'heroImage',
@@ -52,7 +53,7 @@ export const servicesPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -90,7 +91,7 @@ export const servicesPage = defineType({
             defineField({
               name: 'sectionTitle',
               title: 'Section Heading',
-              type: 'string',
+              type: 'simpleRichText',
               description: 'Heading displayed above the service cards.',
             }),
             defineField({
@@ -163,7 +164,7 @@ export const servicesPage = defineType({
           name: 'servicesStrip',
           title: 'Statement Strip',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Heading shown to the left of the statement text. Default: "Services".', initialValue: 'Services'}),
+            defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText', description: 'Heading shown to the left of the statement text. Default: "Services".'}),
             defineField({
               name: 'text',
               title: 'Statement Text',
@@ -186,7 +187,7 @@ export const servicesPage = defineType({
           name: 'serviceCombinations',
           title: 'Service Combinations',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText'}),
             defineField({name: 'intro', title: 'Intro Text', type: 'simpleRichText'}),
             defineField({name: 'typicallyIncludesLabel', title: '"Typically Includes" Label', type: 'string', description: 'Label above each combination\'s item list. Default: "Typically Includes".', initialValue: 'Typically Includes'}),
             defineField({name: 'viewCaseStudyLabel', title: '"View Case Study" Button Label', type: 'string', description: 'Text on the button linking to each combination\'s case study. Default: "View Case Study".', initialValue: 'View Case Study'}),
@@ -239,7 +240,7 @@ export const servicesPage = defineType({
           name: 'servicesCta',
           title: 'Call to Action',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
             defineField({
               name: 'buttons',
@@ -254,7 +255,7 @@ export const servicesPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),

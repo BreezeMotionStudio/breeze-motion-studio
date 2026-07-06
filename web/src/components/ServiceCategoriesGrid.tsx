@@ -81,7 +81,7 @@ export function ServiceCategoriesGrid({
   categories: Category[]
   sectionBg?: any
   collageImages?: { image?: { asset?: { url: string }; alt?: string } }[]
-  sectionTitle?: string
+  sectionTitle?: any
   sectionTitleColor?: string
   buttonLabel?: string
   buttonUrl?: string
@@ -133,7 +133,7 @@ export function ServiceCategoriesGrid({
             className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide pointer-events-auto"
             style={{ color: sectionTitleColor ?? '#ffffff' }}
           >
-            {sectionTitle}
+            <SimpleRichText value={sectionTitle} />
           </h2>
         </div>
       )}

@@ -55,7 +55,7 @@ function StudiosHero({ s }: { s: Section }) {
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
-          {s.heading || 'Studios'}
+          {s.heading ? <SimpleRichText value={s.heading} /> : 'Studios'}
         </h1>
       </div>
     </section>
@@ -163,12 +163,12 @@ function StudiosCta({ s }: { s: Section }) {
       <div className="scroll-catchup relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
           <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6 text-white">
-            {s.heading}
+            <SimpleRichText value={s.heading} />
           </h2>
         )}
         {s.text && (
           <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
-            {s.text}
+            <SimpleRichText value={s.text} />
           </p>
         )}
         {s.buttons?.length > 0 && (

@@ -3,6 +3,7 @@ import {ComponentIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 import {InlineToggleItem} from './components/InlineToggleItem'
 import {BtsImagesInput} from './components/BtsImagesInput'
+import {plainTextFromBlocks} from './shared/portableTextPreview'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -38,8 +39,8 @@ export const studiosPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
-              validation: (r) => r.required(),
+              type: 'simpleRichText',
+              validation: (r) => r.required().min(1),
             }),
             defineField({
               name: 'heroImage',
@@ -55,7 +56,7 @@ export const studiosPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -87,8 +88,7 @@ export const studiosPage = defineType({
             defineField({
               name: 'heading',
               title: 'Section Label',
-              type: 'string',
-              initialValue: 'Highlights',
+              type: 'simpleRichText',
               description: 'Small label shown above the carousel (e.g. "Highlights")',
             }),
             defineField({
@@ -269,8 +269,7 @@ export const studiosPage = defineType({
             defineField({
               name: 'heading',
               title: 'Section Label',
-              type: 'string',
-              initialValue: 'Behind the Scenes',
+              type: 'simpleRichText',
               description: 'Small label shown above the image grid',
             }),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
@@ -363,8 +362,7 @@ export const studiosPage = defineType({
             defineField({
               name: 'heading',
               title: 'Section Label',
-              type: 'string',
-              initialValue: 'Latest Projects',
+              type: 'simpleRichText',
               description: 'Small label shown above the project grid',
             }),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Defaults to dark when left blank.'}),
@@ -422,14 +420,13 @@ export const studiosPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
-              validation: (r) => r.required(),
+              type: 'simpleRichText',
+              validation: (r) => r.required().min(1),
             }),
             defineField({
               name: 'text',
               title: 'Body Text',
-              type: 'text',
-              rows: 2,
+              type: 'simpleRichText',
             }),
             defineField({
               name: 'buttons',
@@ -448,7 +445,7 @@ export const studiosPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] CTA' : 'Call to Action', subtitle: title}
+              return {title: disabled ? '[HIDDEN] CTA' : 'Call to Action', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),

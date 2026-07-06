@@ -61,10 +61,9 @@ export const projectPageTemplate = defineType({
     defineField({
       name: 'videoSectionLabel',
       title: 'Video Gallery Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'media',
       description: 'Small uppercase label above the video gallery. Default: "Video Gallery".',
-      placeholder: 'Video Gallery',
     }),
     defineField({
       name: 'imageSectionBg',
@@ -76,10 +75,9 @@ export const projectPageTemplate = defineType({
     defineField({
       name: 'imageSectionLabel',
       title: 'Image Gallery Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'media',
       description: 'Small uppercase label above the image gallery. Default: "Image Gallery".',
-      placeholder: 'Image Gallery',
     }),
     defineField({
       name: 'btsSectionBg',
@@ -91,10 +89,9 @@ export const projectPageTemplate = defineType({
     defineField({
       name: 'btsSectionLabel',
       title: 'Behind the Scenes Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'media',
       description: 'Small uppercase label above BTS content. Default: "Behind the Scenes".',
-      placeholder: 'Behind the Scenes',
     }),
     defineField({
       name: 'testimonialSectionBg',
@@ -113,10 +110,9 @@ export const projectPageTemplate = defineType({
     defineField({
       name: 'deliverablesLabel',
       title: 'Deliverables Label',
-      type: 'string',
+      type: 'simpleRichText',
       group: 'overview',
       description: 'Label above the deliverables list. Default: "Deliverables".',
-      placeholder: 'Deliverables',
     }),
     defineField({
       name: 'viewCaseStudyLabel',

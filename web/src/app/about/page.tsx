@@ -39,7 +39,7 @@ function AboutHero({ s }: { s: Section }) {
       <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide leading-none">
-          {s.heading || "About"}
+          {s.heading ? <SimpleRichText value={s.heading} /> : "About"}
         </h1>
       </div>
     </section>
@@ -94,7 +94,7 @@ function AboutOverview({ s }: { s: Section }) {
                 )}
               </div>
               <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-                {s.founderHeading || 'The Founder'}
+                {s.founderHeading ? <SimpleRichText value={s.founderHeading} /> : 'The Founder'}
               </h2>
               {s.founderImage?.asset?.url && (
                 <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
@@ -132,7 +132,7 @@ function AboutOverview({ s }: { s: Section }) {
                 )}
               </div>
               <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-                {s.studioHeading || 'The Studio'}
+                {s.studioHeading ? <SimpleRichText value={s.studioHeading} /> : 'The Studio'}
               </h2>
               {s.studioImage?.asset?.url && (
                 <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
@@ -186,7 +186,7 @@ function AboutHowWeWork({ s }: { s: Section }) {
       )}
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h2 className="font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest text-bms-grey-400 mb-12">
-          {s.heading || 'How We Work'}
+          {s.heading ? <SimpleRichText value={s.heading} /> : 'How We Work'}
         </h2>
         {s.intro && (
           <PortableTextContent
@@ -195,13 +195,13 @@ function AboutHowWeWork({ s }: { s: Section }) {
           />
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {s.steps.map((step: { _key?: string; title: string; description?: string }, i: number) => (
+          {s.steps.map((step: { _key?: string; title: any; description?: string }, i: number) => (
             <div key={step._key || i}>
               <span className="font-[family-name:var(--font-brand)] text-3xl text-bms-accent mb-4 block">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="font-[family-name:var(--font-functional)] text-base uppercase tracking-widest font-bold mb-3">
-                {step.title}
+                <SimpleRichText value={step.title} />
               </h3>
               {step.description && (
                 <p className="font-[family-name:var(--font-body)] text-sm text-bms-grey-400 leading-relaxed">
@@ -238,7 +238,7 @@ function AboutCta({ s }: { s: Section }) {
       <div className="scroll-catchup relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
           <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6 text-white">
-            {s.heading}
+            <SimpleRichText value={s.heading} />
           </h2>
         )}
         {s.text && (

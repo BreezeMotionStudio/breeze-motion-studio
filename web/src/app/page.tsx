@@ -113,7 +113,7 @@ function HomeHero({ s }: { s: Section }) {
         <div className="hero-catchup relative z-10 text-center max-w-4xl px-6">
           {s.title && (
             <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-6">
-              {s.title}
+              <SimpleRichText value={s.title} />
             </h1>
           )}
           {s.subtitle && (
@@ -180,7 +180,7 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
       {projects && projects.length > 0 && (
         <div className={`scroll-catchup relative z-10 max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
           <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-12 text-center text-white">
-            {s.heading || 'Featured Work'}
+            {s.heading ? <SimpleRichText value={s.heading} /> : 'Featured Work'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project: any) => (
@@ -274,7 +274,7 @@ function HomeAbout({ s }: { s: Section }) {
       <div className="scroll-catchup relative z-10 max-w-6xl mx-auto px-6">
         {s.heading && (
           <h2 className="font-[family-name:var(--font-brand)] text-xl sm:text-3xl md:text-4xl uppercase tracking-wide mb-10 text-center">
-            {s.heading}
+            <SimpleRichText value={s.heading} />
           </h2>
         )}
 
@@ -336,7 +336,7 @@ function HomeCta({ s }: { s: Section }) {
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} />
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         {s.heading && (
-          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6"><SimpleRichText value={s.heading} /></h2>
         )}
         {s.text && (
           <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">

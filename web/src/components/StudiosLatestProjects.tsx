@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { sectionBgStyle } from '@/lib/sectionBackground'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
 type Project = {
   _id: string
@@ -15,7 +16,7 @@ type Project = {
   studio?: { title: string; slug?: { current: string } }
 }
 
-type SectionData = { heading?: string; sectionBg?: any; [key: string]: unknown }
+type SectionData = { heading?: any; sectionBg?: any; [key: string]: unknown }
 
 type Props = {
   s: SectionData
@@ -90,7 +91,7 @@ export function StudiosLatestProjects({ s, projects }: Props) {
         <div className="flex items-center justify-between mb-14">
           <div className="flex items-center gap-5">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-              {s.heading || 'Latest Projects'}
+              {s.heading ? <SimpleRichText value={s.heading} /> : 'Latest Projects'}
             </span>
             <div className="w-16 h-px bg-white/10" />
           </div>

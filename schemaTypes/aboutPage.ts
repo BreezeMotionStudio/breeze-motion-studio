@@ -1,6 +1,7 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {UserIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
+import {plainTextFromBlocks} from './shared/portableTextPreview'
 
 const disabledField = defineField({
   name: 'disabled',
@@ -35,8 +36,8 @@ export const aboutPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
-              validation: (r) => r.required(),
+              type: 'simpleRichText',
+              validation: (r) => r.required().min(1),
             }),
             defineField({
               name: 'heroImage',
@@ -52,7 +53,7 @@ export const aboutPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Hero' : 'Hero', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -114,8 +115,8 @@ export const aboutPage = defineType({
               description: 'Large image displayed below the Studio and Founder columns.',
               fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
             }),
-            defineField({name: 'founderHeading', title: 'Founder Card Heading', type: 'string', description: 'Heading above the founder card. Default: "The Founder".', initialValue: 'The Founder'}),
-            defineField({name: 'studioHeading', title: 'Studio Card Heading', type: 'string', description: 'Heading above the studio card. Default: "The Studio".', initialValue: 'The Studio'}),
+            defineField({name: 'founderHeading', title: 'Founder Card Heading', type: 'simpleRichText', description: 'Heading above the founder card. Default: "The Founder".'}),
+            defineField({name: 'studioHeading', title: 'Studio Card Heading', type: 'simpleRichText', description: 'Heading above the studio card. Default: "The Studio".'}),
             defineField({name: 'founderCard', title: 'Founder Card Background', type: 'sectionBackground'}),
             defineField({name: 'studioCard', title: 'Studio Card Background', type: 'sectionBackground'}),
             defineField({name: 'sectionBg', title: 'Background', type: 'sectionBackground', description: 'Solid color, gradient, or image. Leave blank to use the default.'}),
@@ -138,9 +139,8 @@ export const aboutPage = defineType({
             defineField({
               name: 'heading',
               title: 'Heading',
-              type: 'string',
+              type: 'simpleRichText',
               description: 'Label shown above the statement. Defaults to "Mission" if left blank.',
-              initialValue: 'Mission',
             }),
             defineField({
               name: 'text',
@@ -155,7 +155,7 @@ export const aboutPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Mission Statement' : 'Mission Statement', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Mission Statement' : 'Mission Statement', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -165,7 +165,7 @@ export const aboutPage = defineType({
           name: 'aboutValues',
           title: 'Core Values',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Heading above the values grid. Default: "Core Values".', initialValue: 'Core Values'}),
+            defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText', description: 'Heading above the values grid. Default: "Core Values".'}),
             defineField({
               name: 'values',
               title: 'Values',
@@ -202,7 +202,7 @@ export const aboutPage = defineType({
           name: 'aboutCta',
           title: 'Call to Action',
           fields: [
-            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
             defineField({
               name: 'buttons',
@@ -216,7 +216,7 @@ export const aboutPage = defineType({
           preview: {
             select: {title: 'heading', disabled: 'disabled'},
             prepare({title, disabled}) {
-              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: plainTextFromBlocks(title)}
             },
           },
         }),
@@ -226,7 +226,7 @@ export const aboutPage = defineType({
           name: 'aboutHowWeWork',
           title: 'How We Work',
           fields: [
-            defineField({name: 'heading', title: 'Section Heading', type: 'string', description: 'Label shown above the steps. Default: "How We Work".', initialValue: 'How We Work'}),
+            defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText', description: 'Label shown above the steps. Default: "How We Work".'}),
             defineField({name: 'intro', title: 'Intro', type: 'blockContent'}),
             defineField({
               name: 'steps',
@@ -239,12 +239,17 @@ export const aboutPage = defineType({
                     defineField({
                       name: 'title',
                       title: 'Title',
-                      type: 'string',
-                      validation: (r) => r.required(),
+                      type: 'simpleRichText',
+                      validation: (r) => r.required().min(1),
                     }),
                     defineField({name: 'description', title: 'Description', type: 'simpleRichText'}),
                   ],
-                  preview: {select: {title: 'title'}},
+                  preview: {
+                    select: {title: 'title'},
+                    prepare({title}) {
+                      return {title: plainTextFromBlocks(title)}
+                    },
+                  },
                 }),
               ],
             }),

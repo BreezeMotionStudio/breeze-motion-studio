@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/Button'
 import { btnSpacingClass } from '@/lib/buttonSpacing'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
-type Step = { _key?: string; stepNumber?: string; title?: string; description?: any }
+type Step = { _key?: string; stepNumber?: string; title?: any; description?: any }
 type CtaButton = { _key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string }
 type SectionData = {
-  heading?: string
+  heading?: any
   bgVideoUrl?: string
   bgImage?: { asset?: { url: string }; alt?: string }
   bgColor?: string
@@ -86,20 +86,22 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
   const onEnterRef = useRef<() => void>(() => {})
   const onLeaveRef = useRef<() => void>(() => {})
 
-  onEnterRef.current = () => {
-    clearStepTimeouts()
-    setLitSteps(new Set())
-    setDone(false)
-    setVisible(true)
-    setActive(true)
-  }
-  onLeaveRef.current = () => {
-    clearStepTimeouts()
-    setActive(false)
-    setVisible(false)
-    setLitSteps(new Set())
-    setHeadingLit(false)
-  }
+  useEffect(() => {
+    onEnterRef.current = () => {
+      clearStepTimeouts()
+      setLitSteps(new Set())
+      setDone(false)
+      setVisible(true)
+      setActive(true)
+    }
+    onLeaveRef.current = () => {
+      clearStepTimeouts()
+      setActive(false)
+      setVisible(false)
+      setLitSteps(new Set())
+      setHeadingLit(false)
+    }
+  })
 
   const buildPath = useCallback(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
@@ -364,7 +366,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
               ref={headingSpanRef}
               className="inline-block transition-transform duration-500 ease-out"
               style={headingLit ? { transform: 'scale(1.04)' } : undefined}
-            >{s.heading}</span>
+            ><SimpleRichText value={s.heading} /></span>
           </h2>
         )}
         {s.steps && s.steps.length > 0 && (
@@ -387,7 +389,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
                         className="text-lg font-[family-name:var(--font-functional)] font-bold mb-2 uppercase tracking-wide transition-transform duration-300 ease-out group-hover:scale-[1.08]"
                         style={lit ? { transform: 'scale(1.08)' } : undefined}
                       >
-                        {step.title}
+                        <SimpleRichText value={step.title} />
                       </h3>
                     )}
                     {step.description && (

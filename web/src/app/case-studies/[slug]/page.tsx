@@ -4,6 +4,7 @@ import { client } from '@/lib/sanity/client'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { resolveBg } from '@/lib/sectionBackground'
 import PortableTextContent from '@/components/ui/PortableTextContent'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { Button } from '@/components/ui/Button'
 import { AnimatedLine } from '@/components/AnimatedLine'
 import { notFound } from 'next/navigation'
@@ -63,14 +64,14 @@ export default async function CaseStudyPage({ params }: Props) {
   const imageUrl = cs.coverImage?.asset?.url
   const imageAlt = cs.coverImage?.alt || cs.title
 
-  const overviewHeading = tmpl?.overviewHeading || 'Project Overview'
-  const deliverablesLabel = tmpl?.deliverablesLabel || 'Deliverables'
-  const challengeLabel = tmpl?.challengeLabel || 'The Challenge'
-  const approachLabel = tmpl?.approachLabel || 'The Approach'
-  const outcomeLabel = tmpl?.outcomeLabel || 'The Outcome'
+  const overviewHeading = tmpl?.overviewHeading ? <SimpleRichText value={tmpl.overviewHeading} /> : 'Project Overview'
+  const deliverablesLabel = tmpl?.deliverablesLabel ? <SimpleRichText value={tmpl.deliverablesLabel} /> : 'Deliverables'
+  const challengeLabel = tmpl?.challengeLabel ? <SimpleRichText value={tmpl.challengeLabel} /> : 'The Challenge'
+  const approachLabel = tmpl?.approachLabel ? <SimpleRichText value={tmpl.approachLabel} /> : 'The Approach'
+  const outcomeLabel = tmpl?.outcomeLabel ? <SimpleRichText value={tmpl.outcomeLabel} /> : 'The Outcome'
 
-  const ctaHeading = tmpl?.ctaHeading || 'Start a Project'
-  const ctaText = tmpl?.ctaText || 'Get in touch to discuss your project.'
+  const ctaHeading = tmpl?.ctaHeading ? <SimpleRichText value={tmpl.ctaHeading} /> : 'Start a Project'
+  const ctaText = tmpl?.ctaText ? <SimpleRichText value={tmpl.ctaText} /> : 'Get in touch to discuss your project.'
   const ctaButtonLabel = tmpl?.ctaButtonLabel || 'Contact'
   const ctaButtonUrl = tmpl?.ctaButtonUrl || '/contact'
 

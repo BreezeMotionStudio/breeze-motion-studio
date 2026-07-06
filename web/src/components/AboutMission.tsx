@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import PortableTextContent from '@/components/ui/PortableTextContent'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { resolveBg } from '@/lib/sectionBackground'
 
 type Props = {
@@ -88,7 +89,7 @@ export function AboutMission({ s }: Props) {
       >
         <div>
           <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
-            {s.heading || 'Mission'}
+            {s.heading ? <SimpleRichText value={s.heading} /> : 'Mission'}
           </h2>
         </div>
 

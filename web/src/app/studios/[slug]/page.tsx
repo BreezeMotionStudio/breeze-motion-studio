@@ -5,6 +5,7 @@ import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/q
 import { notFound } from 'next/navigation'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
 import { Button } from '@/components/ui/Button'
+import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
 
 export const revalidate = 60
@@ -74,13 +75,13 @@ export default async function StudioPage({ params }: Props) {
         >
           <div className="scroll-catchup max-w-5xl mx-auto px-6 py-12 md:py-16">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-6">
-              {tmpl?.overviewLabel || 'Studio Overview'}
+              {tmpl?.overviewLabel ? <SimpleRichText value={tmpl.overviewLabel} /> : 'Studio Overview'}
             </span>
             <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
               {studio.purpose}
             </p>
             <p className="font-[family-name:var(--font-body)] text-base text-bms-grey-400 leading-relaxed mt-6">
-              {tmpl?.overviewSubtext || 'View the projects below.'}
+              {tmpl?.overviewSubtext ? <SimpleRichText value={tmpl.overviewSubtext} /> : 'View the projects below.'}
             </p>
           </div>
         </section>
@@ -94,7 +95,7 @@ export default async function StudioPage({ params }: Props) {
         <div className="max-w-5xl mx-auto px-6">
           <div className="scroll-catchup flex items-center gap-6 mb-14">
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-              {tmpl?.projectsLabel || 'Projects'}
+              {tmpl?.projectsLabel ? <SimpleRichText value={tmpl.projectsLabel} /> : 'Projects'}
             </span>
             <div className="flex-grow h-px bg-white/10" />
           </div>
@@ -172,10 +173,10 @@ export default async function StudioPage({ params }: Props) {
         )}
         <div className="scroll-catchup relative z-10 max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
-            {tmpl?.ctaHeading || 'Start a Project'}
+            {tmpl?.ctaHeading ? <SimpleRichText value={tmpl.ctaHeading} /> : 'Start a Project'}
           </h2>
           <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
-            {tmpl?.ctaText || 'Get in touch to discuss your project.'}
+            {tmpl?.ctaText ? <SimpleRichText value={tmpl.ctaText} /> : 'Get in touch to discuss your project.'}
           </p>
           <Button variant="white" size="lg" href={tmpl?.ctaButtonUrl || '/contact'}>
             {tmpl?.ctaButtonLabel || 'Contact'}
