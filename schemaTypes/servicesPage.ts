@@ -109,38 +109,6 @@ export const servicesPage = defineType({
               initialValue: '#ffffff',
             }),
             defineField({
-              name: 'stripImage',
-              title: 'Strip Image',
-              type: 'image',
-              options: {hotspot: true},
-              fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-              description: 'Optional image displayed inside the horizontal accent strip.',
-            }),
-            defineField({
-              name: 'stripColor',
-              title: 'Accent Strip Color',
-              type: 'string',
-              description: 'Color overlay on the strip (or solid color if no strip image).',
-              options: {
-                list: [
-                  {title: 'White', value: '#ffffff'},
-                  {title: 'Black', value: '#000000'},
-                  {title: 'Light Grey', value: '#E6E6E6'},
-                  {title: 'Dark Grey', value: '#535D66'},
-                ],
-                layout: 'radio',
-              },
-              initialValue: '#ffffff',
-            }),
-            defineField({
-              name: 'stripOpacity',
-              title: 'Accent Strip Opacity',
-              type: 'number',
-              description: 'Opacity of the strip color from 0 (invisible) to 100 (fully opaque).',
-              validation: (r) => r.min(0).max(100),
-              initialValue: 15,
-            }),
-            defineField({
               name: 'collageImages',
               title: 'Collage Background Images (4)',
               type: 'array',

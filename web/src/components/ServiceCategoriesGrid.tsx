@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { sectionBgStyle, toColor } from '@/lib/sectionBackground'
+import { sectionBgStyle } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
 import { CollageBackground } from '@/components/CollageBackground'
 
@@ -72,9 +72,6 @@ export function ServiceCategoriesGrid({
   collageImages,
   sectionTitle,
   sectionTitleColor,
-  stripImage,
-  stripColor,
-  stripOpacity,
   buttonLabel,
   buttonUrl,
   readMoreLabel,
@@ -86,9 +83,6 @@ export function ServiceCategoriesGrid({
   collageImages?: { image?: { asset?: { url: string }; alt?: string } }[]
   sectionTitle?: string
   sectionTitleColor?: string
-  stripImage?: { asset?: { url: string }; alt?: string }
-  stripColor?: string
-  stripOpacity?: number
   buttonLabel?: string
   buttonUrl?: string
   readMoreLabel?: string
@@ -108,9 +102,6 @@ export function ServiceCategoriesGrid({
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [open])
-
-  const resolvedStripColor = stripColor ?? '#ffffff'
-  const resolvedStripOpacity = (stripOpacity ?? 15) / 100
 
   return (
     <section className="relative bg-[#0d0d0d] pb-32 overflow-hidden" style={sectionBgStyle(sectionBg)}>

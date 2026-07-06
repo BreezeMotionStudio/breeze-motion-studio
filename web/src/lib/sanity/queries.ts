@@ -71,7 +71,6 @@ export const SERVICES_PAGE_QUERY = defineQuery(
       heroImage{asset->{url}, alt},
       bgImage{asset->{url}, alt},
       sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
-      stripImage { asset->{ url }, alt },
       collageImages[]{ image { asset->{ url }, alt } },
       orderedCategories[]->{ _id, title, shortDescription, services, serviceGroups[]{ _key, subheading, description, items }, image { asset->{ url }, alt } },
       combinations[]{ _key, ...@->{ _id, title, subtitle, description, items, caseStudySlug, bgImage { asset->{ url }, alt }, images[]{ asset->{ url }, alt } } }

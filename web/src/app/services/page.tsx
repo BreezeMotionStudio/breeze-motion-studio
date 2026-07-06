@@ -154,9 +154,6 @@ export default async function ServicesPage() {
                 collageImages={section.collageImages}
                 sectionTitle={section.sectionTitle}
                 sectionTitleColor={section.sectionTitleColor}
-                stripImage={section.stripImage}
-                stripColor={section.stripColor}
-                stripOpacity={section.stripOpacity}
                 buttonLabel={section.buttonLabel}
                 buttonUrl={section.buttonUrl}
                 readMoreLabel={section.readMoreLabel}
