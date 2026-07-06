@@ -168,6 +168,7 @@ export const CASE_STUDIES_PAGE_QUERY = defineQuery(
   `*[_type == "caseStudiesPage"][0]{
     sections[disabled != true]{...},
     listingCtaLabel,
+    listingSectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
     seoTitle,
     seoDescription
   }`
@@ -283,8 +284,9 @@ export const CASE_STUDIES_QUERY = defineQuery(
     title,
     slug,
     summary,
+    year,
     coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
-    client->{name, industry},
+    client->{name},
     studio->{title, slug}
   }`
 );

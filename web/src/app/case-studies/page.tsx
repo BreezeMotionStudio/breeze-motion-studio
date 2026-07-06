@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { client } from "@/lib/sanity/client";
 import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY } from "@/lib/sanity/queries";
+import { resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 
 export const revalidate = 60;
 
@@ -11,8 +12,9 @@ type CaseStudy = {
   title: string;
   slug: { current: string };
   summary?: string;
+  year?: string;
   coverImage?: { asset?: { url: string }; alt?: string };
-  client?: { name: string; industry?: string };
+  client?: { name: string };
   studio?: { title: string; slug: { current: string } };
 };
 
@@ -51,22 +53,22 @@ function CaseStudiesIntro({ s }: { s: Section }) {
   );
 }
 
-function CaseStudiesListings({ caseStudies, listingCtaLabel }: { caseStudies: CaseStudy[]; listingCtaLabel?: string }) {
+function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { caseStudies: CaseStudy[]; listingCtaLabel?: string; sectionBg?: Section }) {
   return (
-    <section className="bg-white text-black py-20">
+    <section
+      className={`bg-white py-20 ${resolveTextClass(sectionBg, undefined, true)}`}
+      style={resolveBg(sectionBg)}
+    >
       <div className="max-w-5xl mx-auto px-6">
         {caseStudies && caseStudies.length > 0 ? (
           <div className="divide-y divide-[#E6E6E6]">
-            {caseStudies.map((cs, index) => (
+            {caseStudies.map((cs) => (
               <Link
                 key={cs._id}
                 href={`/case-studies/${cs.slug?.current}`}
-                className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 py-14 hover:bg-[#F9F9F9] transition-colors px-2 -mx-2"
+                className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 py-14"
               >
                 <div>
-                  <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-3">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
                   <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide group-hover:text-bms-accent transition-colors mb-3">
                     {cs.title}
                   </h2>
@@ -76,16 +78,16 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel }: { caseStudies: Ca
                         {cs.client.name}
                       </span>
                     )}
-                    {cs.client?.industry && (
+                    {cs.year && (
                       <span className="font-[family-name:var(--font-functional)] text-xs text-bms-grey-400 uppercase tracking-wide">
-                        {cs.client.industry}
+                        {cs.year}
                       </span>
                     )}
                   </div>
                 </div>
                 <div className="flex flex-col justify-center gap-4">
                   {cs.coverImage?.asset?.url && (
-                    <div className="aspect-[16/6] overflow-hidden">
+                    <div className="aspect-[16/6] overflow-hidden rounded-sm">
                       <img
                         src={cs.coverImage.asset.url}
                         alt={cs.coverImage.alt || cs.title}
@@ -98,7 +100,7 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel }: { caseStudies: Ca
                       {cs.summary}
                     </p>
                   )}
-                  <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-accent">
+                  <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black underline transition-colors duration-300 group-hover:text-black/60">
                     {listingCtaLabel || 'Read Case Study →'}
                   </span>
                 </div>
@@ -146,7 +148,7 @@ export default async function CaseStudiesPage() {
         }
       })}
       {/* Listings always appear after sections */}
-      <CaseStudiesListings caseStudies={caseStudies} listingCtaLabel={page?.listingCtaLabel} />
+      <CaseStudiesListings caseStudies={caseStudies} listingCtaLabel={page?.listingCtaLabel} sectionBg={page?.listingSectionBg} />
     </div>
   );
 }

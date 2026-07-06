@@ -74,6 +74,13 @@ export const caseStudiesPage = defineType({
       description: 'Text shown at the bottom of each case study card. Default: "Read Case Study →".',
       placeholder: 'Read Case Study →',
     }),
+    defineField({
+      name: 'listingSectionBg',
+      title: 'Listings Section Background',
+      type: 'sectionBackground',
+      group: 'sections',
+      description: 'Background for the case study listing cards below the page sections. Default: white.',
+    }),
     ...seoFields,
   ],
   preview: {
