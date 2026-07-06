@@ -166,7 +166,10 @@ export const STUDIOS_BTS_QUERY = defineQuery(
 
 export const CASE_STUDIES_PAGE_QUERY = defineQuery(
   `*[_type == "caseStudiesPage"][0]{
-    sections[disabled != true]{...},
+    sections[disabled != true]{
+      ...,
+      sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } }
+    },
     listingCtaLabel,
     listingSectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
     seoTitle,

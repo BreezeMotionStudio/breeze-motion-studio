@@ -63,6 +63,37 @@ export const caseStudiesPage = defineType({
             },
           },
         }),
+
+        defineArrayMember({
+          type: 'object',
+          name: 'caseStudiesCta',
+          title: 'Call to Action',
+          description: 'Always appears at the very bottom of the page, below the case study listings, regardless of its position in this list.',
+          fields: [
+            defineField({name: 'heading', title: 'Heading', type: 'string'}),
+            defineField({name: 'text', title: 'Supporting Text', type: 'simpleRichText'}),
+            defineField({
+              name: 'buttons',
+              title: 'Buttons',
+              type: 'array',
+              description: 'Add, remove, or reorder CTA buttons.',
+              of: [defineArrayMember({type: 'ctaButton'})],
+            }),
+            defineField({
+              name: 'sectionBg',
+              title: 'Background',
+              type: 'sectionBackground',
+              description: 'Solid color, gradient, or image. Leave blank to use the default (black).',
+            }),
+            disabledField,
+          ],
+          preview: {
+            select: {title: 'heading', disabled: 'disabled'},
+            prepare({title, disabled}) {
+              return {title: disabled ? '[HIDDEN] Call to Action' : 'Call to Action', subtitle: title}
+            },
+          },
+        }),
       ],
     }),
 

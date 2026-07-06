@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { client } from "@/lib/sanity/client";
 import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY } from "@/lib/sanity/queries";
-import { resolveBg, resolveTextClass } from "@/lib/sectionBackground";
+import { resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
+import { SimpleRichText } from "@/components/ui/SimpleRichText";
+import { Button } from "@/components/ui/Button";
+import { btnSpacingClass } from "@/lib/buttonSpacing";
 
 export const revalidate = 60;
 
+type CtaButton = { _key?: string; label?: string; url?: string; style?: string; topSpacing?: string; bottomSpacing?: string };
 type Section = Record<string, any> & { _type: string; _key: string };
 type CaseStudy = {
   _id: string;
@@ -118,6 +122,38 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
   );
 }
 
+function CaseStudiesCta({ s }: { s: Section }) {
+  const onDark = !resolveIsLight(s.sectionBg);
+  return (
+    <section
+      className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg)} py-24`}
+      style={resolveBg(s.sectionBg)}
+    >
+      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+        {s.heading && (
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6">{s.heading}</h2>
+        )}
+        {s.text && (
+          <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+            <SimpleRichText value={s.text} />
+          </p>
+        )}
+        {s.buttons && s.buttons.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {s.buttons.map((btn: CtaButton) =>
+              btn.label && btn.url ? (
+                <Button key={btn._key} variant={onDark ? 'white' : 'black'} href={btn.url} className={btnSpacingClass(btn.topSpacing, btn.bottomSpacing)}>
+                  {btn.label}
+                </Button>
+              ) : null
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default async function CaseStudiesPage() {
   const [caseStudies, page] = await Promise.all([
     client.fetch(CASE_STUDIES_QUERY).catch(() => []),
@@ -149,6 +185,12 @@ export default async function CaseStudiesPage() {
       })}
       {/* Listings always appear after sections */}
       <CaseStudiesListings caseStudies={caseStudies} listingCtaLabel={page?.listingCtaLabel} sectionBg={page?.listingSectionBg} />
+      {/* Call to Action always appears at the very bottom, after the listings */}
+      {page.sections
+        .filter((section: Section) => section._type === "caseStudiesCta")
+        .map((section: Section) => (
+          <CaseStudiesCta key={section._key} s={section} />
+        ))}
     </div>
   );
 }
