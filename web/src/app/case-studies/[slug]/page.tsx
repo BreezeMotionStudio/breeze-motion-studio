@@ -87,7 +87,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
       {/* ── Header ───────────────────────────────────────────────────────────── */}
       <section className="bg-black text-white py-12 md:py-16 border-b border-white/5">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="hero-catchup max-w-5xl mx-auto px-6">
           <Link
             href="/case-studies"
             className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white/35 hover:text-white/65 transition-colors mb-8 inline-block"
@@ -267,6 +267,9 @@ export default async function CaseStudyPage({ params }: Props) {
         </section>
       )}
 
+      {/* ── Image Slider ─────────────────────────────────────────────────────── */}
+      {sliderImages.length > 0 && <CaseStudyImageSlider images={sliderImages} />}
+
       {/* ── Testimonial ──────────────────────────────────────────────────────── */}
       {cs.testimonial?.quote && (
         <section
@@ -287,9 +290,6 @@ export default async function CaseStudyPage({ params }: Props) {
           </div>
         </section>
       )}
-
-      {/* ── Image Slider ─────────────────────────────────────────────────────── */}
-      {sliderImages.length > 0 && <CaseStudyImageSlider images={sliderImages} />}
 
       {/* ── CTA ──────────────────────────────────────────────────────────────── */}
       <section

@@ -6,6 +6,7 @@ import { resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackgr
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
 import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
+import { HeroImageFrame } from "@/components/HeroImageFrame";
 
 export const revalidate = 60;
 
@@ -34,8 +35,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function CaseStudiesHero({ s }: { s: Section }) {
   return (
-    <section className="bg-black text-white py-24 md:py-32">
-      <div className="max-w-5xl mx-auto px-6">
+    <section className="relative overflow-hidden bg-black text-white py-24 md:py-32">
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading ? <SimpleRichText value={s.heading} /> : "Case Studies"}
         </h1>
@@ -57,7 +59,7 @@ function CaseStudiesIntro({ s }: { s: Section }) {
   );
 }
 
-function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { caseStudies: CaseStudy[]; listingCtaLabel?: string; sectionBg?: Section }) {
+function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel, sectionBg }: { caseStudies: CaseStudy[]; listingKickerLabel?: string; listingCtaLabel?: string; sectionBg?: Section }) {
   return (
     <section
       className={`bg-white py-20 ${resolveTextClass(sectionBg, undefined, true)}`}
@@ -65,25 +67,28 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
     >
       <div className="max-w-5xl mx-auto px-6">
         {caseStudies && caseStudies.length > 0 ? (
-          <div className="divide-y divide-[#E6E6E6]">
+          <div className="flex flex-col gap-8">
             {caseStudies.map((cs) => (
               <Link
                 key={cs._id}
                 href={`/case-studies/${cs.slug?.current}`}
-                className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 py-14"
+                className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 bg-white rounded-2xl md:rounded-3xl p-8 md:p-12 shadow-lg transition-transform duration-300 ease-out hover:scale-[1.02]"
               >
                 <div>
-                  <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide mb-3">
+                  <span className="block font-[family-name:var(--font-functional)] text-xs text-[#535D66] uppercase tracking-widest mb-2">
+                    {listingKickerLabel || 'Case Study'}
+                  </span>
+                  <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide mb-3 text-black">
                     {cs.title}
                   </h2>
                   <div className="flex flex-col gap-1">
                     {cs.client?.name && (
-                      <span className="font-[family-name:var(--font-functional)] text-xs text-bms-grey-400 uppercase tracking-wide">
+                      <span className="font-[family-name:var(--font-functional)] text-xs text-[#4B4B4B] uppercase tracking-wide">
                         {cs.client.name}
                       </span>
                     )}
                     {cs.year && (
-                      <span className="font-[family-name:var(--font-functional)] text-xs text-bms-grey-400 uppercase tracking-wide">
+                      <span className="font-[family-name:var(--font-functional)] text-xs text-[#4B4B4B] uppercase tracking-wide">
                         {cs.year}
                       </span>
                     )}
@@ -91,7 +96,7 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
                 </div>
                 <div className="flex flex-col justify-center gap-4">
                   {cs.coverImage?.asset?.url && (
-                    <div className="aspect-[16/6] overflow-hidden rounded-sm">
+                    <div className="aspect-[16/6] overflow-hidden rounded-xl">
                       <img
                         src={cs.coverImage.asset.url}
                         alt={cs.coverImage.alt || cs.title}
@@ -100,7 +105,7 @@ function CaseStudiesListings({ caseStudies, listingCtaLabel, sectionBg }: { case
                     </div>
                   )}
                   {cs.summary && (
-                    <p className="font-[family-name:var(--font-body)] text-sm text-bms-grey-400 leading-relaxed">
+                    <p className="font-[family-name:var(--font-body)] text-sm text-[#4B4B4B] leading-relaxed">
                       {cs.summary}
                     </p>
                   )}
@@ -197,7 +202,7 @@ export default async function CaseStudiesPage() {
         }
       })}
       {/* Listings always appear after sections */}
-      <CaseStudiesListings caseStudies={caseStudies} listingCtaLabel={page?.listingCtaLabel} sectionBg={page?.listingSectionBg} />
+      <CaseStudiesListings caseStudies={caseStudies} listingKickerLabel={page?.listingKickerLabel} listingCtaLabel={page?.listingCtaLabel} sectionBg={page?.listingSectionBg} />
       {/* Call to Action always appears at the very bottom, after the listings */}
       {page.sections
         .filter((section: Section) => section._type === "caseStudiesCta")

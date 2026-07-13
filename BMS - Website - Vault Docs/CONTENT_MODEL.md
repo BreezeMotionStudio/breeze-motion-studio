@@ -99,7 +99,7 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 |-------------|--------|
 | `servicesHero` | heading, heroImage{alt} *(diagonal frame)* |
 | `servicesIntro` | text |
-| `servicesCategories` | orderedCategories[] *(drag-to-reorder references to `serviceCategory` — preferred over global query)*, bgImage{alt} *(current live background: same wide panoramic image as homepage studios section)*, sectionTitle, sectionTitleColor *(radio: white/black/grey/dark-grey)*, collageImages[] *(exists in schema — currently unused; populate to restore irregular collage)*, buttonLabel, buttonUrl. *(`stripImage`/`stripColor`/`stripOpacity` removed Session 32 — the "accent strip" they backed was never actually rendered on the frontend since the fields were first added; confirmed no real content had ever been set, so removed rather than left inert.)* |
+| `servicesCategories` | orderedCategories[] *(drag-to-reorder references to `serviceCategory` — preferred over global query)*, bgImage{alt} *(current live background: same wide panoramic image as homepage studios section)*, sectionTitle, sectionTitleColor *(radio: white/black/grey/dark-grey)*, collageImages[] *(exists in schema — currently unused; populate to restore irregular collage)*, buttonLabel, buttonUrl. *(`stripImage`/`stripColor`/`stripOpacity` removed Session 32 — the "accent strip" they backed was never actually rendered on the frontend since the fields were first added; confirmed no real content had ever been set, so removed rather than left inert.)* **⚠️ `orderedCategories[]` is a manual override array (see `ARCHITECTURE.md` decision 17, Pattern A) — when a `serviceCategory` document is created, deleted, or reordered, this array must be patched to match or the change won't appear on the live page even though the source document is correctly published (hit this exact bug in Session 33).** |
 | `servicesStrip` | text *(MissionReveal-style animated statement strip between categories and combinations)*, bgImage{alt} *(full-bleed background for the strip section)*, disabled |
 | `serviceCombinations` | heading, intro, combinations[] *(drag-to-reorder references to `serviceCombination` documents — edit content under Content Library → Services Combination Examples)*, collageImages[] *(exists in schema — currently unused; populate to restore irregular collage)* |
 | `servicesCta` | heading, text *(short description below heading)*, buttons[]{label, url, style}, bgImage{alt} |
@@ -141,15 +141,15 @@ Auto-population: `BtsImagesInput` custom component queries all projects with `co
 
 ### 6. `caseStudiesPage` — Case Studies Page (Singleton)
 
-**Top-level fields:** `sections[]`, `listingCtaLabel` *(text on each listing card, default "Read Case Study →")*, `listingSectionBg` *(sectionBackground — Session 32, background for the listing cards themselves)*, `seoTitle`, `seoDescription`
+**Top-level fields:** `sections[]`, `listingKickerLabel` *(small label above each card's title, default "Case Study" — Session 33)*, `listingCtaLabel` *(text on each listing card, default "Read Case Study →")*, `listingSectionBg` *(sectionBackground — Session 32, background for the listing cards themselves)*, `seoTitle`, `seoDescription`
 
 | Section Type | Fields |
 |-------------|--------|
-| `caseStudiesHero` | heading |
+| `caseStudiesHero` | heading, heroImage{alt} *(diagonal frame, matching every other page hero — Session 33)* |
 | `caseStudiesIntro` | text |
 | `caseStudiesCta` | heading, text, buttons[], sectionBg *(Session 32 — always renders at the very bottom of the page, below the listings, regardless of position in the sections array)* |
 
-**Note:** The case studies listing is always rendered after the sections (not a removable section). Listing cards (Session 32 redesign) show image / title / client / year only — no index number, no category, no hover backdrop; cover image corners slightly rounded; CTA text black + underlined, lightens on hover.
+**Note:** The case studies listing is always rendered after the sections (not a removable section). Listing cards (Session 33 redesign) each sit on their own white, rounded-corner card that scales up slightly on hover; all card text is fixed to dark colors regardless of the section's own background (previously some text was hardcoded black even when the section background was dark — fixed as part of this redesign). Cards show a "Case Study" kicker label, title, client/year, cover image, summary, and CTA.
 
 ---
 
@@ -226,7 +226,7 @@ Fields are organised into groups in Sanity Studio: **Basics**, **Deliverables**,
 | testimonial | reference → testimonial | Client testimonial linked to this project |
 | caseStudySliderImages | array of image | *(Session 32)* "Custom Selection" override for the image slider at the bottom of the case study page. Empty = slider auto-shows every `deliverableImages` image (Content Override Pattern A — see `ARCHITECTURE.md` decision 17). Populated = fully replaces the automatic pull for the slider only; `deliverableImages` itself is never affected. |
 
-**Case study detail page image slider (Session 32):** `CaseStudyImageSlider.tsx`, rendered before the CTA section. Flush-packed, fixed-height carousel, 4 images visible at a time, auto-advances every 4s, chevron arrows for manual scroll, click-to-enlarge via the shared `ImageLightbox` component.
+**Case study detail page image slider:** `CaseStudyImageSlider.tsx`, rendered directly above the testimonial section *(moved above testimonial in Session 33; was previously just above the CTA)*. Full-bleed, edge-to-edge native horizontal scroll — each image keeps its own natural aspect ratio at a fixed height (`h-72 md:h-96`, `w-auto`, no forced cropping) and images sit stacked back-to-back with no gap *(redesigned in Session 33 — previously all images were forced into equal-width cropped boxes)*. White gradient fades on both edges, chevron arrows overlaid on top of the fade, no visible section background (section height hugs the image strip exactly), auto-advances every 4s, click-to-enlarge via the shared `ImageLightbox` component.
 
 **Note on Case Study visibility:**
 - **Sanity sidebar** auto-populates the Case Studies section for any project with at least one `caseStudy*` content field filled — no toggle required
@@ -328,7 +328,9 @@ Standalone documents for the "Example Combinations" section on the services page
 | image | image | No | Card visual on services page (hotspot + alt text) |
 | displayOrder | number | Yes | Sort order fallback (overridden by `orderedCategories` drag order in `servicesPage`) |
 
-**Categories (5):** Branding & Identity, Video & Motion, Photography, Digital Systems & Platform Design, Print & Physical Brand Assets
+**Categories (6, current live order — Session 33):** Video & Videography (`video`), Image & Photography (`photography`), Audio & Sound (`audio-sound`), Motion Graphics (`motion-graphics`), Graphic Design (`graphics-visual-content`), Digital Platforms & Systems (`digital-platforms-systems`)
+
+**Session 33 note:** The former single "Video & Motion Graphics" category was split into two standalone documents — **Video & Videography** (video production only) and **Motion Graphics** (motion graphics + the "Cinematic 3D Showcases" sub-group, kept together per Rebekah's choice). "Photography" was renamed **Image & Photography** and its scope clarified: real image capture and photo editing only (not graphic design), all shot onsite with no indoor studio shoots. See the `orderedCategories[]` override warning above — both the new document and every reorder had to be mirrored into `servicesPage`'s section as a separate step.
 
 **Notes:**
 - `serviceGroups[]` is the primary field for modal content — each group renders a bold animated-underline subheading, an optional description paragraph, and service pill blocks
@@ -569,7 +571,7 @@ All image fields across all schemas include a `roundCrop` boolean sub-field (def
 - **studiosPage (1)** — Hero, intro, studios grid
 - **caseStudiesPage (1)** — Hero, intro
 - **studio (3)** — Machine, Commercial, Creative *(Strategy removed 2026-02-25)*
-- **serviceCategory (10)** — All categories published with descriptions and services lists
+- **serviceCategory (6)** — Video & Videography, Image & Photography, Audio & Sound, Motion Graphics, Graphic Design, Digital Platforms & Systems (Session 33 — split from 5 categories; see section 13 above)
 - **client (33)** — All approved clients
 - **testimonial (12)** — All linked to clients
 - **caseStudy (12)** — All with rich narrative content, linked to clients/studios/testimonials

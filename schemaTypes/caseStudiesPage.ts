@@ -39,6 +39,14 @@ export const caseStudiesPage = defineType({
               type: 'simpleRichText',
               validation: (r) => r.required().min(1),
             }),
+            defineField({
+              name: 'heroImage',
+              title: 'Hero Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Displayed in the diagonal frame on the right side of the hero.',
+              fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+            }),
             disabledField,
           ],
           preview: {
@@ -98,6 +106,14 @@ export const caseStudiesPage = defineType({
       ],
     }),
 
+    defineField({
+      name: 'listingKickerLabel',
+      title: 'Listing Card Kicker Label',
+      type: 'string',
+      group: 'sections',
+      description: 'Small label shown above each case study title on the listing cards. Default: "Case Study".',
+      placeholder: 'Case Study',
+    }),
     defineField({
       name: 'listingCtaLabel',
       title: 'Listing Card CTA Text',

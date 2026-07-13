@@ -72,7 +72,7 @@ export default async function ProjectPage({ params }: Props) {
             style={{ opacity: coverOpacity }}
           />
         )}
-        <div className="relative max-w-5xl mx-auto px-6">
+        <div className="hero-catchup relative max-w-5xl mx-auto px-6">
           {project.studio?.slug?.current && (
             <Link
               href={`/studios/${project.studio.slug.current}`}

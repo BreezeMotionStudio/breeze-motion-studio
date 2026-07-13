@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-07-06 (Session 32)
+**Last Updated:** 2026-07-13 (Session 33)
 
 ---
 
@@ -27,6 +27,10 @@
 | Component library | 🔄 In Progress | Nav, Footer, StudioCard, HowWeWorkSection, HomeStudiosOverview, HomeTestimonials, HomeClientLogos, CaseStudyImageSlider built |
 | Automated bug prevention | ✅ Done | Session 32 — pre-commit hook (husky+lint-staged) + GitHub Actions CI, both apps |
 | Sanity text styling system | ✅ Done | Session 32 — color/font/size + bold/italic/underline on headings/labels/paragraphs sitewide |
+| Services page category split | ✅ Done | Session 33 — "Video & Motion Graphics" split into 2 categories, now 6 total, reordered, descriptions clarified |
+| Case studies redesign (listing + detail) | ✅ Done | Session 33 — white card listing, hero image, sitewide hero animation, full-bleed native-scroll image slider |
+| Contact page dark-bg text contrast | ✅ Done | Session 33 — fixed hardcoded dark text on the details/form section's configurable dark background |
+| Mobile responsiveness audit | 🔄 In Progress | Session 33 — first automated pass done + one real bug fixed (testimonials carousel); full manual pass planned next session |
 | SEO implementation | Not Started | Meta tags, structured data, sitemap |
 | Contact form integration | Not Started | Form + email routing |
 | Performance optimization | Not Started | Image optimization, lazy loading |
@@ -36,6 +40,41 @@
 ---
 
 ## Development Log
+
+### 2026-07-13 (Session 33) — Services Category Split, Case Studies Redesign, Contact Contrast Fix, Mobile Audit
+
+**Services page — category split & reorder:**
+- ✅ Split the single "Video & Motion Graphics" `serviceCategory` document into two standalone documents: **Video & Videography** (video production only) and **Motion Graphics** (motion graphics + "Cinematic 3D Showcases" sub-group, kept together per Rebekah's choice)
+- ✅ Renamed "Photography" → **Image & Photography**; clarified scope in both `shortDescription` and `description` — real image capture and photo editing only (not graphic design), all shot onsite, no indoor studio shoots
+- ✅ Reordered categories twice per Rebekah's feedback; final live order: Video & Videography → Image & Photography → Audio & Sound → Motion Graphics → Graphic Design → Digital Platforms & Systems
+- ✅ Trimmed a stray parenthetical off the Digital Platforms & Systems "Platform Design & Configuration" tag
+- 🐛 **Bug found & fixed:** the new Motion Graphics category didn't appear on the live page after being created and published — root cause was `servicesPage`'s `servicesCategories` section `orderedCategories[]`, a manually curated reference array that overrides the full live category query (see `ARCHITECTURE.md` decision 17, Pattern A) and hadn't been updated to include the new document. Fixed and documented the gotcha directly on the field in `CONTENT_MODEL.md` so it isn't missed again.
+
+**Case studies listing page (`/case-studies`) redesign:**
+- ✅ Each case study now sits on its own white, rounded-corner card that scales up slightly on hover (was a plain divided list row)
+- ✅ All card text switched to fixed dark colors — fixes a latent bug where the CTA link was hardcoded black regardless of the section's actual (possibly dark) background
+- ✅ Added a "Case Study" kicker label above each title — new `listingKickerLabel` field on `caseStudiesPage` (Sanity-managed, not hardcoded, per standing CMS-sync rule)
+- ✅ Added `heroImage` to `caseStudiesHero` (schema + query + component) — now matches every other page's hero pattern
+- ✅ Switched `CASE_STUDIES_PAGE_QUERY` from `*[_type == "caseStudiesPage"][0]` to `*[_id == "caseStudiesPage"][0]` (see `feedback_sanity_singleton_queries` — was violating the standing singleton-query rule)
+
+**Case study detail page (`/case-studies/[slug]`) — image slider redesign:**
+- ✅ Moved `CaseStudyImageSlider` to render directly above the testimonial section (was below it, just above the CTA)
+- ✅ Redesigned to full-bleed, edge-to-edge: images touch both sides of the section completely, with a light white gradient fade on each edge and the prev/next arrows overlaid on top; no section background visible anywhere
+- ✅ Replaced the old equal-width/percentage-transform carousel (which cropped every image into an identical box) with a native `overflow-x-auto` scroll track — each image keeps its own original aspect ratio at a fixed height, stacked back-to-back with no gaps; section height now hugs the image strip exactly (no vertical padding/background)
+
+**Sitewide hero title animation (see `ARCHITECTURE.md` decision 18):**
+- ✅ Rolled out the Studios page's `hero-catchup` load-in animation to every other page header title that lacked it: About (replaced `scroll-catchup`), Services, Contact, Case Studies listing, case study detail, and project detail. Homepage explicitly excluded (already had it).
+
+**Contact page — dark background text contrast fix:**
+- 🐛 **Bug found & fixed:** the contact details/form section's left column ("Get In Touch" heading, email/phone labels + values, note text) had several hardcoded `text-black`/dark-grey classes that assumed the section was always on a white background — but the section's actual configured background in Sanity is a dark gradient, making that text nearly invisible. Added a `resolveIsLight()` check so all five text elements adapt between dark/light variants, matching the pattern already used elsewhere on the site.
+
+**Mobile responsiveness (see `ARCHITECTURE.md` decision 19):**
+- ✅ First automated audit pass — headless-browser screenshots across iPhone SE (375px), iPhone 14 (390px), large Android (412px), and iPad (768px) widths for every page, checking for horizontal overflow and console errors; none found
+- 🐛 **Bug found & fixed:** `HomeTestimonials.tsx` had a hardcoded `VISIBLE = 3` column count with no mobile breakpoint, squeezing testimonial quotes into ~30%-width columns on phones (text wrapping one word per line). Made the visible count viewport-aware (1 / 2 / 3 columns under 640px / 1024px / above) via a resize-aware hook
+- ✅ Set up local-network mobile testing since the site has no domain attached yet: `next dev -H 0.0.0.0` + confirmed Windows firewall already allows inbound Node.js connections — Rebekah confirmed the site loads correctly on her phone over Wi-Fi at the machine's LAN IP
+- ⏳ Full manual mobile pass (beyond the automated check) planned for next session
+
+---
 
 ### 2026-07-06 (Session 32) — Bug Prevention System, Case Studies Redesign, Sitewide Text Styling, Case Study Image Slider
 

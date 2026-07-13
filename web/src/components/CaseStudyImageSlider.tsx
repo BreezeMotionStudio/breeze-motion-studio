@@ -12,8 +12,8 @@ type SliderImage = {
 
 type LightboxState = { src: string; alt: string }
 
-const VISIBLE = 4
 const AUTO_MS = 4000
+const SCROLL_STEP = 420
 
 function ChevronLeft() {
   return (
@@ -35,112 +35,106 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
   const valid = images.filter((img) => !!img.asset?.url)
   const count = valid.length
 
-  const [idx, setIdx] = useState(0)
-  const [transit, setTransit] = useState(true)
-  const idxRef = useRef(0)
+  const trackRef = useRef<HTMLDivElement>(null)
   const pausedRef = useRef(false)
   const [lightbox, setLightbox] = useState<LightboxState | null>(null)
+  const [canScroll, setCanScroll] = useState(false)
 
-  const maxIdx = Math.max(0, count - VISIBLE)
-  const canScroll = count > VISIBLE
-  const widthPct = count > VISIBLE ? 100 / VISIBLE : 100 / Math.max(count, 1)
-  const trackPct = count * widthPct
+  const checkScrollable = useCallback(() => {
+    const el = trackRef.current
+    if (!el) return
+    setCanScroll(el.scrollWidth > el.clientWidth + 4)
+  }, [])
 
-  const handleNext = useCallback(() => {
-    const cur = idxRef.current
-    if (cur >= maxIdx) {
-      setTransit(false)
-      idxRef.current = 0
-      setIdx(0)
-      requestAnimationFrame(() => requestAnimationFrame(() => setTransit(true)))
-    } else {
-      setTransit(true)
-      idxRef.current = cur + 1
-      setIdx(cur + 1)
-    }
-  }, [maxIdx])
-
-  const handlePrev = () => {
-    setTransit(true)
-    const next = idxRef.current <= 0 ? maxIdx : idxRef.current - 1
-    idxRef.current = next
-    setIdx(next)
-  }
-
-  const handleNextRef = useRef(handleNext)
   useEffect(() => {
-    handleNextRef.current = handleNext
-  }, [handleNext])
+    checkScrollable()
+    window.addEventListener('resize', checkScrollable)
+    return () => window.removeEventListener('resize', checkScrollable)
+  }, [checkScrollable])
+
+  const scrollByStep = useCallback((dir: 1 | -1) => {
+    const el = trackRef.current
+    if (!el) return
+    const atEnd = dir === 1 && el.scrollLeft + el.clientWidth >= el.scrollWidth - 4
+    const atStart = dir === -1 && el.scrollLeft <= 4
+    if (atEnd) {
+      el.scrollTo({ left: 0, behavior: 'smooth' })
+    } else if (atStart) {
+      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' })
+    } else {
+      el.scrollBy({ left: dir * SCROLL_STEP, behavior: 'smooth' })
+    }
+  }, [])
+
+  const scrollByStepRef = useRef(scrollByStep)
+  useEffect(() => {
+    scrollByStepRef.current = scrollByStep
+  }, [scrollByStep])
 
   useEffect(() => {
     if (!canScroll) return
     const id = setInterval(() => {
-      if (!pausedRef.current) handleNextRef.current()
+      if (!pausedRef.current) scrollByStepRef.current(1)
     }, AUTO_MS)
     return () => clearInterval(id)
   }, [canScroll])
 
   if (count === 0) return null
 
-  const translatePct = idx * 100 / count
-
   return (
     <section
-      className="bg-black py-16"
+      className="relative overflow-hidden"
       onMouseEnter={() => { pausedRef.current = true }}
       onMouseLeave={() => { pausedRef.current = false }}
     >
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex items-center gap-4 md:gap-6">
+      <div className="relative">
 
-          <button
-            onClick={handlePrev}
-            aria-label="Previous images"
-            className={`shrink-0 text-[#555] hover:text-white group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
-          >
-            <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
-              <ChevronLeft />
-            </span>
-          </button>
-
-          <div className="flex-1 overflow-hidden">
+        <div
+          ref={trackRef}
+          onScroll={checkScrollable}
+          className="flex overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {valid.map((img, i) => (
             <div
-              className="flex"
-              style={{
-                width: `${trackPct}%`,
-                transform: `translateX(-${translatePct}%)`,
-                transition: transit ? 'transform 0.6s ease-in-out' : 'none',
-              }}
+              key={img._key || i}
+              className="h-72 md:h-96 shrink-0 cursor-pointer overflow-hidden group"
+              onClick={() => setLightbox({ src: `${img.asset!.url}?auto=format&q=92`, alt: img.alt || img.caption || '' })}
             >
-              {valid.map((img, i) => (
-                <div
-                  key={img._key || i}
-                  style={{ width: `${100 / count}%` }}
-                  className="h-72 md:h-96 shrink-0 cursor-pointer overflow-hidden group"
-                  onClick={() => setLightbox({ src: `${img.asset!.url}?auto=format&q=92`, alt: img.alt || img.caption || '' })}
-                >
-                  <img
-                    src={`${img.asset!.url}?w=800&auto=format&q=80`}
-                    alt={img.alt || img.caption || ''}
-                    className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-                    loading="lazy"
-                  />
-                </div>
-              ))}
+              <img
+                src={`${img.asset!.url}?w=800&auto=format&q=80`}
+                alt={img.alt || img.caption || ''}
+                className="h-full w-auto object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+                loading="lazy"
+                onLoad={checkScrollable}
+              />
             </div>
-          </div>
-
-          <button
-            onClick={handleNext}
-            aria-label="Next images"
-            className={`shrink-0 text-[#555] hover:text-white group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
-          >
-            <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
-              <ChevronRight />
-            </span>
-          </button>
-
+          ))}
         </div>
+
+        {/* Left/right white fade */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 bg-gradient-to-r from-white/85 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-24 md:w-32 bg-gradient-to-l from-white/85 to-transparent" />
+
+        <button
+          onClick={() => scrollByStep(-1)}
+          aria-label="Previous images"
+          className={`absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-10 text-black/35 hover:text-black group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
+        >
+          <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
+            <ChevronLeft />
+          </span>
+        </button>
+
+        <button
+          onClick={() => scrollByStep(1)}
+          aria-label="Next images"
+          className={`absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-10 text-black/35 hover:text-black group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
+        >
+          <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
+            <ChevronRight />
+          </span>
+        </button>
+
       </div>
 
       {lightbox && (

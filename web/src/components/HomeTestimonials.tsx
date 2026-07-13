@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { resolveBg, resolveTextClass, resolveIsLight } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
@@ -13,20 +13,40 @@ type Testimonial = {
   client?: { name?: string }
 }
 
-const VISIBLE = 3
+function useVisibleCount() {
+  const [visible, setVisible] = useState(3)
+  useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth
+      setVisible(w < 640 ? 1 : w < 1024 ? 2 : 3)
+    }
+    compute()
+    window.addEventListener('resize', compute)
+    return () => window.removeEventListener('resize', compute)
+  }, [])
+  return visible
+}
 
 export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Testimonial[] }) {
   const list = testimonials || []
   const count      = list.length
-  const maxIdx     = Math.max(0, count - VISIBLE)
-  const canScroll  = count > VISIBLE
+  const visible    = useVisibleCount()
+  const maxIdx     = Math.max(0, count - visible)
+  const canScroll  = count > visible
 
-  const cardWidthPct  = count > VISIBLE ? 100 / VISIBLE : 100 / Math.max(count, 1)
+  const cardWidthPct  = count > visible ? 100 / visible : 100 / Math.max(count, 1)
   const trackWidthPct = count * cardWidthPct
 
   const [idx, setIdx]         = useState(0)
   const [transit, setTransit] = useState(true)
   const idxRef                = useRef(0)
+
+  useEffect(() => {
+    if (idxRef.current > maxIdx) {
+      idxRef.current = maxIdx
+      setIdx(maxIdx)
+    }
+  }, [maxIdx])
 
   const handlePrev = () => {
     setTransit(true)

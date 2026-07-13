@@ -226,6 +226,24 @@
 
 **Rule of thumb:** same-document + small set → Pattern A. Cross-document aggregation + potentially-growing set → Pattern B.
 
+### 18. Sitewide Hero Title Load-In Animation — `hero-catchup` (Session 33)
+
+**Decision:** Every page hero title now animates in once on page load via a shared CSS keyframe class, `hero-catchup` (defined in `globals.css`): `translateY(36px) → translateY(0)` over 0.9s with a 0.1s delay, pure CSS, no JS/IntersectionObserver required. Applied to the hero title wrapper on Home, Studios (overview + `[slug]`), About, Services, Contact, Case Studies (listing + `[slug]` detail), and Project detail pages.
+
+**Rationale:** The Studios page already had this exact animation; Rebekah asked for it to be consistent across every other page header. It's distinct from the separate `scroll-catchup` system (IntersectionObserver-driven, fires when a section scrolls into view, initial hidden state applied via JS after a 100ms hydration delay — used for in-page content reveals). A hero at the very top of the page is already in view on load, so the simpler load-once CSS animation is the correct tool there; `scroll-catchup` remains correct for everything below the fold.
+
+**Implementation:** About's hero previously used `scroll-catchup` on its title wrapper — replaced with `hero-catchup`. Services, Contact, Case Studies (listing + `[slug]`), and Project `[slug]` hero title wrappers had no animation at all — added. Homepage was left untouched (already had it, and was explicitly out of scope per Rebekah's instruction).
+
+### 19. Mobile Responsiveness — Fixed `VISIBLE` Counts Don't Reflow (Session 33)
+
+**Decision:** Client-side carousels that compute item width as a percentage of a hardcoded "number of visible items" constant (e.g. `const VISIBLE = 3`) must make that count viewport-aware instead of a single fixed number, or narrow phone screens get item widths ~30% of the screen regardless of content.
+
+**Rationale:** A full mobile audit (headless-browser screenshots across iPhone SE/14, large Android, and iPad widths, checking for horizontal overflow and visually spot-checking key sections) found `HomeTestimonials.tsx` hardcoded to always show 3 columns, causing testimonial quotes to wrap one word per line on a 375px phone. Fixed by computing `visible` from `window.innerWidth` (1 under 640px, 2 under 1024px, 3 above) via a small hook, recalculated on resize, with `idx` clamped to the new `maxIdx` on breakpoint change.
+
+**Process going forward:** Before considering any new carousel/slider component "done," check it at phone width (375–428px) specifically — fixed-count grid/flex layouts are the most common mobile bug in this codebase. `CaseStudyImageSlider.tsx` avoids this class of bug entirely by using native horizontal scroll with each item sized to its own content rather than a percentage-of-N layout (see section 8 in `CONTENT_MODEL.md`).
+
+**Local mobile testing:** With no domain attached yet, real-device testing is done over the local network — `npx next dev -H 0.0.0.0` binds the dev server to all interfaces, then any phone on the same Wi-Fi can open `http://<this-machine's-LAN-IP>:3000`. Windows already has an inbound firewall allow rule for Node.js on both Private and Public profiles, so no firewall changes were needed.
+
 ---
 
 ## Data Flow
