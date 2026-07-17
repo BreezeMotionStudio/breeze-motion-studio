@@ -65,12 +65,28 @@ export const studio = defineType({
       group: 'content',
     }),
     defineField({
+      name: 'heroMediaType',
+      title: 'Studio Page — Hero Media Type',
+      type: 'string',
+      group: 'media',
+      options: {
+        list: [
+          {title: 'Image', value: 'image'},
+          {title: 'Video', value: 'video'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'image',
+      description: 'Choose whether the hero frame on the individual studio page shows an image or a video.',
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Studio Page — Hero Image',
       type: 'image',
       options: {hotspot: true},
       group: 'media',
       description: 'Full-width image for the top of the individual studio page.',
+      hidden: ({document}) => document?.heroMediaType === 'video',
       fields: [
         defineField({
           name: 'alt',
@@ -81,11 +97,21 @@ export const studio = defineType({
       ],
     }),
     defineField({
+      name: 'heroVideo',
+      title: 'Studio Page — Hero Video (Upload)',
+      type: 'file',
+      options: {accept: 'video/*'},
+      group: 'media',
+      description: 'Upload a video file for the top of the individual studio page. Takes priority over the Hero Video URL below.',
+      hidden: ({document}) => document?.heroMediaType !== 'video',
+    }),
+    defineField({
       name: 'heroVideoUrl',
       title: 'Studio Page — Hero Video URL',
       type: 'url',
       group: 'media',
-      description: 'Showcase video for the top of the individual studio page.',
+      description: 'Alternative to uploading a file above — a direct link to a video file. Ignored if a video is uploaded above.',
+      hidden: ({document}) => document?.heroMediaType !== 'video',
     }),
     defineField({
       name: 'displayOrder',

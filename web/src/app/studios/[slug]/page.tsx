@@ -4,6 +4,7 @@ import { client } from '@/lib/sanity/client'
 import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { notFound } from 'next/navigation'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
+import { StudioProjectsGrid } from '@/components/StudioProjectsGrid'
 import { Button } from '@/components/ui/Button'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
@@ -11,15 +12,6 @@ import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
 export const revalidate = 60
 
 type Props = { params: Promise<{ slug: string }> }
-
-type Project = {
-  _id: string
-  title: string
-  slug?: { current: string }
-  coverImage?: { asset?: { url: string }; alt?: string }
-  client?: { name: string; industry?: string }
-  year?: string
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
@@ -48,7 +40,12 @@ export default async function StudioPage({ params }: Props) {
         className={`relative bg-black overflow-hidden py-24 md:py-32 ${resolveTextClass(tmpl?.heroSectionBg)}`}
         style={resolveBg(tmpl?.heroSectionBg)}
       >
-        <HeroImageFrame url={studio.heroImage?.asset?.url} alt={studio.heroImage?.alt || studio.title} />
+        <HeroImageFrame
+          url={studio.heroImage?.asset?.url}
+          videoUrl={studio.heroMediaType === 'video' ? (studio.heroVideo?.asset?.url || studio.heroVideoUrl) : undefined}
+          alt={studio.heroImage?.alt || studio.title}
+          overlay={false}
+        />
         <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
           <Link
             href="/studios"
@@ -56,14 +53,16 @@ export default async function StudioPage({ params }: Props) {
           >
             {tmpl?.backLabel || '← Studios'}
           </Link>
-          <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-4">
-            {studio.title}
-          </h1>
-          {studio.tagline && (
-            <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)]">
-              {studio.tagline}
-            </p>
-          )}
+          <div className="hero-text-underlay">
+            <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-4">
+              {studio.title}
+            </h1>
+            {studio.tagline && (
+              <p className="text-base md:text-lg text-bms-grey-300 font-[family-name:var(--font-body)]">
+                {studio.tagline}
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
@@ -77,7 +76,7 @@ export default async function StudioPage({ params }: Props) {
             <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 block mb-6">
               {tmpl?.overviewLabel ? <SimpleRichText value={tmpl.overviewLabel} /> : 'Studio Overview'}
             </span>
-            <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
+            <p className="font-[family-name:var(--font-body)] text-base md:text-lg text-[#4B4B4B] leading-relaxed max-w-2xl">
               {studio.purpose}
             </p>
             <p className="font-[family-name:var(--font-body)] text-base text-bms-grey-400 leading-relaxed mt-6">
@@ -101,49 +100,7 @@ export default async function StudioPage({ params }: Props) {
           </div>
 
           {studio.projects && studio.projects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {studio.projects.map((project: Project, i: number) => (
-                <Link
-                  key={project._id}
-                  href={project.slug?.current ? `/projects/${project.slug.current}` : '#'}
-                  className="scroll-catchup group"
-                  style={{ transitionDelay: `${i * 80}ms` }}
-                >
-                  <div className="aspect-[4/3] bg-white/5 mb-4 overflow-hidden rounded-sm">
-                    {project.coverImage?.asset?.url ? (
-                      <img
-                        src={project.coverImage.asset.url}
-                        alt={project.coverImage.alt || project.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.2"
-                          className="text-white/20"
-                        >
-                          <rect x="2" y="6" width="20" height="14" rx="2" />
-                          <circle cx="12" cy="13" r="3.5" />
-                          <path d="M7 6l1.5-2.5h5L15 6" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <h3 className="font-[family-name:var(--font-functional)] font-bold text-sm uppercase tracking-wide mb-1 text-white group-hover:underline decoration-white/40 decoration-1 underline-offset-2">
-                    {project.title}
-                  </h3>
-                  <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400">
-                    {project.client?.name}
-                    {project.year && ` — ${project.year}`}
-                  </p>
-                </Link>
-              ))}
-            </div>
+            <StudioProjectsGrid projects={studio.projects} />
           ) : (
             <p className="text-bms-grey-400 font-[family-name:var(--font-body)]">
               Projects will appear here once added in{' '}
@@ -175,7 +132,7 @@ export default async function StudioPage({ params }: Props) {
           <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
             {tmpl?.ctaHeading ? <SimpleRichText value={tmpl.ctaHeading} /> : 'Start a Project'}
           </h2>
-          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
+          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-base md:text-lg leading-relaxed mb-10">
             {tmpl?.ctaText ? <SimpleRichText value={tmpl.ctaText} /> : 'Get in touch to discuss your project.'}
           </p>
           <Button variant="white" size="lg" href={tmpl?.ctaButtonUrl || '/contact'}>

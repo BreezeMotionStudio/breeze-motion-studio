@@ -72,6 +72,21 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
   const translatePct = idx * 100 / count
   const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
 
+  const touchStartX = useRef<number | null>(null)
+  const SWIPE_THRESHOLD = 40
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current
+    touchStartX.current = null
+    if (deltaX > SWIPE_THRESHOLD) handlePrev()
+    else if (deltaX < -SWIPE_THRESHOLD) handleNext()
+  }
+
   if (count === 0) return null
 
   return (
@@ -97,19 +112,19 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
           </h2>
         )}
 
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-3 sm:gap-10">
 
           <button
             onClick={handlePrev}
             aria-label="Previous testimonials"
-            className={`shrink-0 text-[#999999] hover:text-white group cursor-pointer transition-colors duration-300${canScroll ? '' : ' invisible'}`}
+            className={`hidden sm:block shrink-0 px-2 text-[#999999] hover:text-white group cursor-pointer transition-colors duration-300${canScroll ? '' : ' invisible'}`}
           >
             <svg width="16" height="56" viewBox="0 0 16 56" fill="none" className="transition-transform duration-300 group-hover:scale-[1.125]">
               <polyline points="14,2 2,28 14,54" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
 
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             <div
               className="flex"
               style={{
@@ -118,17 +133,17 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
                 transition: transit ? 'transform 0.6s ease-in-out' : 'none',
               }}
             >
-              {list.map((t, i) => (
+              {list.map((t) => (
                 <div
                   key={t._id}
                   style={{ width: `${100 / count}%` }}
-                  className={`px-5${i < count - 1 ? ' border-r border-white/10' : ''}`}
+                  className="px-5"
                 >
                   <blockquote className="text-center">
                     <p className="text-base italic text-bms-grey-200 mb-4 font-[family-name:var(--font-body)] leading-relaxed">
                       &ldquo;{t.quote}&rdquo;
                     </p>
-                    <footer className="text-sm text-bms-grey-400 tracking-wide uppercase">
+                    <footer className="text-sm text-bms-grey-400 tracking-wide uppercase leading-none">
                       {t.attribution}
                       {t.role && ` · ${t.role}`}
                       {t.client?.name && ` · ${t.client.name}`}
@@ -142,7 +157,7 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
           <button
             onClick={handleNext}
             aria-label="Next testimonials"
-            className={`shrink-0 text-[#999999] hover:text-white group cursor-pointer transition-colors duration-300${canScroll ? '' : ' invisible'}`}
+            className={`hidden sm:block shrink-0 px-2 text-[#999999] hover:text-white group cursor-pointer transition-colors duration-300${canScroll ? '' : ' invisible'}`}
           >
             <svg width="16" height="56" viewBox="0 0 16 56" fill="none" className="transition-transform duration-300 group-hover:scale-[1.125]">
               <polyline points="2,2 14,28 2,54" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -152,7 +167,7 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
         </div>
 
         {canScroll && (
-          <div className="flex justify-center gap-2 mt-10">
+          <div className="flex justify-center gap-2 mt-0">
             {Array.from({ length: maxIdx + 1 }, (_, i) => (
               <button
                 key={i}

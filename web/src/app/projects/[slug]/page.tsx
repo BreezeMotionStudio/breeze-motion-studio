@@ -117,7 +117,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
             <div>
               {project.summary && (
-                <p className="font-[family-name:var(--font-body)] text-lg text-[#4B4B4B] leading-relaxed mb-8">
+                <p className="font-[family-name:var(--font-body)] text-base md:text-lg text-[#4B4B4B] leading-relaxed mb-8">
                   {project.summary}
                 </p>
               )}
@@ -147,8 +147,8 @@ export default async function ProjectPage({ params }: Props) {
           const supportingVideos = deliverableVideos.slice(1)
           const supportingGridCols =
             supportingVideos.length === 1 ? 'grid-cols-1 max-w-sm' :
-            supportingVideos.length === 2 ? 'grid-cols-2 max-w-2xl' :
-            'grid-cols-3'
+            supportingVideos.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
+            'grid-cols-1 sm:grid-cols-3'
           return (
             <section key="videos" id="videos" className="bg-black py-16" style={resolveBg(tmpl?.videoSectionBg)}>
               <div className="max-w-5xl mx-auto px-6">

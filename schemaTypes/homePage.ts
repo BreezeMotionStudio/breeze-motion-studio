@@ -35,6 +35,13 @@ export const homePage = defineType({
           fields: [
             defineField({name: 'title', title: 'Title', type: 'simpleRichText'}),
             defineField({name: 'subtitle', title: 'Subtitle', type: 'simpleRichText'}),
+            defineField({
+              name: 'subtitleDisabled',
+              title: 'Hide the subtitle text',
+              type: 'boolean',
+              description: 'When ticked, the subtitle paragraph is hidden but the rest of the Hero (title, background, buttons) still shows.',
+              initialValue: false,
+            }),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),
             defineField({
               name: 'bgImage',

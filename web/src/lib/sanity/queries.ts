@@ -224,6 +224,7 @@ export const STUDIO_BY_SLUG_QUERY = defineQuery(
   `*[_type == "studio" && slug.current == $slug][0]{
     ...,
     heroImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+    heroVideo{asset->{_id, url, mimeType}},
     "projects": *[_type == "project" && references(^._id)] | order(select(manualOrder == true => displayOrder, 9999) asc, completedAt desc){
       _id,
       title,

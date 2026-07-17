@@ -15,28 +15,15 @@ type LightboxState = { src: string; alt: string }
 const AUTO_MS = 4000
 const SCROLL_STEP = 420
 
-function ChevronLeft() {
-  return (
-    <svg width="16" height="56" viewBox="0 0 16 56" fill="none">
-      <polyline points="14,2 2,28 14,54" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function ChevronRight() {
-  return (
-    <svg width="16" height="56" viewBox="0 0 16 56" fill="none">
-      <polyline points="2,2 14,28 2,54" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
   const valid = images.filter((img) => !!img.asset?.url)
   const count = valid.length
 
   const trackRef = useRef<HTMLDivElement>(null)
   const pausedRef = useRef(false)
+  const stoppedRef = useRef(false)
+  const programmaticRef = useRef(false)
+  const programmaticTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [lightbox, setLightbox] = useState<LightboxState | null>(null)
   const [canScroll, setCanScroll] = useState(false)
 
@@ -45,6 +32,12 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
     if (!el) return
     setCanScroll(el.scrollWidth > el.clientWidth + 4)
   }, [])
+
+  const handleScroll = useCallback(() => {
+    checkScrollable()
+    // Only a scroll we didn't trigger ourselves counts as the user taking over.
+    if (!programmaticRef.current) stoppedRef.current = true
+  }, [checkScrollable])
 
   useEffect(() => {
     checkScrollable()
@@ -57,6 +50,11 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
     if (!el) return
     const atEnd = dir === 1 && el.scrollLeft + el.clientWidth >= el.scrollWidth - 4
     const atStart = dir === -1 && el.scrollLeft <= 4
+
+    programmaticRef.current = true
+    if (programmaticTimeoutRef.current) clearTimeout(programmaticTimeoutRef.current)
+    programmaticTimeoutRef.current = setTimeout(() => { programmaticRef.current = false }, 700)
+
     if (atEnd) {
       el.scrollTo({ left: 0, behavior: 'smooth' })
     } else if (atStart) {
@@ -74,7 +72,7 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
   useEffect(() => {
     if (!canScroll) return
     const id = setInterval(() => {
-      if (!pausedRef.current) scrollByStepRef.current(1)
+      if (!pausedRef.current && !stoppedRef.current) scrollByStepRef.current(1)
     }, AUTO_MS)
     return () => clearInterval(id)
   }, [canScroll])
@@ -91,7 +89,7 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
 
         <div
           ref={trackRef}
-          onScroll={checkScrollable}
+          onScroll={handleScroll}
           className="flex overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {valid.map((img, i) => (
@@ -110,30 +108,6 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
             </div>
           ))}
         </div>
-
-        {/* Left/right white fade */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-24 md:w-32 bg-gradient-to-r from-white/85 to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-24 md:w-32 bg-gradient-to-l from-white/85 to-transparent" />
-
-        <button
-          onClick={() => scrollByStep(-1)}
-          aria-label="Previous images"
-          className={`absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-10 text-black/35 hover:text-black group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
-        >
-          <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
-            <ChevronLeft />
-          </span>
-        </button>
-
-        <button
-          onClick={() => scrollByStep(1)}
-          aria-label="Next images"
-          className={`absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-10 text-black/35 hover:text-black group transition-colors duration-300 ${canScroll ? '' : 'invisible'}`}
-        >
-          <span className="block transition-transform duration-300 group-hover:scale-[1.125]">
-            <ChevronRight />
-          </span>
-        </button>
 
       </div>
 

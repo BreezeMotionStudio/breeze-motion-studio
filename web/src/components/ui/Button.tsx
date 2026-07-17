@@ -13,7 +13,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
 }
 
 const BASE =
-  'cursor-pointer rounded-sm font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest transition duration-200 hover:scale-105'
+  'cursor-pointer rounded-sm font-[family-name:var(--font-functional)] text-sm uppercase tracking-widest text-center transition duration-200 hover:scale-105'
 
 type ButtonProps = {
   variant?: ButtonVariant

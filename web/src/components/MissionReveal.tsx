@@ -76,7 +76,7 @@ export function MissionReveal({ text }: { text: any }) {
       />
       <p
         ref={textRef}
-        className="font-[family-name:var(--font-body)] text-lg text-white leading-relaxed italic"
+        className="font-[family-name:var(--font-body)] text-base md:text-lg text-white leading-relaxed italic"
       >
         <SimpleRichText value={text} />
       </p>

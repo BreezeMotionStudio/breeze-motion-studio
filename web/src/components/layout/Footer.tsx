@@ -3,6 +3,63 @@ import Image from "next/image";
 
 type FooterLink = { label: string; href: string };
 type SocialLink = { platform: string; url: string };
+
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 md:w-6 md:h-6">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 md:w-6 md:h-6">
+      <path d="M14 8.5h-1.2c-.6 0-.8.3-.8.9V11H14l-.3 2.5h-1.7V21h-3v-7.5H7V11h2V9.1C9 6.6 10.4 5 12.9 5H14v3.5z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 md:w-6 md:h-6">
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <circle cx="7.5" cy="8" r="0.9" fill="currentColor" stroke="none" />
+      <line x1="7.5" y1="11" x2="7.5" y2="17" strokeLinecap="round" />
+      <path d="M11 17v-4c0-1.5 1-2.5 2.3-2.5S16 11.5 16 13v4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SoundCloudIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 md:w-6 md:h-6">
+      <path d="M7 17h10a3.5 3.5 0 0 0 .5-6.96A5 5 0 0 0 8 9.06 3 3 0 0 0 7 17z" strokeLinejoin="round" />
+      <line x1="3" y1="13.5" x2="3" y2="17" strokeLinecap="round" />
+      <line x1="5" y1="11.5" x2="5" y2="17" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function GenericSocialIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 md:w-6 md:h-6">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9z" />
+    </svg>
+  );
+}
+
+function socialIconFor(platform: string) {
+  const key = platform.trim().toLowerCase();
+  if (key.includes("instagram")) return <InstagramIcon />;
+  if (key.includes("facebook")) return <FacebookIcon />;
+  if (key.includes("linkedin")) return <LinkedInIcon />;
+  if (key.includes("soundcloud")) return <SoundCloudIcon />;
+  return <GenericSocialIcon />;
+}
 type LogoSettings = {
   enabled?: boolean;
   sizePreset?: "small" | "medium" | "large";
@@ -114,11 +171,11 @@ export default function Footer({
         </div>
 
         {/* Col 2 — Quick Links */}
-        <div>
+        <div className="hidden md:block text-center md:text-left">
           <h3 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-5">
             {footerLinksHeading || 'Quick Links'}
           </h3>
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col items-center md:items-start gap-3">
             {links.map(({ label, href }) => (
               <li key={href}>
                 <Link
@@ -133,11 +190,11 @@ export default function Footer({
         </div>
 
         {/* Col 3 — Get In Touch */}
-        <div>
+        <div className="hidden md:block text-center md:text-left">
           <h3 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-5">
             {footerContactHeading || 'Get In Touch'}
           </h3>
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col items-center md:items-start gap-3">
             {email && (
               <li>
                 <a
@@ -163,24 +220,33 @@ export default function Footer({
 
         {/* Col 4 — Follow */}
         {socialLinks && socialLinks.length > 0 && (
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400 mb-5">
               {footerFollowHeading || 'Follow'}
             </h3>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-row flex-wrap justify-center md:justify-start gap-4">
               {socialLinks.map(({ platform, url }) => (
                 <li key={platform}>
                   <a
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-[family-name:var(--font-functional)] text-sm text-bms-grey-300 hover:text-white transition-colors uppercase tracking-wide"
+                    aria-label={platform}
+                    className="block text-white hover:opacity-70 transition-opacity duration-200"
                   >
-                    {platform}
+                    {socialIconFor(platform)}
                   </a>
                 </li>
               ))}
             </ul>
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="md:hidden block mt-5 font-[family-name:var(--font-body)] text-sm text-bms-grey-300 hover:text-white transition-colors"
+              >
+                {email}
+              </a>
+            )}
           </div>
         )}
       </div>

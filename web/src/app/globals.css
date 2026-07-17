@@ -64,8 +64,32 @@ h4, h5, h6 {
   animation: bms-catchup 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
+/* Soft underlay to keep hero text legible where it overlaps a hero image.
+   A single blurred shape behind the whole text block, not a per-letter shadow. */
+.hero-text-underlay {
+  position: relative;
+}
+.hero-text-underlay::before {
+  content: '';
+  position: absolute;
+  inset: -28px -36px;
+  background: radial-gradient(ellipse 70% 75% at center, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0) 75%);
+  filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}
+
 /* Scroll reveal: initial hidden state applied by JS (SSR-safe).
    Only the transitions are defined here so there is no flash on hydration. */
 .scroll-catchup {
   transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Opt out of the scroll-catchup slide-in below the md breakpoint.
+   ScrollObserver sets transform inline via JS, so it must be beaten with !important here. */
+@media (max-width: 767px) {
+  .scroll-catchup-md-only {
+    transform: none !important;
+    transition: none !important;
+  }
 }

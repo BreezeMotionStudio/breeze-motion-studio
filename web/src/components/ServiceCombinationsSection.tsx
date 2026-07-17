@@ -91,7 +91,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
               </h2>
             )}
             {intro && (
-              <p className="font-[family-name:var(--font-body)] text-lg leading-relaxed text-white/50">
+              <p className="font-[family-name:var(--font-body)] text-base md:text-lg leading-relaxed text-white/50">
                 <SimpleRichText value={intro} />
               </p>
             )}
@@ -118,11 +118,20 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                 <div className="absolute inset-0 bg-[#141414] transition-transform duration-500 group-hover/card:scale-[1.06]" />
               )}
               <div className="relative z-10 p-8 md:p-12">
+              {/* Number + title — side by side on mobile */}
+              <div className="flex items-start gap-4 mb-6 md:hidden">
+                <span className="font-[family-name:var(--font-brand)] text-5xl text-white leading-none select-none">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide text-white leading-snug">
+                  {combo.title}
+                </h3>
+              </div>
               {/* Main row */}
               <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-8 md:gap-12">
 
                 {/* Number */}
-                <div className="flex items-start">
+                <div className="hidden md:flex items-start">
                   <span className="font-[family-name:var(--font-brand)] text-5xl md:text-6xl text-white leading-none select-none w-16 inline-block transition-transform duration-300 group-hover/card:scale-[1.08] origin-left">
                     {String(index + 1).padStart(2, '0')}
                   </span>
@@ -130,7 +139,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
 
                 {/* Title + description + image thumbnails */}
                 <div className="flex flex-col">
-                  <h3 className="font-[family-name:var(--font-brand)] text-2xl uppercase tracking-wide text-white mb-2 leading-snug transition-transform duration-300 group-hover/card:scale-[1.04] origin-left">
+                  <h3 className="hidden md:block font-[family-name:var(--font-brand)] text-2xl uppercase tracking-wide text-white mb-2 leading-snug transition-transform duration-300 group-hover/card:scale-[1.04] origin-left">
                     {combo.title}
                   </h3>
                   {combo.subtitle && (

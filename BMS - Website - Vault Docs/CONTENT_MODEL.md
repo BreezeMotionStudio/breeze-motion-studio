@@ -32,7 +32,7 @@ All 6 page singletons share a common architecture: a **`sections[]` array** as t
 
 | Section Type | Fields |
 |-------------|--------|
-| `homeHero` | title, subtitle, bgVideoUrl, bgImage{alt}, buttons[]{label, url, style} |
+| `homeHero` | title, subtitle, subtitleDisabled *(boolean — hides just the subtitle paragraph, keeps title/background/buttons)*, bgVideoUrl, bgImage{alt}, buttons[]{label, url, style} |
 | `homeFeaturedWork` | videoUrl *(YouTube or direct file — main featured video)*, bgImage{alt} |
 | `homeAbout` | heading, text, imageLeftSlides[]{alt} *(array — multiple images enable auto-slideshow)*, imageRightSlides[]{alt} *(array — multiple images enable auto-slideshow)*, imageAspectRatio *(radio: 1:1/2:3/9:16, default 1:1)*, buttons[]{label, url, style}, aboutLogo *(logo rendered at top of centre column with horizontal rule dividers)*, logoMaxWidth *(px, controls logo display width)*, bgVideoUrl, bgImage{alt} |
 | `homeStudiosOverview` | heading, description, parentLogo{alt, roundCrop} *(centered logo displayed above the animated connector tree)*, studioCards[]{studio→, cardImage{alt}, cardVideoUrl}, buttons[]{label, url, style}, bgVideoUrl, bgImage{alt} |

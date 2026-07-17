@@ -323,9 +323,9 @@ export function CoreValuesSection({ values, bgColor, sectionBg, heading }: { val
           {values.map((v, i) => {
             const lit = litValues.has(i)
             return (
-              <div key={v._key || i} className={`group cursor-default${i === 1 ? ' pl-6' : ''}`}>
+              <div key={v._key || i} className={`group cursor-default${i === 1 ? ' lg:pl-6' : ''}`}>
                 <div
-                  className="transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+                  className="border border-[#535D66]/35 rounded-2xl p-6 sm:p-8 h-full transition-transform duration-300 ease-out group-hover:scale-[1.04]"
                   style={lit ? { transform: 'scale(1.04)' } : undefined}
                 >
                   <h3

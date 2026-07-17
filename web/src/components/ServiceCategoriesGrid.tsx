@@ -272,7 +272,7 @@ export function ServiceCategoriesGrid({
               )}
               <button
                 onClick={() => setOpen(null)}
-                className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-black text-white px-6 py-3 rounded-md transition-transform duration-200 hover:scale-[1.06] cursor-pointer"
+                className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-center bg-black text-white px-6 py-3 rounded-md transition-transform duration-200 hover:scale-[1.06] cursor-pointer"
               >
                 {closeLabel || 'Close'}
               </button>

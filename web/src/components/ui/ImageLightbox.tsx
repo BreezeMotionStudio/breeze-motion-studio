@@ -27,7 +27,7 @@ export function ImageLightbox({ src, alt, onClose, viewProjectHref }: Props) {
       onClick={onClose}
     >
       <button
-        className="absolute top-5 right-5 text-white/50 hover:text-white cursor-pointer transition-colors duration-200"
+        className="absolute top-2.5 right-2.5 p-2.5 text-white/50 hover:text-white cursor-pointer transition-colors duration-200"
         onClick={onClose}
         aria-label="Close"
       >

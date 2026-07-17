@@ -1,6 +1,8 @@
 type HeroImageFrameProps = {
   url?: string
+  videoUrl?: string
   alt?: string
+  overlay?: boolean
 }
 
 const CLIP = 'polygon(35% 0%, 100% 0%, 100% 100%, 0% 100%)'
@@ -11,9 +13,10 @@ const CLIP = 'polygon(35% 0%, 100% 0%, 100% 100%, 0% 100%)'
  * The left edge is a diagonal slash; right/top/bottom edges are straight.
  * The containing section must be `relative overflow-hidden`.
  * Renders a visible placeholder when no image URL is provided.
+ * When `videoUrl` is set it takes priority over `url` and plays on loop.
  */
-export function HeroImageFrame({ url, alt = '' }: HeroImageFrameProps) {
-  if (!url) {
+export function HeroImageFrame({ url, videoUrl, alt = '', overlay = true }: HeroImageFrameProps) {
+  if (!url && !videoUrl) {
     return (
       <div
         className="absolute inset-y-0 right-0 w-[57%]"
@@ -39,30 +42,50 @@ export function HeroImageFrame({ url, alt = '' }: HeroImageFrameProps) {
     )
   }
 
-  const src = `${url}?w=1400&auto=format&q=80`
+  const src = url ? `${url}?w=1400&auto=format&q=80` : undefined
   return (
     <>
       <div
         className="absolute inset-y-0 right-0 w-[57%]"
         style={{ clipPath: CLIP }}
       >
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover"
-          fetchPriority="high"
-          loading="eager"
-        />
+        {videoUrl ? (
+          <video
+            className="w-full h-full object-cover"
+            src={videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        ) : (
+          <img
+            src={src}
+            alt={alt}
+            className="w-full h-full object-cover"
+            fetchPriority="high"
+            loading="eager"
+          />
+        )}
       </div>
-      {/* gradient softens the hard diagonal edge into the dark bg */}
-      <div
-        className="absolute inset-y-0 right-0 w-[57%] pointer-events-none z-[1]"
-        style={{
-          clipPath: CLIP,
-          background:
-            'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.25) 40%, transparent 70%)',
-        }}
-      />
+      {overlay && (
+        <>
+          {/* flat scrim keeps hero title/description legible over the image regardless of its brightness */}
+          <div
+            className="absolute inset-y-0 right-0 w-[57%] bg-black/55 pointer-events-none z-[1]"
+            style={{ clipPath: CLIP }}
+          />
+          {/* gradient softens the hard diagonal edge into the dark bg */}
+          <div
+            className="absolute inset-y-0 right-0 w-[57%] pointer-events-none z-[1]"
+            style={{
+              clipPath: CLIP,
+              background:
+                'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.25) 40%, transparent 70%)',
+            }}
+          />
+        </>
+      )}
     </>
   )
 }

@@ -51,7 +51,7 @@ function CaseStudiesIntro({ s }: { s: Section }) {
   return (
     <section className="bg-white border-b border-[#E6E6E6]">
       <div className="max-w-5xl mx-auto px-6 py-12 md:py-14">
-        <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+        <p className="text-[#4B4B4B] text-base md:text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />
         </p>
       </div>
@@ -152,7 +152,7 @@ function CaseStudiesCta({ s }: { s: Section }) {
           <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6"><SimpleRichText value={s.heading} /></h2>
         )}
         {s.text && (
-          <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+          <p className="text-base md:text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
             <SimpleRichText value={s.text} />
           </p>
         )}

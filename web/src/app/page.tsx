@@ -105,18 +105,18 @@ function HomeHero({ s }: { s: Section }) {
   const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   return (
     <section
-      className={`relative z-10 flex items-center justify-center min-h-screen bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} overflow-hidden`}
+      className={`relative z-10 flex items-center justify-center min-h-[85svh] sm:min-h-screen bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} overflow-hidden`}
       style={resolveBg(s.sectionBg, s.bgColor)}
     >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} priority />
       {(s.title || s.subtitle || s.buttons?.length > 0) && (
         <div className="hero-catchup relative z-10 text-center max-w-4xl px-6">
           {s.title && (
-            <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide mb-6">
+            <h1 className="font-[family-name:var(--font-brand)] text-[clamp(1.1rem,6vw,4.5rem)] uppercase tracking-wide whitespace-nowrap mb-10">
               <SimpleRichText value={s.title} />
             </h1>
           )}
-          {s.subtitle && (
+          {s.subtitle && !s.subtitleDisabled && (
             <div className="relative mb-10">
               <div
                 className="absolute pointer-events-none"
@@ -262,9 +262,22 @@ const ABOUT_ASPECT_CLASS: Record<string, string> = {
   '9:16': 'aspect-[9/16]',
 }
 
+function plainTextFromRichText(value: any): string {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  if (!Array.isArray(value)) return ''
+  return value
+    .map((block: any) => (block.children || []).map((c: any) => c.text || '').join(''))
+    .join(' ')
+    .trim()
+}
+
 function HomeAbout({ s }: { s: Section }) {
   const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   const aspectClass = ABOUT_ASPECT_CLASS[s.imageAspectRatio ?? '1:1'] ?? 'aspect-square'
+  const headingText = plainTextFromRichText(s.heading)
+  const [headingFirstWord, ...headingRestWords] = headingText.split(' ')
+  const headingRest = headingRestWords.join(' ')
   return (
     <section
       className={`relative overflow-hidden bg-black ${resolveTextClass(s.sectionBg, s.bgColor)} py-24`}
@@ -274,7 +287,8 @@ function HomeAbout({ s }: { s: Section }) {
       <div className="scroll-catchup relative z-10 max-w-6xl mx-auto px-6">
         {s.heading && (
           <h2 className="font-[family-name:var(--font-brand)] text-xl sm:text-3xl md:text-4xl uppercase tracking-wide mb-10 text-center">
-            <SimpleRichText value={s.heading} />
+            <span className="block">{headingFirstWord}</span>
+            {headingRest && <span className="block">{headingRest}</span>}
           </h2>
         )}
 
@@ -298,7 +312,7 @@ function HomeAbout({ s }: { s: Section }) {
             </div>
 
             {s.text && (
-              <p className="text-lg text-bms-grey-300 font-[family-name:var(--font-body)] leading-relaxed">
+              <p className="text-base md:text-lg text-bms-grey-300 font-[family-name:var(--font-body)] leading-relaxed">
                 <SimpleRichText value={s.text} />
               </p>
             )}
@@ -339,7 +353,7 @@ function HomeCta({ s }: { s: Section }) {
           <h2 className="text-xl sm:text-3xl md:text-4xl font-semibold mb-6"><SimpleRichText value={s.heading} /></h2>
         )}
         {s.text && (
-          <p className="text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
+          <p className="text-base md:text-lg text-bms-grey-300 mb-10 font-[family-name:var(--font-body)]">
             <SimpleRichText value={s.text} />
           </p>
         )}

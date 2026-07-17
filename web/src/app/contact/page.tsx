@@ -60,7 +60,7 @@ function ContactIntro({ s }: { s: Section }) {
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
         <PortableTextContent
           value={s.content}
-          className="text-[#4B4B4B] max-w-2xl [&_p]:text-[#4B4B4B] [&_p]:text-lg [&_p]:leading-relaxed"
+          className="text-[#4B4B4B] max-w-2xl [&_p]:text-[#4B4B4B] [&_p]:text-base md:[&_p]:text-lg [&_p]:leading-relaxed"
         />
       </div>
     </section>
@@ -162,7 +162,7 @@ function ContactDetailsForm({
               />
               <textarea
                 placeholder={s.messagePlaceholder || 'Tell us about your project'}
-                rows={6}
+                rows={9}
                 className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)] resize-none"
               />
               <div>

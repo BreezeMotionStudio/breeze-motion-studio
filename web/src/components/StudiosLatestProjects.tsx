@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { sectionBgStyle } from '@/lib/sectionBackground'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
+
+const SWIPE_THRESHOLD = 40
 
 type Project = {
   _id: string
@@ -75,6 +77,7 @@ function ProjectCard({ project }: { project: Project }) {
 export function StudiosLatestProjects({ s, projects }: Props) {
   const [page, setPage] = useState(0)
   const bgStyle = s.sectionBg ? sectionBgStyle(s.sectionBg) : undefined
+  const touchStartX = useRef<number | null>(null)
 
   const source = projects.slice(0, 6)
   const totalPages = Math.ceil(source.length / PER_PAGE)
@@ -82,6 +85,22 @@ export function StudiosLatestProjects({ s, projects }: Props) {
 
   function nextPage() {
     setPage((p) => (p + 1) % Math.max(1, totalPages))
+  }
+
+  function prevPage() {
+    setPage((p) => (p - 1 + Math.max(1, totalPages)) % Math.max(1, totalPages))
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current
+    touchStartX.current = null
+    if (deltaX > SWIPE_THRESHOLD) prevPage()
+    else if (deltaX < -SWIPE_THRESHOLD) nextPage()
   }
 
   return (
@@ -112,7 +131,7 @@ export function StudiosLatestProjects({ s, projects }: Props) {
               </div>
               <button
                 onClick={nextPage}
-                className="w-9 h-9 flex items-center justify-center border border-white/20 hover:border-bms-accent hover:text-bms-accent transition-colors duration-200"
+                className="w-11 h-11 flex items-center justify-center border border-white/20 hover:border-bms-accent hover:text-bms-accent transition-colors duration-200"
                 aria-label="Next projects"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -125,7 +144,7 @@ export function StudiosLatestProjects({ s, projects }: Props) {
 
         {/* Grid */}
         {projects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             {visible.map((project) => (
               <ProjectCard key={project._id} project={project} />
             ))}

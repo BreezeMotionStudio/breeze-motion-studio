@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-07-13 (Session 33)
+**Last Updated:** 2026-07-16 (Session 35)
 
 ---
 
@@ -30,7 +30,7 @@
 | Services page category split | ✅ Done | Session 33 — "Video & Motion Graphics" split into 2 categories, now 6 total, reordered, descriptions clarified |
 | Case studies redesign (listing + detail) | ✅ Done | Session 33 — white card listing, hero image, sitewide hero animation, full-bleed native-scroll image slider |
 | Contact page dark-bg text contrast | ✅ Done | Session 33 — fixed hardcoded dark text on the details/form section's configurable dark background |
-| Mobile responsiveness audit | 🔄 In Progress | Session 33 — first automated pass done + one real bug fixed (testimonials carousel); full manual pass planned next session |
+| Mobile responsiveness audit | ✅ Done | Session 34 — full manual/real-device pass across every page, on top of Session 33's automated pass; see decision 20 in `ARCHITECTURE.md` |
 | SEO implementation | Not Started | Meta tags, structured data, sitemap |
 | Contact form integration | Not Started | Form + email routing |
 | Performance optimization | Not Started | Image optimization, lazy loading |
@@ -40,6 +40,66 @@
 ---
 
 ## Development Log
+
+### 2026-07-16 (Session 35) — Dev Server Hang Fix, Studio Hero Text Shadow Redesign
+
+**Dev server unresponsive ("website won't load"):**
+- 🐛 **Bug found & fixed:** the `web/` dev server process was still listening on port 3000 but not responding to any request (hung, not crashed/stopped) — `curl` timed out after 15s instead of getting a connection refused. Killed the hung `next dev` process and started a fresh one; confirmed HTTP 200 on reload. Distinct from the known "server stopped" failure mode already covered by `feedback_dev_server_must_stay_running` session memory — this one still shows up as LISTENING in `netstat`, so a port check alone isn't enough to confirm the server is actually healthy; an HTTP request is needed.
+
+**Studio sub-page hero text shadow (see `ARCHITECTURE.md` decision 21):**
+- ✅ Replaced `.hero-text-shadow` (`text-shadow`, applied directly to the hero `<h1>`/`<p>` on `studios/[slug]/page.tsx`) with `.hero-text-underlay` — a single blurred radial-gradient shape behind the whole title+tagline block via a `::before` pseudo-element, instead of a shadow outlining each letter
+- ✅ Old class removed from `globals.css` (was unused elsewhere); title + tagline now wrapped in one `<div className="hero-text-underlay">` instead of each carrying the shadow class individually
+
+---
+
+### 2026-07-15 (Session 34) — Full Mobile Responsiveness Pass (Every Page)
+
+**Goal:** Complete the manual/real-device mobile pass deferred from Session 33 — go page by page, fix what's actually broken or cramped on a phone, verify each change on the LAN dev server.
+
+**Homepage:**
+- ✅ Hero: added `homeHero.subtitleDisabled` boolean field (Sanity-editable — hides just the subtitle text, keeps title/bg/buttons); title locked to one line (`whitespace-nowrap` + fluid `clamp(1.1rem,6vw,4.5rem)` font-size instead of fixed breakpoint steps) so "Breeze Motion Studio" can never wrap mid-word; mobile hero height changed to `min-h-[85svh] sm:min-h-screen` so the title/buttons sit closer to true center on a phone (accounts for mobile browser chrome); title→button gap increased (`mb-6`→`mb-10`)
+- ✅ About section: description text-size stepped down for mobile (`text-base md:text-lg`); heading split into two stacked lines ("About" / "Breeze Motion Studio") via plain-text extraction + word-split, matching the `CoreValuesSection` stacked-title convention
+- ✅ Call to Action section: description text matched to the About section's sizing
+- 🐛 **Bug found & fixed:** `HomeClientLogos.tsx` had the same hardcoded-`VISIBLE`-count bug as Session 33's testimonials fix (`LOGO_VISIBLE = 7` regardless of viewport) — made viewport-aware (2/4/7)
+- ✅ Testimonials ("What Our Clients Say"): chevron arrows hidden on mobile (`hidden sm:block` — were eating too much of a 375px screen alongside a fixed `gap-10`, squashing the quote column); added touch-swipe (40px threshold, reuses existing `nextPage`/`prevPage`); gap above the dot indicators tightened (`mt-10`→`mt-0` + `leading-none` on the footer, since the real remaining gap was line-height slack, not the margin); vertical divider line between quote cards removed entirely
+- ✅ Footer: social links switched from text labels to inline SVG icons (Instagram/Facebook/LinkedIn/SoundCloud + generic fallback), white, sized up on mobile (`w-10 h-10` vs `w-6 h-6` desktop); phone number and the "Stock Footage" social link removed from `siteSettings` in Sanity (content only, no schema change); Quick Links column hidden on mobile (`hidden md:block`); "Get In Touch" heading hidden on mobile while the email moved to render under the social icons instead
+
+**About page:**
+- ✅ Founder/Studio card backgrounds: horizontal bleed (`-inset-x-7`, tuned for desktop) was actually exceeding the mobile container's own padding, pushing the card past the screen edge — scoped to `-inset-x-3 md:-inset-x-7`
+- 🐛 **Bug found & fixed:** the two cards' vertical bleed (`-inset-y-8`, 32px each) exactly canceled out the grid's row-gap (`gap-16`, 64px) on mobile, leaving zero visible space between the stacked cards — fixed via `gap-y-[5.5rem] md:gap-y-16`
+- ✅ Scroll-triggered slide-up animation disabled on mobile only for these two cards, via a new `.scroll-catchup-md-only` CSS class (media-query + `!important`, since `ScrollObserver.tsx` sets the transform inline via JS and a plain responsive class can't win against that)
+- ✅ Overview image repositioned: on mobile it now renders as a grid item between the Founder/Studio cards (was below both, full-bleed via `-mx-7`) — the mobile instance uses `-mx-6` for true edge-to-edge (the only horizontal constraint below `lg` is the wrapper's own `px-6`, no viewport-width trick needed); desktop keeps the original position/treatment via `hidden md:block`
+- ✅ Core Values: each value now sits in an outlined rounded box (`border border-[#535D66]/35 rounded-2xl`, `p-6 sm:p-8`) — applied to the same div that already handles the hover/scroll scale, so the border scales with it
+- 🐛 **Bug found & fixed (same session, code audit):** `CoreValuesSection.tsx`'s second value card had an unconditional `pl-6` — a desktop-only offset for the SVG connector-line geometry (already disabled below 1024px) — leaking an unexplained indent onto mobile/tablet; scoped to `lg:pl-6`
+
+**Studios pages:**
+- ✅ Listing page: bigger gap between studio cards on mobile (`gap-3`→`gap-6 md:gap-3`); more top/bottom section padding on mobile (`py-10` vs `md:py-4 lg:py-6 xl:py-8`, decoupled from horizontal padding)
+- 🐛 **Bug found & fixed:** Commercial Studio's card title was nearly unreadable — its photo has a bright white coat filling the bottom-left corner, and the existing diagonal overlay gradient (already configured at max 100% opacity) is only fully opaque right at the corner pixel. Added a fixed `bg-gradient-to-t from-black/85 via-black/25 to-transparent` scrim behind the text on all three cards, independent of the configurable diagonal gradient — protects against any future photo with a bright bottom area, not just this one
+- ✅ `StudiosHighlights.tsx` rebuilt to exactly match `StudiosLatestProjects.tsx` — same header (label + line + dot pagination + single next-arrow button, no more chevron-flanked sliding track or 3s auto-advance), same card sizing (`text-xl` title, `text-sm` tagline, `mb-4`, 24×24 placeholder icon), same `grid-cols-1 md:grid-cols-3` (dropped the old `sm:grid-cols-2` step)
+- ✅ Swipe-to-navigate added to both `StudiosHighlights` and `StudiosLatestProjects` (the latter needed a `prevPage` function added — it only had forward-cycling via its button before)
+- ✅ Studio detail hero: `HeroImageFrame.tsx` (shared across every page hero — About/Services/Studios/Case Studies/Contact too) had only a diagonal-edge-blend gradient, not a guaranteed-legibility one; added a flat `bg-black/55` scrim across the whole clipped image area
+- ✅ New `StudioProjectsGrid.tsx` client component, extracted from the inline projects grid: mobile shows 6 with a load-more arrow that reveals 6 more per click (stacks downward, stays visible until everything's shown); desktop/tablet always render every project with no cap, rows just keep adding as more are added in Sanity. Arrow style matched to the borderless carousel-chevron pattern used elsewhere (not a bordered/circular button) — 56×28 downward chevron, no border, grey→white hover + slight scale
+
+**Services page:**
+- ✅ Example service cards: number + title now sit side by side on mobile (`flex items-start`, top-aligned so a wrapping title only extends downward, never up past the number) — was stacked vertically (number row, then title row) since the desktop 3-column grid collapses to 1 column on mobile; title sized down to `text-lg` for the mobile row specifically (desktop title unaffected, separate element)
+
+**Contact page:**
+- ✅ Message textarea made taller (`rows={6}`→`rows={9}`)
+
+**Case study detail pages:**
+- ✅ `CaseStudyImageSlider.tsx`: removed the left/right white fade overlays and the prev/next chevron arrow buttons (native touch-scroll/swipe already works without them); quote/testimonial text sized down (`text-xl`→`text-base`)
+- 🐛 **Bug found & fixed:** after removing the arrow buttons, added `onTouchStart`/`onPointerDown`/`onWheel` to permanently stop the 4s auto-scroll on user interaction — but those events fire for *any* touch/wheel input landing on the element, including just scrolling the page vertically past that section, so auto-scroll appeared to die immediately. Fixed by flagging the auto-scroll's own `scrollBy`/`scrollTo` calls (`programmaticRef`, ~700ms) and only treating a `scroll` event as "user took over" when that flag isn't set
+- ✅ Narrative Challenge/Approach/Outcome image placeholders were `hidden md:flex` (invisible on mobile) — made visible on all breakpoints so it's clear where an image will go once one is uploaded
+
+**Sitewide:**
+- ✅ Body-paragraph `text-lg` (18px, no smaller mobile step) standardized to `text-base md:text-lg` across every page intro/CTA and several shared components (`AboutMission`, `MissionReveal`, `ServiceCombinationsSection`) — the same fix originally piloted on the homepage About/CTA sections
+- ✅ Tap targets under ~44px bumped: Nav hamburger (24px→padded to ~44px), `ImageLightbox` close button, carousel chevrons in `HomeTestimonials`/`StudiosHighlights`/`CaseStudyImageSlider`, `StudiosLatestProjects` pagination button (36px→44px)
+- ✅ Shared `Button` component: added `text-center` to guard against a long label wrapping to two lines and defaulting to left-aligned on a narrow phone; same fix applied to two one-off buttons outside the shared component (services modal "Close", desktop Nav CTA)
+- 🐛 **Bug found & fixed:** `projects/[slug]/page.tsx`'s supporting-videos grid used a bare `grid-cols-3`/`grid-cols-2` with no mobile breakpoint, squeezing video embeds into ~110px columns on a phone — fixed to `grid-cols-1 sm:grid-cols-3` / `grid-cols-1 sm:grid-cols-2`
+
+**End-of-session verification:** full `tsc --noEmit` (0 errors), `npm run lint` (0 errors, 145 pre-existing warnings — all `no-explicit-any`/`set-state-in-effect`/`no-img-element`, none new), production `next build` (succeeds), and an HTTP smoke test of every static page plus all dynamic routes (all studios, the one case-study-enabled project) — all 200s. One pre-existing unpublished draft found (`client` doc "AE Manufacturing [Pty] Ltd.", created February 2026, unrelated to this session) — left untouched, not this session's to resolve. 🐛 **Bug found & fixed during this final check:** `StudioProjectsGrid.tsx`'s load-more arrow had been temporarily forced visible (`hasMore || true`) earlier in the session so Rebekah could review its design against real carousel-arrow styling on a studio with only 1 project — reverted to the real `hasMore` condition before ending the session.
+
+---
 
 ### 2026-07-13 (Session 33) — Services Category Split, Case Studies Redesign, Contact Contrast Fix, Mobile Audit
 
@@ -1201,6 +1261,7 @@
 8. **Contact form** — Form implementation + email routing to rebekah@breezemotionstudio.com
 9. **SEO implementation** — Meta tags, OG images, sitemap.xml, structured data
 10. **Domain + deployment** — DNS config, Vercel production deployment
+11. **Swap studio sub-page hero images for video** — `studios/[slug]/page.tsx` hero currently uses static images per studio; Rebekah wants these eventually replaced with video (noted 2026-07-17, not scheduled to a session yet)
 
 ---
 

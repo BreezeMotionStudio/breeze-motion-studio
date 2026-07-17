@@ -52,7 +52,7 @@ function StudiosHero({ s }: { s: Section }) {
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
-      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} overlay={false} />
       <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading ? <SimpleRichText value={s.heading} /> : 'Studios'}
@@ -76,7 +76,7 @@ function StudiosIntro({ s }: { s: Section }) {
         </>
       )}
       <div className="scroll-catchup relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
-        <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+        <p className="text-[#4B4B4B] text-base md:text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />
         </p>
       </div>
@@ -99,8 +99,8 @@ function StudiosGrid({ studios, sectionBg, exploreLabel }: { studios: Studio[]; 
     )
   }
   return (
-    <section className="bg-black p-3 md:p-4 lg:p-6 xl:p-8" style={bgStyle}>
-      <div className="flex flex-wrap justify-center gap-3">
+    <section className="bg-black px-3 md:px-4 lg:px-6 xl:px-8 py-10 md:py-4 lg:py-6 xl:py-8" style={bgStyle}>
+      <div className="flex flex-wrap justify-center gap-6 md:gap-3">
         {studios.map((studio) => (
           <Link
             key={studio._id}
@@ -123,6 +123,8 @@ function StudiosGrid({ studios, sectionBg, exploreLabel }: { studios: Studio[]; 
                 background: `linear-gradient(${studio.overlayDirection ?? 'to top right'}, rgba(0,0,0,${((studio.overlayOpacity ?? 70) / 100).toFixed(2)}) 0%, rgba(0,0,0,0) 65%)`,
               }}
             />
+            {/* Fixed scrim behind the text — keeps title/tagline legible regardless of what's in the bottom of the photo */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
               <h2 className="font-[family-name:var(--font-brand)] text-3xl md:text-4xl uppercase tracking-wide text-white mb-2 leading-none">
                 {studio.title}
@@ -167,7 +169,7 @@ function StudiosCta({ s }: { s: Section }) {
           </h2>
         )}
         {s.text && (
-          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
+          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-base md:text-lg leading-relaxed mb-10">
             <SimpleRichText value={s.text} />
           </p>
         )}

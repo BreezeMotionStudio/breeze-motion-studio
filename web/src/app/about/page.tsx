@@ -36,7 +36,7 @@ function AboutHero({ s }: { s: Section }) {
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
-      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} overlay={false} />
       <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide leading-none">
           {s.heading ? <SimpleRichText value={s.heading} /> : "About"}
@@ -60,7 +60,7 @@ function AboutIntro({ s }: { s: Section }) {
         </>
       )}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
-        <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+        <p className="text-[#4B4B4B] text-base md:text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />
         </p>
       </div>
@@ -84,11 +84,11 @@ function AboutOverview({ s }: { s: Section }) {
         </>
       )}
       <div className="relative z-10 max-w-5xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-[5.5rem] md:gap-y-16 md:items-stretch">
           {s.mission && (
-            <div className="scroll-catchup h-full">
+            <div className="scroll-catchup scroll-catchup-md-only h-full">
               <div className="relative flex flex-col text-center transition-transform duration-500 ease-out hover:scale-[1.02] h-full">
-              <div className="absolute -inset-y-8 -inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.founderCard)}>
+              <div className="absolute -inset-y-8 -inset-x-3 md:-inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.founderCard)}>
                 {s.founderCard?.bgType === 'image' && s.founderCard?.bgImage?.asset?.url && (
                   <img src={s.founderCard.bgImage.asset.url} alt={s.founderCard.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
                 )}
@@ -123,10 +123,22 @@ function AboutOverview({ s }: { s: Section }) {
               </div>
             </div>
           )}
+          {s.overviewImage?.asset?.url && (
+            <div className="md:hidden -mx-6">
+              <img
+                src={`${s.overviewImage.asset.url}?auto=format&q=80`}
+                alt={s.overviewImage.alt || ''}
+                className="w-full h-auto rounded-sm"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+          )}
+
           {s.overview && (
-            <div className="scroll-catchup h-full" style={{ transitionDelay: '300ms' }}>
+            <div className="scroll-catchup scroll-catchup-md-only h-full" style={{ transitionDelay: '300ms' }}>
               <div className="relative flex flex-col text-center transition-transform duration-500 ease-out hover:scale-[1.02] h-full">
-              <div className="absolute -inset-y-8 -inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.studioCard)}>
+              <div className="absolute -inset-y-8 -inset-x-3 md:-inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.studioCard)}>
                 {s.studioCard?.bgType === 'image' && s.studioCard?.bgImage?.asset?.url && (
                   <img src={s.studioCard.bgImage.asset.url} alt={s.studioCard.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
                 )}
@@ -149,7 +161,7 @@ function AboutOverview({ s }: { s: Section }) {
           )}
         </div>
         {s.overviewImage?.asset?.url && (
-          <div className="scroll-catchup -mx-7 mt-20">
+          <div className="hidden md:block scroll-catchup -mx-7 mt-20">
             <img
               src={`${s.overviewImage.asset.url}?auto=format&q=80`}
               alt={s.overviewImage.alt || ''}
@@ -242,7 +254,7 @@ function AboutCta({ s }: { s: Section }) {
           </h2>
         )}
         {s.text && (
-          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
+          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-base md:text-lg leading-relaxed mb-10">
             <SimpleRichText value={s.text} />
           </p>
         )}

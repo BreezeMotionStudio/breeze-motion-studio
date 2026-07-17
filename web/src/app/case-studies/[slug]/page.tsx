@@ -45,7 +45,7 @@ function NarrativeImage({ url, alt }: { url?: string; alt?: string }) {
     )
   }
   return (
-    <div className="hidden md:flex aspect-[4/3] items-center justify-center border border-dashed border-white/15 rounded-sm bg-white/5">
+    <div className="flex aspect-[4/3] items-center justify-center border border-dashed border-white/15 rounded-sm bg-white/5">
       <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-white/25">
         Image
       </span>
@@ -148,14 +148,14 @@ export default async function CaseStudyPage({ params }: Props) {
 
           {/* Summary */}
           {cs.summary && (
-            <p className="font-[family-name:var(--font-body)] text-lg text-white/70 leading-relaxed mb-8">
+            <p className="font-[family-name:var(--font-body)] text-base md:text-lg text-white/70 leading-relaxed mb-8">
               {cs.summary}
             </p>
           )}
 
           {/* Overview */}
           {cs.caseStudyOverview && (
-            <p className={`font-[family-name:var(--font-body)] text-lg text-white/70 leading-relaxed ${cs.summary ? 'pt-8 border-t border-white/8' : ''}`}>
+            <p className={`font-[family-name:var(--font-body)] text-base md:text-lg text-white/70 leading-relaxed ${cs.summary ? 'pt-8 border-t border-white/8' : ''}`}>
               {cs.caseStudyOverview}
             </p>
           )}
@@ -164,7 +164,7 @@ export default async function CaseStudyPage({ params }: Props) {
           {!cs.summary && !cs.caseStudyOverview && cs.description && (
             <PortableTextContent
               value={cs.description}
-              className="text-white/60 [&_p]:font-[family-name:var(--font-body)] [&_p]:text-lg [&_p]:leading-relaxed [&_p]:mb-3"
+              className="text-white/60 [&_p]:font-[family-name:var(--font-body)] [&_p]:text-base md:[&_p]:text-lg [&_p]:leading-relaxed [&_p]:mb-3"
             />
           )}
 
@@ -226,7 +226,7 @@ export default async function CaseStudyPage({ params }: Props) {
                   </h2>
                   <PortableTextContent
                     value={cs.caseStudyChallenge}
-                    className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-lg [&_p]:text-white/70 [&_p]:leading-relaxed [&_p]:mb-4"
+                    className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-base md:[&_p]:text-lg [&_p]:text-white/70 [&_p]:leading-relaxed [&_p]:mb-4"
                   />
                 </div>
                 <NarrativeImage url={cs.caseStudyChallengeImage?.asset?.url} alt={cs.caseStudyChallengeImage?.alt} />
@@ -241,7 +241,7 @@ export default async function CaseStudyPage({ params }: Props) {
                   </h2>
                   <PortableTextContent
                     value={cs.caseStudyApproach}
-                    className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-lg [&_p]:text-white/70 [&_p]:leading-relaxed [&_p]:mb-4"
+                    className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-base md:[&_p]:text-lg [&_p]:text-white/70 [&_p]:leading-relaxed [&_p]:mb-4"
                   />
                 </div>
                 <NarrativeImage url={cs.caseStudyApproachImage?.asset?.url} alt={cs.caseStudyApproachImage?.alt} />
@@ -256,7 +256,7 @@ export default async function CaseStudyPage({ params }: Props) {
                   </h2>
                   <PortableTextContent
                     value={cs.caseStudyOutcome}
-                    className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-lg [&_p]:text-white/70 [&_p]:leading-relaxed [&_p]:mb-4"
+                    className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-base md:[&_p]:text-lg [&_p]:text-white/70 [&_p]:leading-relaxed [&_p]:mb-4"
                   />
                 </div>
                 <NarrativeImage url={cs.caseStudyOutcomeImage?.asset?.url} alt={cs.caseStudyOutcomeImage?.alt} />
@@ -278,7 +278,7 @@ export default async function CaseStudyPage({ params }: Props) {
         >
           <div className="scroll-catchup max-w-3xl mx-auto px-6 text-center">
             <blockquote>
-              <p className="font-[family-name:var(--font-body)] text-xl text-white/75 leading-relaxed mb-6 italic">
+              <p className="font-[family-name:var(--font-body)] text-base text-white/75 leading-relaxed mb-6 italic">
                 &ldquo;{cs.testimonial.quote}&rdquo;
               </p>
               <footer className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
@@ -311,7 +311,7 @@ export default async function CaseStudyPage({ params }: Props) {
           <h2 className="font-[family-name:var(--font-brand)] text-2xl sm:text-4xl md:text-5xl uppercase tracking-wide leading-none mb-6">
             {ctaHeading}
           </h2>
-          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-lg leading-relaxed mb-10">
+          <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-base md:text-lg leading-relaxed mb-10">
             {ctaText}
           </p>
           <Button variant="white" size="lg" href={ctaButtonUrl}>

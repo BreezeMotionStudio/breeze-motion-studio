@@ -244,6 +244,37 @@
 
 **Local mobile testing:** With no domain attached yet, real-device testing is done over the local network — `npx next dev -H 0.0.0.0` binds the dev server to all interfaces, then any phone on the same Wi-Fi can open `http://<this-machine's-LAN-IP>:3000`. Windows already has an inbound firewall allow rule for Node.js on both Private and Public profiles, so no firewall changes were needed.
 
+### 20. Mobile Responsiveness — Full Manual Pass Complete (Session 34)
+
+**Decision:** The Session 33 automated pass + the Session 34 full manual/interactive pass (real-device testing over LAN, page by page) are both complete. Every page has been reviewed and fixed for mobile: Home, About, Studios (listing + detail), Services, Case Studies (listing + detail), Contact, Footer.
+
+**Real bugs found and fixed this session (beyond the Session 33 testimonials carousel):**
+- `HomeClientLogos.tsx` — same fixed-`VISIBLE`-count bug as Session 33's testimonials fix; made viewport-aware (2/4/7 under 640px/1024px/above)
+- `CoreValuesSection.tsx` — the second value card had an unconditional `pl-6` offset tuned only for the desktop SVG-connector-line geometry (which the component already disables below 1024px); leaked onto mobile/tablet as a visible, unexplained indent. Scoped to `lg:pl-6`.
+- Tap targets under ~44px bumped up: Nav hamburger, `ImageLightbox` close button, carousel chevrons in `HomeTestimonials`/`StudiosHighlights`/`CaseStudyImageSlider`, `StudiosLatestProjects` pagination button
+- `projects/[slug]/page.tsx` supporting-videos grid used a bare `grid-cols-3`/`grid-cols-2` with no mobile breakpoint — fixed to `grid-cols-1 sm:grid-cols-3`
+- Sitewide body-paragraph `text-lg` (18px, no smaller mobile step) standardized to `text-base md:text-lg` — intros, CTAs, and narrative text across every page and several shared components
+
+**New patterns established this session:**
+- **Mobile-only style overrides without touching desktop:** for anything that can't be solved with a responsive Tailwind class alone (e.g. `ScrollObserver.tsx` sets the scroll-catchup transform inline via JS, so no plain `md:` class can beat it), add a small dedicated CSS class gated by `@media (max-width: 767px)` using `!important` (see `.scroll-catchup-md-only` in `globals.css`). Used to disable the About page Founder/Studio cards' slide-up animation on mobile only.
+- **Full-bleed images on mobile:** since the only horizontal constraint in most page layouts below the `lg` breakpoint is the `max-w-5xl mx-auto px-6` wrapper's own `px-6` (the `max-w` itself never binds on a phone), a plain `-mx-6` on a mobile-only (`md:hidden`) wrapper is enough to reach true edge-to-edge — no `100vw`/`calc()` viewport trick needed. Used for the About page's overview image, repositioned between the Founder/Studio cards on mobile.
+- **Swipe-to-navigate carousels:** a small `touchStartX` ref + `onTouchStart`/`onTouchEnd` pair computing horizontal delta against a ~40px threshold, calling the same `nextPage`/`prevPage` functions the buttons already use. Applied to `HomeTestimonials`, `StudiosHighlights`, `StudiosLatestProjects` (which needed a `prevPage` added — it only had forward-cycling via its button before).
+- **Text-legibility scrim independent of decorative overlays:** when a section's overlay gradient exists for visual/blend purposes (e.g. `HeroImageFrame`'s diagonal-edge fade, or the Studios grid cards' corner gradient) rather than guaranteed text contrast, add a *separate* flat dark scrim behind the text specifically, so legibility never depends on what happens to be in that part of the photo. Root-caused via `Commercial Studio`'s card title nearly disappearing against a bright white coat in the bottom-left of its photo, even at the card's overlay already maxed to 100% opacity.
+- **Stopping an interval-driven auto-scroll on real user interaction, not any DOM event that happens to land on the element:** `onTouchStart`/`onPointerDown`/`onWheel` all fire for incidental events (e.g. scrolling the page vertically with a finger that starts on top of the element) — this looked like the auto-scroll had died completely. Fixed by flagging the auto-scroll's own `scrollBy`/`scrollTo` calls (`programmaticRef`, cleared ~700ms later) and only treating a `scroll` event as "user took over" when that flag isn't set. Used in `CaseStudyImageSlider.tsx`.
+
+**Component/schema changes:**
+- New `homeHero.subtitleDisabled` boolean field — hides just the hero subtitle paragraph from Sanity Studio without touching title/background/buttons; schema deployed
+- New `StudioProjectsGrid.tsx` client component — extracted from `studios/[slug]/page.tsx`'s inline projects grid; mobile shows 6 with a load-more arrow (borderless chevron matching the carousel-arrow style, not a bordered box), desktop/tablet always renders every project with no cap
+- `Footer.tsx` — social links switched from text labels to inline SVG icons (white, sized up on mobile); phone number and the "Stock Footage" social link removed from `siteSettings` in Sanity (content change, not schema); Quick Links column and the "Get In Touch" heading hidden on mobile (`hidden md:block` / `invisible md:visible` — publishing the layout parity without removing anything at `md:` and up)
+
+### 21. Hero Text Legibility — Soft Underlay Instead of Per-Letter Text Shadow (Session 35)
+
+**Decision:** Replaced `.hero-text-shadow` (a `text-shadow` utility applied directly to the `<h1>`/`<p>` on the studio detail hero) with `.hero-text-underlay`, a single blurred radial-gradient shape rendered behind the whole text block via a `::before` pseudo-element (`position: absolute; inset: -28px -36px; background: radial-gradient(...); filter: blur(20px); z-index: -1`) on a wrapping `<div>` around the title + tagline.
+
+**Rationale:** `text-shadow` traces each glyph's own outline, so at large hero sizes it reads as a dark halo around individual letters rather than one cohesive shadow. Rebekah flagged this as the wrong look for the studio sub-pages. A single soft shape behind the text block (not the text itself) reads as one underlay regardless of font size or letter shapes, and works for both the title and the tagline as one unit since the underlay wraps both.
+
+**Where used / how to extend:** Currently only on `studios/[slug]/page.tsx`'s hero. If the same per-letter-shadow problem shows up elsewhere with a hero image and `overlay={false}` on `HeroImageFrame`, reuse `.hero-text-underlay` (wrap the affected text in a `relative` div with that class) rather than reaching for `text-shadow` again.
+
 ---
 
 ## Data Flow
@@ -336,6 +367,7 @@ src/
 │   ├── HowWeWorkSection.tsx          # Animated SVG process steps ('use client')
 │   ├── HomeTestimonials.tsx          # Testimonials carousel ('use client')
 │   ├── HomeClientLogos.tsx           # Logo strip ('use client')
+│   ├── StudioProjectsGrid.tsx        # Studio detail projects grid — mobile caps at 6 w/ load-more arrow, desktop shows all ('use client', Session 34)
 │   ├── StudioCard.tsx                # Studio card (server)
 │   ├── SplashAccents.tsx             # Splash graphics (server-compatible)
 │   └── ScrollObserver.tsx            # Scroll reveal utility ('use client', mounted in root layout)

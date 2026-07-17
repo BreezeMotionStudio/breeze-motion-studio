@@ -194,7 +194,7 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, 
           {navCta?.label && navCta?.href && (
             <Link
               href={navCta.href}
-              className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest rounded-sm bg-white text-black px-4 py-2 hover:bg-gray-200 hover:scale-105 transition duration-200"
+              className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-center rounded-sm bg-white text-black px-4 py-2 hover:bg-gray-200 hover:scale-105 transition duration-200"
             >
               {navCta.label}
             </Link>
@@ -203,13 +203,15 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, 
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden flex flex-col justify-center gap-1.5 w-6 h-6"
+          className="md:hidden -mr-2.5 p-2.5 flex items-center justify-center"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Close menu" : "Open menu"}
         >
-          <span className={`block h-px bg-white transition-transform origin-center ${open ? "rotate-45 translate-y-[7px]" : ""}`} />
-          <span className={`block h-px bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-px bg-white transition-transform origin-center ${open ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          <span className="flex flex-col justify-center gap-1.5 w-6 h-6">
+            <span className={`block h-px bg-white transition-transform origin-center ${open ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block h-px bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
+            <span className={`block h-px bg-white transition-transform origin-center ${open ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          </span>
         </button>
       </div>
 

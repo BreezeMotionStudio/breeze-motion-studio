@@ -69,7 +69,7 @@ function ServicesIntro({ s }: { s: Section }) {
         </>
       )}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-14">
-        <p className="text-[#4B4B4B] text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
+        <p className="text-[#4B4B4B] text-base md:text-lg leading-relaxed max-w-2xl font-[family-name:var(--font-body)]">
           <SimpleRichText value={s.text} />
         </p>
       </div>
@@ -100,7 +100,7 @@ function ServicesCta({ s }: { s: Section }) {
           {s.heading ? <SimpleRichText value={s.heading} /> : "Ready to work together?"}
         </h2>
         {s.text && (
-          <p className="text-bms-grey-300 font-[family-name:var(--font-body)] text-lg mb-8">
+          <p className="text-bms-grey-300 font-[family-name:var(--font-body)] text-base md:text-lg mb-8">
             <SimpleRichText value={s.text} />
           </p>
         )}

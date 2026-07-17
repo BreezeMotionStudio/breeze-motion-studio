@@ -102,7 +102,7 @@ export function AboutMission({ s }: Props) {
           <div ref={textRef}>
             <PortableTextContent
               value={s.text}
-              className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-lg [&_p]:text-white [&_p]:leading-relaxed [&_p]:italic [&_p]:mb-4 [&_p:last-child]:mb-0 [&_strong]:text-white [&_em]:not-italic"
+              className="[&_p]:font-[family-name:var(--font-body)] [&_p]:text-base md:[&_p]:text-lg [&_p]:text-white [&_p]:leading-relaxed [&_p]:italic [&_p]:mb-4 [&_p:last-child]:mb-0 [&_strong]:text-white [&_em]:not-italic"
             />
           </div>
         </div>

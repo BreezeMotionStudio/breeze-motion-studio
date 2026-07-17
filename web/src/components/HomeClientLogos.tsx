@@ -11,21 +11,42 @@ type ClientLogo = {
   logoOverride?: { asset?: { url: string }; alt?: string }
 }
 
-const LOGO_VISIBLE = 7
 const LOGO_AUTO_MS = 3000
+
+function useVisibleCount() {
+  const [visible, setVisible] = useState(7)
+  useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth
+      setVisible(w < 640 ? 2 : w < 1024 ? 4 : 7)
+    }
+    compute()
+    window.addEventListener('resize', compute)
+    return () => window.removeEventListener('resize', compute)
+  }, [])
+  return visible
+}
 
 export function HomeClientLogos({ s }: { s: any }) {
   const logos: ClientLogo[] = s.clientLogos || []
 
+  const logoVisible = useVisibleCount()
   const count    = logos.length
-  const maxIdx   = Math.max(0, count - LOGO_VISIBLE)
-  const widthPct = count > LOGO_VISIBLE ? 100 / LOGO_VISIBLE : 100 / count
+  const maxIdx   = Math.max(0, count - logoVisible)
+  const widthPct = count > logoVisible ? 100 / logoVisible : 100 / count
   const trackPct = count * widthPct
 
   const [idx, setIdx]         = useState(0)
   const [transit, setTransit] = useState(true)
   const idxRef                = useRef(0)
   const pausedRef             = useRef(false)
+
+  useEffect(() => {
+    if (idxRef.current > maxIdx) {
+      idxRef.current = maxIdx
+      setIdx(maxIdx)
+    }
+  }, [maxIdx])
 
   const advance = useCallback(() => {
     const cur = idxRef.current
@@ -47,10 +68,10 @@ export function HomeClientLogos({ s }: { s: any }) {
   }, [advance])
 
   useEffect(() => {
-    if (count <= LOGO_VISIBLE) return
+    if (count <= logoVisible) return
     const id = setInterval(() => { if (!pausedRef.current) advanceRef.current() }, LOGO_AUTO_MS)
     return () => clearInterval(id)
-  }, [count])
+  }, [count, logoVisible])
 
   if (count === 0) return null
 
