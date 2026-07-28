@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { resolveBg } from '@/lib/sectionBackground'
 import PortableTextContent from '@/components/ui/PortableTextContent'
@@ -16,7 +16,7 @@ type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const cs = await client.fetch(CASE_STUDY_BY_SLUG_QUERY, { slug }).catch(() => null)
+  const cs = await fetchSafe(CASE_STUDY_BY_SLUG_QUERY, { slug }, null)
   if (!cs) return { title: 'Case Study Not Found' }
   return {
     title: cs.seoTitle || cs.title,
@@ -56,8 +56,8 @@ function NarrativeImage({ url, alt }: { url?: string; alt?: string }) {
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params
   const [cs, tmpl] = await Promise.all([
-    client.fetch(CASE_STUDY_BY_SLUG_QUERY, { slug }).catch(() => null),
-    client.fetch(CASE_STUDY_PAGE_TEMPLATE_QUERY).catch(() => null),
+    fetchSafe(CASE_STUDY_BY_SLUG_QUERY, { slug }, null),
+    fetchSafe(CASE_STUDY_PAGE_TEMPLATE_QUERY, {}, null),
   ])
 
   if (!cs) return notFound()

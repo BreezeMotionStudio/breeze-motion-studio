@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { sectionBgStyle as cardBgStyleFn, resolveBg, resolveTextClass } from "@/lib/sectionBackground";
-import { client } from "@/lib/sanity/client";
+import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { ABOUT_PAGE_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
@@ -15,7 +15,7 @@ export const revalidate = 60;
 type Section = Record<string, any> & { _type: string; _key: string };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await client.fetch(ABOUT_PAGE_QUERY).catch(() => null);
+  const page = await fetchSafe(ABOUT_PAGE_QUERY, {}, null);
   return {
     title: page?.seoTitle || "About",
     description:
@@ -278,7 +278,7 @@ function AboutCta({ s }: { s: Section }) {
 }
 
 export default async function AboutPage() {
-  const page = await client.fetch(ABOUT_PAGE_QUERY).catch(() => null);
+  const page = await fetchSafe(ABOUT_PAGE_QUERY, {}, null);
 
   if (!page?.sections?.length) {
     return (

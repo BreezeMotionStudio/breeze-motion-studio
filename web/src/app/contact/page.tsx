@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { client } from "@/lib/sanity/client";
+import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
@@ -13,7 +13,7 @@ export const revalidate = 60;
 type Section = Record<string, any> & { _type: string; _key: string };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await client.fetch(CONTACT_PAGE_QUERY).catch(() => null);
+  const page = await fetchSafe(CONTACT_PAGE_QUERY, {}, null);
   return {
     title: page?.seoTitle || "Contact",
     description:
@@ -180,8 +180,8 @@ function ContactDetailsForm({
 
 export default async function ContactPage() {
   const [page, settings] = await Promise.all([
-    client.fetch(CONTACT_PAGE_QUERY).catch(() => null),
-    client.fetch(SITE_SETTINGS_QUERY).catch(() => null),
+    fetchSafe(CONTACT_PAGE_QUERY, {}, null),
+    fetchSafe(SITE_SETTINGS_QUERY, {}, null),
   ]);
 
   const fallbackEmail = settings?.contactEmail || "info@breezemotionstudio.com";

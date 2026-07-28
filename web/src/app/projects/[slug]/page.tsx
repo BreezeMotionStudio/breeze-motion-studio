@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import { PROJECT_BY_SLUG_QUERY, PROJECT_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { resolveBg } from '@/lib/sectionBackground'
 import { VideoEmbed } from '@/components/ui/VideoEmbed'
@@ -17,7 +17,7 @@ type DeliverableVideo = { _key: string; title?: string; platform?: string; url?:
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const project = await client.fetch(PROJECT_BY_SLUG_QUERY, { slug }).catch(() => null)
+  const project = await fetchSafe(PROJECT_BY_SLUG_QUERY, { slug }, null)
   if (!project) return { title: 'Project Not Found' }
   return {
     title: project.seoTitle || project.title,
@@ -28,8 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params
   const [project, tmpl] = await Promise.all([
-    client.fetch(PROJECT_BY_SLUG_QUERY, { slug }).catch(() => null),
-    client.fetch(PROJECT_PAGE_TEMPLATE_QUERY).catch(() => null),
+    fetchSafe(PROJECT_BY_SLUG_QUERY, { slug }, null),
+    fetchSafe(PROJECT_PAGE_TEMPLATE_QUERY, {}, null),
   ])
 
   if (!project) return notFound()

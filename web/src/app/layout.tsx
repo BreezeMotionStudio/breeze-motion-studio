@@ -3,11 +3,11 @@ import "./globals.css";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ScrollObserver";
-import { client } from "@/lib/sanity/client";
+import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { SITE_SETTINGS_QUERY, STUDIOS_QUERY } from "@/lib/sanity/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await client.fetch(SITE_SETTINGS_QUERY).catch(() => null)
+  const settings = await fetchSafe(SITE_SETTINGS_QUERY, {}, null)
   const siteTitle = settings?.siteTitle || 'Breeze Motion Studio'
   return {
     title: {
@@ -28,8 +28,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [settings, studios] = await Promise.all([
-    client.fetch(SITE_SETTINGS_QUERY).catch(() => null),
-    client.fetch(STUDIOS_QUERY).catch(() => []),
+    fetchSafe(SITE_SETTINGS_QUERY, {}, null),
+    fetchSafe(STUDIOS_QUERY, {}, []),
   ]);
 
   return (

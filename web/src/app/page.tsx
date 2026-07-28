@@ -1,4 +1,4 @@
-import { client } from "@/lib/sanity/client";
+import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import {
   HOME_PAGE_QUERY,
   FEATURED_PROJECTS_QUERY,
@@ -377,9 +377,9 @@ export const revalidate = 60;
 
 export default async function HomePage() {
   const [page, featuredProjects, studios] = await Promise.all([
-    client.fetch(HOME_PAGE_QUERY).catch(() => null),
-    client.fetch(FEATURED_PROJECTS_QUERY).catch(() => []),
-    client.fetch(STUDIOS_QUERY).catch(() => []),
+    fetchSafe(HOME_PAGE_QUERY, {}, null),
+    fetchSafe(FEATURED_PROJECTS_QUERY, {}, []),
+    fetchSafe(STUDIOS_QUERY, {}, []),
   ]);
 
   if (!page?.sections?.length) {

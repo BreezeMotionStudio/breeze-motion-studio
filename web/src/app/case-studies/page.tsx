@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { client } from "@/lib/sanity/client";
+import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY } from "@/lib/sanity/queries";
 import { resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
@@ -24,7 +24,7 @@ type CaseStudy = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await client.fetch(CASE_STUDIES_PAGE_QUERY).catch(() => null);
+  const page = await fetchSafe(CASE_STUDIES_PAGE_QUERY, {}, null);
   return {
     title: page?.seoTitle || "Case Studies",
     description:
@@ -174,8 +174,8 @@ function CaseStudiesCta({ s }: { s: Section }) {
 
 export default async function CaseStudiesPage() {
   const [caseStudies, page] = await Promise.all([
-    client.fetch(CASE_STUDIES_QUERY).catch(() => []),
-    client.fetch(CASE_STUDIES_PAGE_QUERY).catch(() => null),
+    fetchSafe(CASE_STUDIES_QUERY, {}, []),
+    fetchSafe(CASE_STUDIES_PAGE_QUERY, {}, null),
   ]);
 
   if (!page?.sections?.length) {

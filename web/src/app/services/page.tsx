@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { client } from "@/lib/sanity/client";
+import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { SERVICES_PAGE_QUERY, SERVICE_CATEGORIES_QUERY } from "@/lib/sanity/queries";
 import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
@@ -24,7 +24,7 @@ type ServiceCategory = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await client.fetch(SERVICES_PAGE_QUERY).catch(() => null);
+  const page = await fetchSafe(SERVICES_PAGE_QUERY, {}, null);
   return {
     title: page?.seoTitle || "Services",
     description:
@@ -122,8 +122,8 @@ function ServicesCta({ s }: { s: Section }) {
 
 export default async function ServicesPage() {
   const [page, categories] = await Promise.all([
-    client.fetch(SERVICES_PAGE_QUERY).catch(() => null),
-    client.fetch(SERVICE_CATEGORIES_QUERY).catch(() => []),
+    fetchSafe(SERVICES_PAGE_QUERY, {}, null),
+    fetchSafe(SERVICE_CATEGORIES_QUERY, {}, []),
   ]);
 
   if (!page?.sections?.length) {

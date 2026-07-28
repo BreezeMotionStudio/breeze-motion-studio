@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { notFound } from 'next/navigation'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
@@ -15,7 +15,7 @@ type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const studio = await client.fetch(STUDIO_BY_SLUG_QUERY, { slug }).catch(() => null)
+  const studio = await fetchSafe(STUDIO_BY_SLUG_QUERY, { slug }, null)
   if (!studio) return { title: 'Studio Not Found' }
   return {
     title: studio.seoTitle || studio.title,
@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StudioPage({ params }: Props) {
   const { slug } = await params
   const [studio, tmpl] = await Promise.all([
-    client.fetch(STUDIO_BY_SLUG_QUERY, { slug }).catch(() => null),
-    client.fetch(STUDIO_PAGE_TEMPLATE_QUERY).catch(() => null),
+    fetchSafe(STUDIO_BY_SLUG_QUERY, { slug }, null),
+    fetchSafe(STUDIO_PAGE_TEMPLATE_QUERY, {}, null),
   ])
 
   if (!studio) return notFound()

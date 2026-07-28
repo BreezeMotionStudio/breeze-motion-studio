@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { client } from '@/lib/sanity/client'
+import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import {
   STUDIOS_QUERY,
   STUDIOS_PAGE_QUERY,
@@ -29,7 +29,7 @@ type Studio = {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await client.fetch(STUDIOS_PAGE_QUERY).catch(() => null)
+  const page = await fetchSafe(STUDIOS_PAGE_QUERY, {}, null)
   return {
     title: page?.seoTitle || 'Studios',
     description:
@@ -199,8 +199,8 @@ function StudiosCta({ s }: { s: Section }) {
 
 export default async function StudiosPage() {
   const [studios, page] = await Promise.all([
-    client.fetch(STUDIOS_QUERY).catch(() => []),
-    client.fetch(STUDIOS_PAGE_QUERY).catch(() => null),
+    fetchSafe(STUDIOS_QUERY, {}, []),
+    fetchSafe(STUDIOS_PAGE_QUERY, {}, null),
   ])
 
   // Pull section configs from Sanity if present (for heading/disabled control),
