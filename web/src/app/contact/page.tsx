@@ -34,7 +34,7 @@ function ContactHero({ s }: { s: Section }) {
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
-      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} />
+      <HeroImageFrame url={s.heroImage?.asset?.url} alt={s.heroImage?.alt} overlay={false} />
       <div className="hero-catchup relative z-10 max-w-5xl mx-auto px-6">
         <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide">
           {s.heading ? <SimpleRichText value={s.heading} /> : "Contact"}
