@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ScrollObserver";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { SITE_SETTINGS_QUERY, STUDIOS_QUERY } from "@/lib/sanity/queries";
+import { SITE_URL } from "@/lib/siteUrl";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSafe(SITE_SETTINGS_QUERY, {}, null)
@@ -32,9 +33,25 @@ export default async function RootLayout({
     fetchSafe(STUDIOS_QUERY, {}, []),
   ]);
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: settings?.siteTitle || "Breeze Motion Studio",
+    url: SITE_URL,
+    description: settings?.description,
+    logo: settings?.plainLogo?.logoImage?.asset?.url || settings?.iconLogo?.logoImage?.asset?.url,
+    email: settings?.contactEmail,
+    telephone: settings?.contactPhone,
+    sameAs: (settings?.socialLinks || []).map((l: { url?: string }) => l.url).filter(Boolean),
+  };
+
   return (
     <html lang="en">
       <body className="antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <Nav
           navLinks={settings?.navLinks}
           navCta={settings?.navCta}
