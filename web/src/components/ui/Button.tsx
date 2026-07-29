@@ -19,7 +19,6 @@ type ButtonProps = {
   variant?: ButtonVariant
   size?: ButtonSize
   href?: string
-  target?: string
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
   children: React.ReactNode
@@ -31,7 +30,6 @@ export function Button({
   variant = 'black',
   size = 'md',
   href,
-  target,
   onClick,
   type = 'button',
   children,
@@ -44,13 +42,7 @@ export function Button({
 
   if (href) {
     return (
-      <a
-        href={href}
-        target={target}
-        rel={target === '_blank' ? 'noopener noreferrer' : undefined}
-        className={classes}
-        aria-label={ariaLabel}
-      >
+      <a href={href} className={classes} aria-label={ariaLabel}>
         {children}
       </a>
     )
