@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
-import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY } from "@/lib/sanity/queries";
+import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY, MORE_CASE_STUDIES_QUERY } from "@/lib/sanity/queries";
 import { resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
 import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
+import { MoreCaseStudies } from "@/components/MoreCaseStudies";
 
 export const revalidate = 60;
 
@@ -21,6 +22,20 @@ type CaseStudy = {
   coverImage?: { asset?: { url: string }; alt?: string };
   client?: { name: string };
   studio?: { title: string; slug: { current: string } };
+};
+type MoreCaseStudy = {
+  _id: string;
+  title: string;
+  caseStudyPdf?: { asset?: { url: string; originalFilename?: string } };
+  caseStudyPdfPreview?: { asset?: { url: string }; alt?: string };
+};
+type MoreCaseStudyItem = {
+  _id: string;
+  title: string;
+  previewUrl: string;
+  previewAlt?: string;
+  pdfUrl: string;
+  filename?: string;
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -59,13 +74,19 @@ function CaseStudiesIntro({ s }: { s: Section }) {
   );
 }
 
-function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel, sectionBg }: { caseStudies: CaseStudy[]; listingKickerLabel?: string; listingCtaLabel?: string; sectionBg?: Section }) {
+function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel, listingSectionTitle, sectionBg, moreCaseStudies, viewMoreLabel }: { caseStudies: CaseStudy[]; listingKickerLabel?: string; listingCtaLabel?: string; listingSectionTitle?: string; sectionBg?: Section; moreCaseStudies: MoreCaseStudyItem[]; viewMoreLabel?: string }) {
+  const onDark = !resolveIsLight(sectionBg);
   return (
     <section
       className={`bg-white py-20 ${resolveTextClass(sectionBg, undefined, true)}`}
       style={resolveBg(sectionBg)}
     >
       <div className="max-w-5xl mx-auto px-6">
+        {caseStudies && caseStudies.length > 0 && (
+          <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide text-center mb-12">
+            {listingSectionTitle || 'Featured Case Studies'}
+          </h2>
+        )}
         {caseStudies && caseStudies.length > 0 ? (
           <div className="flex flex-col gap-8">
             {caseStudies.map((cs) => (
@@ -122,6 +143,7 @@ function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel,
             <strong>Sanity Studio → Content Library → Case Studies</strong>.
           </p>
         )}
+        <MoreCaseStudies items={moreCaseStudies} buttonLabel={viewMoreLabel} onDark={onDark} />
       </div>
     </section>
   );
@@ -173,10 +195,22 @@ function CaseStudiesCta({ s }: { s: Section }) {
 }
 
 export default async function CaseStudiesPage() {
-  const [caseStudies, page] = await Promise.all([
+  const [caseStudies, page, moreCaseStudiesRaw] = await Promise.all([
     fetchSafe(CASE_STUDIES_QUERY, {}, []),
     fetchSafe(CASE_STUDIES_PAGE_QUERY, {}, null),
+    fetchSafe(MORE_CASE_STUDIES_QUERY, {}, []),
   ]);
+
+  const moreCaseStudies = (moreCaseStudiesRaw as MoreCaseStudy[])
+    .filter((cs) => cs.caseStudyPdf?.asset?.url && cs.caseStudyPdfPreview?.asset?.url)
+    .map((cs) => ({
+      _id: cs._id,
+      title: cs.title,
+      previewUrl: cs.caseStudyPdfPreview!.asset!.url,
+      previewAlt: cs.caseStudyPdfPreview?.alt,
+      pdfUrl: cs.caseStudyPdf!.asset!.url,
+      filename: cs.caseStudyPdf?.asset?.originalFilename,
+    }));
 
   if (!page?.sections?.length) {
     return (
@@ -202,7 +236,15 @@ export default async function CaseStudiesPage() {
         }
       })}
       {/* Listings always appear after sections */}
-      <CaseStudiesListings caseStudies={caseStudies} listingKickerLabel={page?.listingKickerLabel} listingCtaLabel={page?.listingCtaLabel} sectionBg={page?.listingSectionBg} />
+      <CaseStudiesListings
+        caseStudies={caseStudies}
+        listingKickerLabel={page?.listingKickerLabel}
+        listingCtaLabel={page?.listingCtaLabel}
+        listingSectionTitle={page?.listingSectionTitle}
+        sectionBg={page?.listingSectionBg}
+        moreCaseStudies={moreCaseStudies}
+        viewMoreLabel={page?.viewMoreLabel}
+      />
       {/* Call to Action always appears at the very bottom, after the listings */}
       {page.sections
         .filter((section: Section) => section._type === "caseStudiesCta")

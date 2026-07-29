@@ -25,6 +25,7 @@ export function CaseStudyPdfViewer({ previewUrl, previewAlt, pdfUrl, filename, o
   }, [onClose])
 
   const downloadUrl = `${pdfUrl}?dl=${encodeURIComponent(filename || 'case-study.pdf')}`
+  const displayUrl = `${previewUrl}?w=1700&auto=format&q=85`
 
   return (
     <div
@@ -43,7 +44,7 @@ export function CaseStudyPdfViewer({ previewUrl, previewAlt, pdfUrl, filename, o
 
       <div className="relative flex flex-col items-center gap-4 mx-auto" onClick={(e) => e.stopPropagation()}>
         <img
-          src={previewUrl}
+          src={displayUrl}
           alt={previewAlt || 'Case Study Preview'}
           className="w-[80vw] max-w-[850px] h-auto object-contain rounded-sm"
           style={{ display: 'block' }}

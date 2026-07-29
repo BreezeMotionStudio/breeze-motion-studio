@@ -129,6 +129,22 @@ export const caseStudiesPage = defineType({
       group: 'sections',
       description: 'Background for the case study listing cards below the page sections. Default: white.',
     }),
+    defineField({
+      name: 'listingSectionTitle',
+      title: 'Listings Section Title',
+      type: 'string',
+      group: 'sections',
+      description: 'Heading shown above the featured case study cards. Default: "Featured Case Studies".',
+      placeholder: 'Featured Case Studies',
+    }),
+    defineField({
+      name: 'viewMoreLabel',
+      title: '"View More" Button Text',
+      type: 'string',
+      group: 'sections',
+      description: 'Button shown below the featured cards that reveals every other project with a Case Study PDF, as small clickable thumbnails. Default: "View More Case Studies".',
+      placeholder: 'View More Case Studies',
+    }),
     ...seoFields,
   ],
   preview: {

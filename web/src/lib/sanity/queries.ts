@@ -173,6 +173,8 @@ export const CASE_STUDIES_PAGE_QUERY = defineQuery(
     },
     listingKickerLabel,
     listingCtaLabel,
+    listingSectionTitle,
+    viewMoreLabel,
     listingSectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
     seoTitle,
     seoDescription
@@ -296,6 +298,15 @@ export const CASE_STUDIES_QUERY = defineQuery(
     coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
     client->{name},
     studio->{title, slug}
+  }`
+);
+
+export const MORE_CASE_STUDIES_QUERY = defineQuery(
+  `*[_type == "project" && showAsCaseStudy != true && defined(caseStudyPdf.asset) && defined(caseStudyPdfPreview.asset)] | order(completedAt desc){
+    _id,
+    title,
+    caseStudyPdf{asset->{url, originalFilename}},
+    caseStudyPdfPreview{asset->{url}, alt}
   }`
 );
 
