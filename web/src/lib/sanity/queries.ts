@@ -258,6 +258,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(
     caseStudyChallenge,
     caseStudyApproach,
     caseStudyOutcome,
+    caseStudyPdf{asset->{url, originalFilename}},
     deliverables,
     services[]->{_id, title},
     client->{name, industry, logo{asset->{url}, alt}},

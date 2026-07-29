@@ -5,7 +5,7 @@ import { PROJECT_BY_SLUG_QUERY, PROJECT_PAGE_TEMPLATE_QUERY } from '@/lib/sanity
 import { resolveBg } from '@/lib/sectionBackground'
 import { VideoEmbed } from '@/components/ui/VideoEmbed'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
-import { Button } from '@/components/ui/Button'
+import { CaseStudyPdfButton } from '@/components/CaseStudyPdfButton'
 import { ProjectImageGrid } from '@/components/ProjectImageGrid'
 import { notFound } from 'next/navigation'
 
@@ -38,7 +38,8 @@ export default async function ProjectPage({ params }: Props) {
   const deliverableVideos: DeliverableVideo[] = project.deliverableVideos ?? []
   const btsVideos: DeliverableVideo[] = project.btsVideos ?? []
   const hasBts = !!(project.btsImages?.length || btsVideos.length)
-  const hasCaseStudy = !!(project.caseStudyOverview || project.caseStudyChallenge || project.caseStudyApproach || project.caseStudyOutcome)
+  const caseStudyPdfUrl = project.caseStudyPdf?.asset?.url
+  const hasCaseStudy = !!caseStudyPdfUrl
 
   const mediaSections = [
     { order: project.sectionOrderVideos ?? 1, key: 'videos' },
@@ -254,9 +255,11 @@ export default async function ProjectPage({ params }: Props) {
             </>
           )}
           <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-            <Button variant="white" size="lg" href={`/case-studies/${project.slug?.current}`}>
-              {tmpl?.viewCaseStudyLabel || 'View Case Study'}
-            </Button>
+            <CaseStudyPdfButton
+              pdfUrl={caseStudyPdfUrl}
+              filename={project.caseStudyPdf?.asset?.originalFilename}
+              label={tmpl?.viewCaseStudyLabel || 'View Case Study'}
+            />
           </div>
         </section>
       )}
