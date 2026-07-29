@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation
 
-**Last Updated:** 2026-07-16 (Session 35)
+**Last Updated:** 2026-07-29 (Session 36)
 
 ---
 
@@ -31,15 +31,44 @@
 | Case studies redesign (listing + detail) | ✅ Done | Session 33 — white card listing, hero image, sitewide hero animation, full-bleed native-scroll image slider |
 | Contact page dark-bg text contrast | ✅ Done | Session 33 — fixed hardcoded dark text on the details/form section's configurable dark background |
 | Mobile responsiveness audit | ✅ Done | Session 34 — full manual/real-device pass across every page, on top of Session 33's automated pass; see decision 20 in `ARCHITECTURE.md` |
-| SEO implementation | Not Started | Meta tags, structured data, sitemap |
-| Contact form integration | Not Started | Form + email routing |
-| Performance optimization | Not Started | Image optimization, lazy loading |
+| Case study PDF system | ✅ Done | Session 36 — per-project PDF + required PNG preview replaces most dedicated case-study pages; see `CONTENT_MODEL.md` |
+| Case Studies page "View More" | ✅ Done | Session 36 — reveals every project's case study (featured or not) as small clickable thumbnails |
+| SEO implementation | ✅ Done | Session 36 — per-page meta tags (earlier session) + sitemap.xml, robots.txt, Organization JSON-LD (this session) |
+| Contact form integration | ✅ Done | Session 36 — Resend-powered; temporarily force-routed to rebekah@ pending domain verification, see decision 22 in `ARCHITECTURE.md` |
+| Performance optimization | ✅ Done | Session 36 — every `<img>` migrated to `next/image` via a custom Sanity CDN loader (3 deliberate lightbox exceptions); see decision 23 in `ARCHITECTURE.md` |
 | Deployment pipeline | Partial | Vercel linked, needs frontend config |
-| Domain / DNS | Not Started | Namecheap domain → Vercel |
+| Domain / DNS | Not Started | Namecheap domain → Vercel — deliberately deferred until all client projects are uploaded to Sanity |
 
 ---
 
 ## Development Log
+
+### 2026-07-29 (Session 36) — Case Study PDF System, Contact Form Email, SEO, Image Performance
+
+**Case study delivery redesigned (see `ARCHITECTURE.md` decision 22):**
+- ✅ Most projects now deliver their case study as a PDF (`project.caseStudyPdf`) + a required companion PNG preview (`project.caseStudyPdfPreview`) instead of a dedicated page — schema validation blocks publishing one without the other
+- ✅ "View Case Study" anywhere on the site opens a full-screen modal (`CaseStudyPdfButton`/`CaseStudyPdfViewer`) showing the PNG (sized for readable text, scrolls if taller than the screen) with a Download PDF button — never navigates to a page
+- ✅ Only the small curated `showAsCaseStudy` set keeps the original full-page `/case-studies/[slug]` treatment; old full-page-only Studio fields now hidden unless that flag is on
+- ✅ `/case-studies` listing gained a "Featured Case Studies" heading and an always-visible "View More" reveal (`MoreCaseStudies.tsx`) showing every project's case study (featured or not) as small clickable thumbnails
+- 🐛 **Bugs found & fixed along the way:** a pre-existing empty (no-asset) Behind the Scenes image slot and an over-length Short Summary field were both blocking publish on the one live project — unrelated to this session's schema changes, just surfaced when validation ran; a hardcoded `text-black` heading was invisible against the Case Studies listing's actual (dark, Sanity-configured) background — fixed by deriving color from `resolveTextClass` instead of assuming a light section
+
+**Contact form now sends real email (see `ARCHITECTURE.md` decision 23):**
+- ✅ New `/api/contact` Route Handler sends via Resend; client-side `ContactForm.tsx` replaces the old static form (which had no submit handler at all)
+- ⚠️ **Temporarily force-routed** to `rebekah@breezemotionstudio.com` via `CONTACT_TO_EMAIL_OVERRIDE` in `.env.local` instead of the real `info@breezemotionstudio.com` — Resend's unverified-domain sandbox only allows delivery to the account's own signup address. Remove the override (and verify `breezemotionstudio.com` as a Resend sending domain) at the same time as the domain/Vercel migration
+- ✅ Confirmed end-to-end working — test email received and independently re-tested by Rebekah
+
+**SEO basics filled in:**
+- ✅ `web/src/app/sitemap.ts` — dynamic sitemap pulling all published studios/projects/featured-case-studies from Sanity
+- ✅ `web/src/app/robots.ts` — points at the sitemap
+- ✅ Organization JSON-LD structured data added sitewide in `layout.tsx`
+
+**Image performance (see `ARCHITECTURE.md` decision 24):**
+- ✅ Every `<img>` sitewide (~30 files) migrated to `next/image`, backed by a new custom Sanity CDN loader (`web/src/lib/sanity/imageLoader.ts`) so images are correctly resized by Sanity's own CDN instead of double-proxying through Next's image server
+- ✅ 3 click-to-enlarge lightbox/modal previews deliberately left as plain `<img>` (on-demand full-size views, outside the initial-load performance budget)
+- 🐛 **Found & removed:** one genuinely dead function (`AboutSideImage` in the homepage, defined but never called)
+- ✅ End-of-session verification: `tsc --noEmit` (0 errors), `npm run lint` (0 errors, warnings down from 149 → 83, all remaining ones pre-existing/accepted), `npm run build` (succeeds, all routes compile), full page-by-page HTTP smoke test (all 200s)
+
+---
 
 ### 2026-07-16 (Session 35) — Dev Server Hang Fix, Studio Hero Text Shadow Redesign
 

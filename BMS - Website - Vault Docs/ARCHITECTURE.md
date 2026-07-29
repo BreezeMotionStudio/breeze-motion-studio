@@ -277,6 +277,36 @@
 
 ---
 
+### 22. Case Study Delivery — Per-Project PDF + PNG Preview Instead of a Dedicated Page (Session 36)
+
+**Decision:** Most projects no longer get a full dedicated case-study page. Instead, `project` documents gained a `caseStudyPdf` file field (the one-page A4 case study) and a required-when-a-PDF-exists `caseStudyPdfPreview` PNG (a high-res export of that same page). Any "View Case Study" button sitewide opens `CaseStudyPdfButton` → `CaseStudyPdfViewer`, a full-screen modal showing the PNG (sized for readable text, scrolls if taller than the viewport) with a "Download PDF" button. It never navigates to a page. Only a small curated set of projects (gated by the pre-existing `showAsCaseStudy` boolean) keep the original full-page `/case-studies/[slug]` treatment, reachable only from the `/case-studies` listing's own cards.
+
+**Rationale:** An embedded-PDF approach (`<iframe>`) was tried first and rejected — browsers render embedded PDFs inconsistently (grey letterboxing, "fit whole page" zoom makes text unreadably small with no reliable cross-browser way to force a bigger zoom). A plain PNG `<img>` in a lightbox-style modal gives full, predictable control over sizing and zoom instead.
+
+**Where used / how to extend:** `web/src/components/CaseStudyPdfButton.tsx` / `CaseStudyPdfViewer.tsx`. The `/case-studies` listing page also has a "View More" reveal (`MoreCaseStudies.tsx`) showing every project's case study — featured or not — as small clickable thumbnails, always visible even with nothing to show. See `CONTENT_MODEL.md` and session memory `project_case_study_pdf_system.md` for the full field/validation details and the `ServiceCombinationsSection` exception (its own case-study links stay page-based, by design).
+
+---
+
+### 23. Contact Form — Resend, Temporarily Force-Routed Pending Domain Verification (Session 36)
+
+**Decision:** The contact form (previously a static `<form>` with no submit handler at all) now POSTs to a Route Handler (`web/src/app/api/contact/route.ts`) which sends via Resend. The destination address is `process.env.CONTACT_TO_EMAIL_OVERRIDE || settings.contactEmail` — currently set to `rebekah@breezemotionstudio.com` in `.env.local`, not the real configured `info@breezemotionstudio.com`.
+
+**Rationale:** Resend's free/unverified tier only allows delivery to the account's own signup email until a sending domain is verified. Rebekah's Resend account is signed up with `rebekah@`; sending straight to `info@` returned a 403. Rather than block on DNS work now, routing overrides to a known-working address unblocks the feature immediately.
+
+**Where used / how to extend:** Remove `CONTACT_TO_EMAIL_OVERRIDE` from `.env.local` (and Vercel, once deployed) once `breezemotionstudio.com` is verified as a sending domain in Resend — do this at the same time as the domain/Vercel migration (Decision pending — see Domain/DNS row in `PROJECT_STATUS.md`), since it's a few DNS records added at the same time, not a separate task. Also swap the `from` address in `route.ts` from Resend's sandbox `onboarding@resend.dev` to a proper `noreply@breezemotionstudio.com` address once verified.
+
+---
+
+### 24. Image Performance — next/image via a Custom Sanity CDN Loader (Session 36)
+
+**Decision:** Every `<img>` sitewide (~30 files) migrated to `next/image`, backed by a custom loader (`web/src/lib/sanity/imageLoader.ts`, wired in `next.config.ts` via `images.loader: 'custom'`) that requests correctly-sized images directly from Sanity's own CDN (`?w=&auto=format&q=`) rather than double-proxying through Next's built-in image-optimization server. Exactly 3 images were deliberately left as plain `<img>`: the click-to-enlarge lightbox/modal previews (`ImageLightbox.tsx`, `CaseStudyPdfViewer.tsx`, and one inside `ServiceCombinationsSection.tsx`) — these are on-demand full-size views outside the initial page load, so `next/image`'s benefits don't apply and the added sizing complexity isn't worth it.
+
+**Rationale:** This is the standard recommended integration pattern for Sanity + Next.js — Sanity's CDN is already purpose-built for on-the-fly image resizing, so there's no reason to route that work through Next's server as well.
+
+**Where used / how to extend:** Any new image should use `next/image` from the start. Two conversion patterns: `fill` inside a `position: relative`/fixed-aspect wrapper (the overwhelming majority of cases — backgrounds and cropped cards), or explicit `width`/`height` sourced from a `metadata{dimensions}` GROQ projection (added where missing) for natural-aspect-ratio images with no fixed crop. Portable-text inline images use `getImageDimensions()` from `@sanity/asset-utils` instead, since that asset stays as an unexpanded reference. See session memory `project_image_performance_migration.md` for the full decision tree and a gotcha: neither `tsc` nor `eslint` reliably catch every missed `<img>` — always finish with a plain `grep '<img\b'` sweep across `src/`.
+
+---
+
 ## Data Flow
 
 ### Content Creation Flow

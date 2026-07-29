@@ -141,7 +141,7 @@ Auto-population: `BtsImagesInput` custom component queries all projects with `co
 
 ### 6. `caseStudiesPage` — Case Studies Page (Singleton)
 
-**Top-level fields:** `sections[]`, `listingKickerLabel` *(small label above each card's title, default "Case Study" — Session 33)*, `listingCtaLabel` *(text on each listing card, default "Read Case Study →")*, `listingSectionBg` *(sectionBackground — Session 32, background for the listing cards themselves)*, `seoTitle`, `seoDescription`
+**Top-level fields:** `sections[]`, `listingKickerLabel` *(small label above each card's title, default "Case Study" — Session 33)*, `listingCtaLabel` *(text on each listing card, default "Read Case Study →")*, `listingSectionBg` *(sectionBackground — Session 32, background for the listing cards themselves)*, `listingSectionTitle` *(heading above the featured cards, default "Featured Case Studies" — Session 36)*, `viewMoreLabel` *(button revealing every other project's case study as thumbnails, default "View More" — Session 36)*, `seoTitle`, `seoDescription`
 
 | Section Type | Fields |
 |-------------|--------|
@@ -194,7 +194,7 @@ Fields are organised into groups in Sanity Studio: **Basics**, **Deliverables**,
 | services | array of reference → serviceCategory | No | Services provided |
 | year | string | No | Project year |
 | tagline | string | No | One-line descriptor shown on project cards (max 100 chars) |
-| summary | text | Yes | Short summary for cards and case study listing (max 300 chars) |
+| summary | text | Yes | Short summary for cards and case study listing (max 500 chars, raised from 300 in Session 36) |
 | description | blockContent | No | Detailed project description — shown in the Overview section |
 | coverImage | image | Yes | Primary thumbnail used on all cards site-wide |
 
@@ -213,26 +213,29 @@ Fields are organised into groups in Sanity Studio: **Basics**, **Deliverables**,
 | btsImages | array of image | Gallery-style upload; same display rules as deliverableImages |
 | btsVideos | array of video object | Same structure as deliverableVideos |
 
-**Case Study group:**
+**Case Study group** *(rebuilt in Session 36 — see `ARCHITECTURE.md` decision 22)*:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| showAsCaseStudy | boolean | "Feature on Case Studies Page" — controls public `/case-studies` listing only; does not gate content editing |
+| showAsCaseStudy | boolean | "Feature on Case Studies Page" — only for the small curated set that keep the full dedicated `/case-studies/[slug]` page. Most projects should leave this off and use `caseStudyPdf` instead. |
+| caseStudyPdf | file (PDF only) | The one-page A4 case study PDF. Available regardless of `showAsCaseStudy` — this is the delivery method for every project *not* in the featured set. |
+| caseStudyPdfPreview | image (PNG only) | High-res PNG export of the same page, shown in the "View Case Study" modal. **Required whenever `caseStudyPdf` has a file** (schema-level custom validation) — publish is blocked if one exists without the other. |
 | caseStudyOrder | number | Display order on public case studies page (hidden unless `showAsCaseStudy` is true) |
-| caseStudyOverview | text | Opening paragraph framing the project |
-| caseStudyChallenge | blockContent | The Challenge narrative |
-| caseStudyApproach | blockContent | The Approach narrative |
-| caseStudyOutcome | blockContent | The Outcome narrative |
-| testimonial | reference → testimonial | Client testimonial linked to this project |
-| caseStudySliderImages | array of image | *(Session 32)* "Custom Selection" override for the image slider at the bottom of the case study page. Empty = slider auto-shows every `deliverableImages` image (Content Override Pattern A — see `ARCHITECTURE.md` decision 17). Populated = fully replaces the automatic pull for the slider only; `deliverableImages` itself is never affected. |
+| caseStudyOverview | text | Opening paragraph framing the project (hidden unless `showAsCaseStudy` is true) |
+| caseStudyChallenge | blockContent | The Challenge narrative (hidden unless `showAsCaseStudy` is true) |
+| caseStudyApproach | blockContent | The Approach narrative (hidden unless `showAsCaseStudy` is true) |
+| caseStudyOutcome | blockContent | The Outcome narrative (hidden unless `showAsCaseStudy` is true) |
+| testimonial | reference → testimonial | Client testimonial linked to this project (hidden unless `showAsCaseStudy` is true) |
+| caseStudySliderImages | array of image | *(Session 32)* "Custom Selection" override for the image slider at the bottom of the case study page (hidden unless `showAsCaseStudy` is true). Empty = slider auto-shows every `deliverableImages` image (Content Override Pattern A — see `ARCHITECTURE.md` decision 17). Populated = fully replaces the automatic pull for the slider only; `deliverableImages` itself is never affected. |
+
+**"View Case Study" behavior everywhere except the featured set:** opens `CaseStudyPdfButton` → `CaseStudyPdfViewer`, a full-screen modal showing `caseStudyPdfPreview` (not the raw PDF — embedded PDF viewers render inconsistently across browsers) with a Download PDF button. Never navigates to a page.
 
 **Case study detail page image slider:** `CaseStudyImageSlider.tsx`, rendered directly above the testimonial section *(moved above testimonial in Session 33; was previously just above the CTA)*. Full-bleed, edge-to-edge native horizontal scroll — each image keeps its own natural aspect ratio at a fixed height (`h-72 md:h-96`, `w-auto`, no forced cropping) and images sit stacked back-to-back with no gap *(redesigned in Session 33 — previously all images were forced into equal-width cropped boxes)*. White gradient fades on both edges, chevron arrows overlaid on top of the fade, no visible section background (section height hugs the image strip exactly), auto-advances every 4s, click-to-enlarge via the shared `ImageLightbox` component.
 
-**Note on Case Study visibility:**
-- **Sanity sidebar** auto-populates the Case Studies section for any project with at least one `caseStudy*` content field filled — no toggle required
-- **`/case-studies` listing** shows only projects with `showAsCaseStudy == true`
-- **`/case-studies/[slug]`** works by slug for any project regardless of toggle — accessible via direct link or the "View Case Study" button on the project page
-- The project page shows a "View Case Study" strip/button when case study content exists; the full narrative is only on the case study detail page
+**Note on Case Study visibility (updated Session 36):**
+- **`/case-studies` listing** shows only the featured cards for projects with `showAsCaseStudy == true`, reachable only from their own cards — no other button anywhere in the site links to a `/case-studies/[slug]` URL (deliberate; `ServiceCombinationsSection`'s own case-study links are the one confirmed exception)
+- **`/case-studies` "View More" reveal** (`MoreCaseStudies.tsx`) shows *every* project with both `caseStudyPdf` and `caseStudyPdfPreview` uploaded — featured or not — as small clickable thumbnails, always visible even with nothing to show yet
+- **`/projects/[slug]`** shows a "View Case Study" button whenever `caseStudyPdf` + `caseStudyPdfPreview` both exist — opens the PDF/PNG modal, not a page link, regardless of `showAsCaseStudy`
 
 **Settings group:**
 
