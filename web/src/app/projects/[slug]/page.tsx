@@ -39,7 +39,8 @@ export default async function ProjectPage({ params }: Props) {
   const btsVideos: DeliverableVideo[] = project.btsVideos ?? []
   const hasBts = !!(project.btsImages?.length || btsVideos.length)
   const caseStudyPdfUrl = project.caseStudyPdf?.asset?.url
-  const hasCaseStudy = !!caseStudyPdfUrl
+  const caseStudyPreviewUrl = project.caseStudyPdfPreview?.asset?.url
+  const hasCaseStudy = !!(caseStudyPdfUrl && caseStudyPreviewUrl)
 
   const mediaSections = [
     { order: project.sectionOrderVideos ?? 1, key: 'videos' },
@@ -256,6 +257,8 @@ export default async function ProjectPage({ params }: Props) {
           )}
           <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
             <CaseStudyPdfButton
+              previewUrl={caseStudyPreviewUrl}
+              previewAlt={project.caseStudyPdfPreview?.alt}
               pdfUrl={caseStudyPdfUrl}
               filename={project.caseStudyPdf?.asset?.originalFilename}
               label={tmpl?.viewCaseStudyLabel || 'View Case Study'}

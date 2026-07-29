@@ -76,8 +76,8 @@ export const project = defineType({
       type: 'text',
       rows: 3,
       group: 'basics',
-      description: 'Shown on project cards and the case studies listing page (max 300 characters)',
-      validation: (rule) => rule.required().max(300),
+      description: 'Shown on project cards and the case studies listing page (max 500 characters)',
+      validation: (rule) => rule.required().max(500),
     }),
     defineField({
       name: 'description',
@@ -260,6 +260,24 @@ export const project = defineType({
       options: {accept: 'application/pdf'},
       description:
         'Upload the one-page A4 case study PDF for this project. Shown as a "View Case Study" link on the project page for projects that are not featured above.',
+    }),
+    defineField({
+      name: 'caseStudyPdfPreview',
+      title: 'Case Study PDF — Thumbnail Preview',
+      type: 'image',
+      group: 'caseStudy',
+      options: {hotspot: true, accept: 'image/png'},
+      description:
+        'A PNG image preview of the Case Study PDF — shown to visitors when they click "View Case Study", with a Download PDF button alongside it. Export at high resolution (2x) so the text stays sharp when enlarged. Required whenever a Case Study PDF is uploaded above.',
+      fields: [defineField({name: 'alt', type: 'string', title: 'Alt Text'})],
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          const parent = context.parent as {caseStudyPdf?: unknown} | undefined
+          if (parent?.caseStudyPdf && !value) {
+            return 'Required when a Case Study PDF is uploaded above'
+          }
+          return true
+        }),
     }),
     defineField({
       name: 'caseStudyOrder',
