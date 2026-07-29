@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 type CollageImage = {
   image?: {
     asset?: { url: string }
@@ -89,18 +91,23 @@ export function CollageBackground({ images, overlayOpacity = 55, variant = 'serv
             style={{ clipPath: clip }}
           >
             {src?.image?.asset?.url ? (
-              <img
-                src={src.image.asset.url}
-                alt={src.image.alt || ''}
+              <div
                 style={{
                   position: 'absolute',
                   left: bbox.left,
                   top: bbox.top,
                   width: bbox.width,
                   height: bbox.height,
-                  objectFit: 'cover',
                 }}
-              />
+              >
+                <Image
+                  src={src.image.asset.url}
+                  alt={src.image.alt || ''}
+                  fill
+                  className="object-cover"
+                  sizes="50vw"
+                />
+              </div>
             ) : (
               <div className="absolute inset-0 bg-[#1a1a1a]" />
             )}

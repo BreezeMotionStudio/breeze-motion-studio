@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 type Project = {
   _id: string
@@ -28,12 +29,14 @@ function ProjectCard({ project }: { project: Project }) {
       href={project.slug?.current ? `/projects/${project.slug.current}` : '#'}
       className="group"
     >
-      <div className="aspect-[4/3] bg-white/5 mb-4 overflow-hidden rounded-sm">
+      <div className="relative aspect-[4/3] bg-white/5 mb-4 overflow-hidden rounded-sm">
         {project.coverImage?.asset?.url ? (
-          <img
+          <Image
             src={project.coverImage.asset.url}
             alt={project.coverImage.alt || project.title}
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            fill
+            className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

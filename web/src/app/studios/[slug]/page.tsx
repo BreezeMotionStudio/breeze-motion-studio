@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { notFound } from 'next/navigation'
@@ -117,13 +118,14 @@ export default async function StudioPage({ params }: Props) {
       >
         {(!tmpl?.ctaSectionBg?.bgType || tmpl.ctaSectionBg.bgType === 'image') && (
           <>
-            <img
+            <Image
               src={tmpl?.ctaSectionBg?.bgType === 'image' && tmpl.ctaSectionBg.bgImage?.asset?.url
-                ? `${tmpl.ctaSectionBg.bgImage.asset.url}?w=1920&auto=format&q=80`
-                : 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg?w=1920&auto=format&q=80'}
+                ? tmpl.ctaSectionBg.bgImage.asset.url
+                : 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg'}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              loading="lazy"
+              fill
+              className="object-cover"
+              sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/55" />
           </>

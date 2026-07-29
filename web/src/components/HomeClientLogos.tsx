@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import Image from 'next/image'
 
+type LogoAsset = { asset?: { url: string; metadata?: { dimensions?: { width: number; height: number } } }; alt?: string }
 type ClientLogo = {
   _key: string
   client?: {
     name?: string
-    logo?: { asset?: { url: string }; alt?: string }
+    logo?: LogoAsset
   }
-  logoOverride?: { asset?: { url: string }; alt?: string }
+  logoOverride?: LogoAsset
 }
 
 const LOGO_AUTO_MS = 3000
@@ -104,9 +106,11 @@ export function HomeClientLogos({ s }: { s: any }) {
                       ? logo.client.logo
                       : null
                   return img?.asset?.url ? (
-                    <img
+                    <Image
                       src={img.asset.url}
                       alt={img.alt || logo.client?.name || ''}
+                      width={img.asset.metadata?.dimensions?.width || 400}
+                      height={img.asset.metadata?.dimensions?.height || 160}
                       className="h-20 w-auto max-w-[200px] object-contain"
                     />
                   ) : (

@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 type HeroImageFrameProps = {
   url?: string
   videoUrl?: string
@@ -42,7 +44,6 @@ export function HeroImageFrame({ url, videoUrl, alt = '', overlay = true }: Hero
     )
   }
 
-  const src = url ? `${url}?w=1400&auto=format&q=80` : undefined
   return (
     <>
       <div
@@ -59,12 +60,13 @@ export function HeroImageFrame({ url, videoUrl, alt = '', overlay = true }: Hero
             playsInline
           />
         ) : (
-          <img
-            src={src}
+          <Image
+            src={url!}
             alt={alt}
-            className="w-full h-full object-cover"
-            fetchPriority="high"
-            loading="eager"
+            fill
+            className="object-cover"
+            sizes="57vw"
+            priority
           />
         )}
       </div>

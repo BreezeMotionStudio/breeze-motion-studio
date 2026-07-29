@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import {
   HOME_PAGE_QUERY,
@@ -84,15 +85,15 @@ function SectionBg({ videoUrl, image, priority = false }: { videoUrl?: string; i
     );
   }
   if (image?.asset?.url) {
-    const src = `${image.asset.url}?w=1920&auto=format&q=80`
     return (
       <>
-        <img
-          className="absolute inset-0 w-full h-full object-cover"
-          src={src}
+        <Image
+          className="object-cover"
+          src={image.asset.url}
           alt={image.alt || ""}
-          fetchPriority={priority ? 'high' : 'low'}
-          loading={priority ? 'eager' : 'lazy'}
+          fill
+          sizes="100vw"
+          priority={priority}
         />
         <div className="absolute inset-0 bg-black/55" />
       </>
@@ -171,11 +172,9 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
         )
       )}
       {!s.videoUrl && s.bgImage?.asset?.url && (
-        <img
-          className="w-full aspect-video object-cover"
-          src={s.bgImage.asset.url}
-          alt={s.bgImage.alt || ""}
-        />
+        <div className="relative w-full aspect-video">
+          <Image className="object-cover" src={s.bgImage.asset.url} alt={s.bgImage.alt || ""} fill sizes="100vw" />
+        </div>
       )}
       {projects && projects.length > 0 && (
         <div className={`scroll-catchup relative z-10 max-w-6xl mx-auto px-6 py-24 ${hasMedia ? "" : "pt-24"}`}>
@@ -189,12 +188,14 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
                 href={`/studios/${project.studio?.slug?.current}`}
                 className="group block"
               >
-                <div className="aspect-[4/3] bg-bms-dark-500 mb-4 overflow-hidden">
+                <div className="relative aspect-[4/3] bg-bms-dark-500 mb-4 overflow-hidden">
                   {project.coverImage?.asset?.url && (
-                    <img
+                    <Image
                       src={project.coverImage.asset.url}
                       alt={project.coverImage.alt || project.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     />
                   )}
                 </div>
@@ -229,31 +230,6 @@ function splitTextAtFounder(text: string): [string, string] {
   else if (before === -1) cut = after + 2;
   else cut = (after - mid < mid - before ? after : before) + 2;
   return [text.slice(0, cut).trim(), text.slice(cut).trim()];
-}
-
-function AboutSideImage({ image, side }: { image?: { asset?: { url: string }; alt?: string }; side: 'left' | 'right' }) {
-  if (image?.asset?.url) {
-    const src = `${image.asset.url}?w=600&auto=format&q=80`
-    return (
-      <img
-        src={src}
-        alt={image.alt || ''}
-        className="w-full h-full object-cover transition-transform duration-500 ease-out hover:scale-105"
-        loading="eager"
-        decoding="async"
-      />
-    );
-  }
-  return (
-    <div className="w-full h-full border border-dashed border-white/20 flex flex-col items-center justify-center gap-2 text-white/25 text-xs uppercase tracking-widest select-none">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <polyline points="21 15 16 10 5 21" />
-      </svg>
-      <span>{side === 'left' ? 'Left Image' : 'Right Image'}</span>
-    </div>
-  );
 }
 
 const ABOUT_ASPECT_CLASS: Record<string, string> = {
@@ -302,9 +278,11 @@ function HomeAbout({ s }: { s: Section }) {
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center gap-6 w-full pb-8">
               <hr className="flex-grow border-t border-white/15" />
-              <img
+              <Image
                 src={s.aboutLogo?.asset?.url ?? '/logo.png'}
                 alt="Breeze Motion Studio"
+                width={s.aboutLogo?.asset?.metadata?.dimensions?.width || 256}
+                height={s.aboutLogo?.asset?.metadata?.dimensions?.height || 256}
                 className={`h-auto shrink-0${s.aboutLogo?.roundCrop ? ' rounded-full overflow-hidden' : ''}`}
                 style={{ width: s.logoMaxWidth ? `${s.logoMaxWidth}px` : '256px' }}
               />

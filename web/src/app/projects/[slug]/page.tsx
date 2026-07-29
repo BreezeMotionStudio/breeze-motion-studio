@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import { PROJECT_BY_SLUG_QUERY, PROJECT_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { resolveBg } from '@/lib/sectionBackground'
@@ -67,11 +68,13 @@ export default async function ProjectPage({ params }: Props) {
         style={heroStyle}
       >
         {showCoverImage && project.coverImage?.asset?.url && (
-          <img
-            src={`${project.coverImage.asset.url}?w=1920&auto=format&q=75`}
+          <Image
+            src={project.coverImage.asset.url}
             alt={project.coverImage.alt || project.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
             style={{ opacity: coverOpacity }}
+            sizes="100vw"
           />
         )}
         <div className="hero-catchup relative max-w-5xl mx-auto px-6">
@@ -109,11 +112,13 @@ export default async function ProjectPage({ params }: Props) {
         >
           <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-12 items-start">
             {project.coverImage?.asset?.url && (
-              <div className="aspect-[4/3] overflow-hidden rounded-sm">
-                <img
-                  src={`${project.coverImage.asset.url}?w=900&auto=format&q=80`}
+              <div className="relative aspect-[4/3] overflow-hidden rounded-sm">
+                <Image
+                  src={project.coverImage.asset.url}
                   alt={project.coverImage.alt || project.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 768px) 50vw, 100vw"
                 />
               </div>
             )}
@@ -244,13 +249,14 @@ export default async function ProjectPage({ params }: Props) {
         >
           {(!tmpl?.caseStudySectionBg?.bgType || tmpl.caseStudySectionBg.bgType === 'image') && (
             <>
-              <img
+              <Image
                 src={hasCaseStudyBgImage
-                  ? `${caseStudyBgImg!.asset.url}?w=1920&auto=format&q=80`
-                  : 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg?w=1920&auto=format&q=80'}
+                  ? caseStudyBgImg!.asset.url
+                  : 'https://cdn.sanity.io/images/ce9w3sdr/production/05b32c4153168a8465c443af641d1859f9389cac-6780x2160.jpg'}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="lazy"
+                fill
+                className="object-cover"
+                sizes="100vw"
               />
               <div className="absolute inset-0 bg-black/55" />
             </>

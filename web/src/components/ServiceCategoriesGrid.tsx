@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { sectionBgStyle } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
 import { CollageBackground } from '@/components/CollageBackground'
@@ -109,10 +110,12 @@ export function ServiceCategoriesGrid({
       {/* Section background */}
       {sectionBg?.bgType === 'image' && sectionBg?.bgImage?.asset?.url ? (
         <>
-          <img
+          <Image
             src={sectionBg.bgImage.asset.url}
             alt={sectionBg.bgImage.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-black/55" />
         </>
@@ -151,12 +154,14 @@ export function ServiceCategoriesGrid({
             >
               {/* Image — full width square */}
               <div className="p-3 pb-2">
-                <div className="w-full aspect-square overflow-hidden rounded-xl">
+                <div className="relative w-full aspect-square overflow-hidden rounded-xl">
                   {cat.image?.asset?.url ? (
-                    <img
+                    <Image
                       src={cat.image.asset.url}
                       alt={cat.image.alt || cat.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     />
                   ) : (
                     <PlaceholderImage />
@@ -215,12 +220,14 @@ export function ServiceCategoriesGrid({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-5 pb-0">
-              <div className="w-full aspect-video overflow-hidden rounded-xl">
+              <div className="relative w-full aspect-video overflow-hidden rounded-xl">
                 {open.image?.asset?.url ? (
-                  <img
+                  <Image
                     src={open.image.asset.url}
                     alt={open.image.alt || open.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 768px) 672px, 100vw"
                   />
                 ) : (
                   <PlaceholderImage />

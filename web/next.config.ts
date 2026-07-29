@@ -3,6 +3,8 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   images: {
+    loader: "custom",
+    loaderFile: "./src/lib/sanity/imageLoader.ts",
     remotePatterns: [
       {
         protocol: "https",

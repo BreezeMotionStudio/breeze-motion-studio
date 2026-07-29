@@ -1,9 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
 
-type GalleryImage = { asset?: { url: string }; alt?: string; caption?: string }
+type GalleryImage = {
+  asset?: { url: string; metadata?: { dimensions?: { width: number; height: number } } }
+  alt?: string
+  caption?: string
+}
 
 export function ProjectImageGrid({ images }: { images: GalleryImage[] }) {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
@@ -20,10 +25,13 @@ export function ProjectImageGrid({ images }: { images: GalleryImage[] }) {
               className="rounded-sm overflow-hidden cursor-pointer group"
               onClick={() => setLightbox({ src: `${item.asset!.url}?auto=format&q=92`, alt: item.alt || '' })}
             >
-              <img
-                src={`${item.asset!.url}?w=1600&auto=format&q=85`}
+              <Image
+                src={item.asset!.url}
                 alt={item.alt || ''}
+                width={item.asset!.metadata?.dimensions?.width || 1600}
+                height={item.asset!.metadata?.dimensions?.height || 1067}
                 className="w-full h-auto group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                sizes="(min-width: 768px) 50vw, 100vw"
               />
             </div>
             {item.caption && (

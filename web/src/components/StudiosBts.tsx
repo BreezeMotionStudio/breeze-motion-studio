@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { sectionBgStyle } from '@/lib/sectionBackground'
@@ -59,11 +60,12 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
                   })
                 }
               >
-                <img
-                  src={`${item.image!.asset!.url}?w=640&auto=format&q=80`}
+                <Image
+                  src={item.image!.asset!.url}
                   alt={item.image?.alt || item.label || ''}
-                  className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-                  loading="lazy"
+                  fill
+                  className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+                  sizes="(min-width: 768px) 33vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 {(item.projectTitle || item.clientName || item.imageCaption || item.label) && (

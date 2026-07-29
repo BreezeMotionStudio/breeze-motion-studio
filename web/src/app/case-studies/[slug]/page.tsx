@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/queries'
 import { resolveBg } from '@/lib/sectionBackground'
@@ -35,11 +36,13 @@ function deliverableAnchor(label: string): 'videos' | 'images' | 'bts' | null {
 function NarrativeImage({ url, alt }: { url?: string; alt?: string }) {
   if (url) {
     return (
-      <div className="aspect-[4/3] overflow-hidden rounded-sm">
-        <img
-          src={`${url}?w=700&auto=format&q=85`}
+      <div className="relative aspect-[4/3] overflow-hidden rounded-sm">
+        <Image
+          src={url}
           alt={alt || ''}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
+          sizes="300px"
         />
       </div>
     )
@@ -124,11 +127,7 @@ export default async function CaseStudyPage({ params }: Props) {
             className="hidden md:block absolute inset-y-0 right-0"
             style={{ left: '42%' }}
           >
-            <img
-              src={`${imageUrl}?w=1600&auto=format&q=85`}
-              alt={imageAlt}
-              className="w-full h-full object-cover"
-            />
+            <Image src={imageUrl} alt={imageAlt} fill className="object-cover" sizes="58vw" priority />
             <div
               className="absolute inset-0"
               style={{ background: 'linear-gradient(to right, #1a1a1a 0%, transparent 18%)' }}
@@ -199,12 +198,8 @@ export default async function CaseStudyPage({ params }: Props) {
 
         {/* Mobile: image below the panel */}
         {imageUrl && (
-          <div className="md:hidden aspect-video overflow-hidden">
-            <img
-              src={`${imageUrl}?w=900&auto=format&q=85`}
-              alt={imageAlt}
-              className="w-full h-full object-cover"
-            />
+          <div className="relative md:hidden aspect-video overflow-hidden">
+            <Image src={imageUrl} alt={imageAlt} fill className="object-cover" sizes="100vw" />
           </div>
         )}
 
@@ -298,11 +293,12 @@ export default async function CaseStudyPage({ params }: Props) {
       >
         {(!ctaBg?.bgType || ctaBg.bgType === 'image') && (
           <>
-            <img
-              src={`${ctaBgImageUrl || fallbackCtaImageUrl}?w=1920&auto=format&q=80`}
+            <Image
+              src={ctaBgImageUrl || fallbackCtaImageUrl}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-              loading="lazy"
+              fill
+              className="object-cover"
+              sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/55" />
           </>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { sectionBgStyle as cardBgStyleFn, resolveBg, resolveTextClass } from "@/lib/sectionBackground";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { ABOUT_PAGE_QUERY } from "@/lib/sanity/queries";
@@ -32,7 +33,7 @@ function AboutHero({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -55,7 +56,7 @@ function AboutIntro({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -79,7 +80,7 @@ function AboutOverview({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -90,29 +91,33 @@ function AboutOverview({ s }: { s: Section }) {
               <div className="relative flex flex-col text-center transition-transform duration-500 ease-out hover:scale-[1.02] h-full">
               <div className="absolute -inset-y-8 -inset-x-3 md:-inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.founderCard)}>
                 {s.founderCard?.bgType === 'image' && s.founderCard?.bgImage?.asset?.url && (
-                  <img src={s.founderCard.bgImage.asset.url} alt={s.founderCard.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+                  <Image src={s.founderCard.bgImage.asset.url} alt={s.founderCard.bgImage.alt || ''} fill className="object-cover" sizes="(min-width: 768px) 50vw, 100vw" />
                 )}
               </div>
               <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
                 {s.founderHeading ? <SimpleRichText value={s.founderHeading} /> : 'The Founder'}
               </h2>
               {s.founderImage?.asset?.url && (
-                <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
-                  <img
+                <div className="relative w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
+                  <Image
                     src={s.founderImage.asset.url}
                     alt={s.founderImage.alt || 'Founder'}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
+                    sizes="(min-width: 768px) 50vw, 100vw"
                   />
                 </div>
               )}
               <PortableTextContent value={s.mission} className="text-white" />
               {s.founderImage2?.asset?.url && (
                 <div className="flex justify-center my-8">
-                  <div className="w-56 h-56 rounded-full overflow-hidden transition-transform duration-700 ease-out hover:scale-[1.08]">
-                    <img
+                  <div className="relative w-56 h-56 rounded-full overflow-hidden transition-transform duration-700 ease-out hover:scale-[1.08]">
+                    <Image
                       src={s.founderImage2.asset.url}
                       alt={s.founderImage2.alt || ''}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="224px"
                     />
                   </div>
                 </div>
@@ -125,12 +130,13 @@ function AboutOverview({ s }: { s: Section }) {
           )}
           {s.overviewImage?.asset?.url && (
             <div className="md:hidden -mx-6">
-              <img
-                src={`${s.overviewImage.asset.url}?auto=format&q=80`}
+              <Image
+                src={s.overviewImage.asset.url}
                 alt={s.overviewImage.alt || ''}
+                width={s.overviewImage.asset.metadata?.dimensions?.width || 1600}
+                height={s.overviewImage.asset.metadata?.dimensions?.height || 900}
                 className="w-full h-auto rounded-sm"
-                loading="eager"
-                decoding="async"
+                priority
               />
             </div>
           )}
@@ -140,18 +146,20 @@ function AboutOverview({ s }: { s: Section }) {
               <div className="relative flex flex-col text-center transition-transform duration-500 ease-out hover:scale-[1.02] h-full">
               <div className="absolute -inset-y-8 -inset-x-3 md:-inset-x-7 -z-10 rounded-xl overflow-hidden" style={cardBgStyle(s.studioCard)}>
                 {s.studioCard?.bgType === 'image' && s.studioCard?.bgImage?.asset?.url && (
-                  <img src={s.studioCard.bgImage.asset.url} alt={s.studioCard.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+                  <Image src={s.studioCard.bgImage.asset.url} alt={s.studioCard.bgImage.alt || ''} fill className="object-cover" sizes="(min-width: 768px) 50vw, 100vw" />
                 )}
               </div>
               <h2 className="font-[family-name:var(--font-brand)] text-xl md:text-2xl uppercase tracking-wide text-white mb-6">
                 {s.studioHeading ? <SimpleRichText value={s.studioHeading} /> : 'The Studio'}
               </h2>
               {s.studioImage?.asset?.url && (
-                <div className="w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
-                  <img
+                <div className="relative w-full aspect-[3/1] overflow-hidden rounded-sm mb-8">
+                  <Image
                     src={s.studioImage.asset.url}
                     alt={s.studioImage.alt || ''}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
+                    sizes="(min-width: 768px) 50vw, 100vw"
                   />
                 </div>
               )}
@@ -162,12 +170,13 @@ function AboutOverview({ s }: { s: Section }) {
         </div>
         {s.overviewImage?.asset?.url && (
           <div className="hidden md:block scroll-catchup -mx-7 mt-20">
-            <img
-              src={`${s.overviewImage.asset.url}?auto=format&q=80`}
+            <Image
+              src={s.overviewImage.asset.url}
               alt={s.overviewImage.alt || ''}
+              width={s.overviewImage.asset.metadata?.dimensions?.width || 1600}
+              height={s.overviewImage.asset.metadata?.dimensions?.height || 900}
               className="w-full h-auto rounded-sm transition-transform duration-700 ease-out hover:scale-[1.08]"
-              loading="eager"
-              decoding="async"
+              priority
             />
           </div>
         )}
@@ -192,7 +201,7 @@ function AboutHowWeWork({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -238,11 +247,12 @@ function AboutCta({ s }: { s: Section }) {
     >
       {hasBgImage && (
         <>
-          <img
-            src={`${bgImg.asset.url}?w=1920&auto=format&q=80`}
+          <Image
+            src={bgImg.asset.url}
             alt={bgImg.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-black/65" />
         </>

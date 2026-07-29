@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { isLightBg } from '@/lib/sectionColors'
 import { resolveBg, resolveIsLight } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
@@ -16,7 +17,10 @@ type SectionData = {
   bgColor?: string
   sectionBg?: any
   steps?: Step[]
-  sectionImage?: { asset?: { url: string }; alt?: string }
+  sectionImage?: {
+    asset?: { url: string; metadata?: { dimensions?: { width: number; height: number } } }
+    alt?: string
+  }
   buttons?: CtaButton[]
 }
 
@@ -303,7 +307,7 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
       )}
       {!s.bgVideoUrl && s.bgImage?.asset?.url && (
         <>
-          <img className="absolute inset-0 w-full h-full object-cover" src={s.bgImage.asset.url} alt={s.bgImage.alt || ''} />
+          <Image src={s.bgImage.asset.url} alt={s.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/55" />
         </>
       )}
@@ -408,12 +412,12 @@ export function HowWeWorkSection({ s }: { s: SectionData }) {
         )}
         {s.sectionImage?.asset?.url && (
           <div className="flex justify-center mt-16">
-            <img
-              src={`${s.sectionImage.asset.url}?auto=format&q=80`}
+            <Image
+              src={s.sectionImage.asset.url}
               alt={s.sectionImage.alt || ''}
+              width={s.sectionImage.asset.metadata?.dimensions?.width || 1200}
+              height={s.sectionImage.asset.metadata?.dimensions?.height || 800}
               className="max-w-full h-auto rounded-sm transition-transform duration-700 ease-out hover:scale-[1.08]"
-              loading="eager"
-              decoding="async"
             />
           </div>
         )}

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { sectionBgStyle } from '@/lib/sectionBackground'
@@ -76,7 +77,7 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
     <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden bg-white" style={sectionBgStyle(sectionBg)}>
       {sectionBg?.bgType === 'image' && sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={sectionBg.bgImage.asset.url} alt={sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={sectionBg.bgImage.asset.url} alt={sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/55" />
         </>
       )}
@@ -107,10 +108,12 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
             >
               {combo.bgImage?.asset?.url ? (
                 <>
-                  <img
+                  <Image
                     src={combo.bgImage.asset.url}
                     alt={combo.bgImage.alt || ''}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-[1.06]"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover/card:scale-[1.06]"
+                    sizes="100vw"
                   />
                   <div className="absolute inset-0 bg-black/70" />
                 </>
@@ -163,10 +166,12 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                           className="flex-1 aspect-square rounded-md overflow-hidden cursor-pointer group/thumb relative"
                           aria-label={`View image ${i + 1}`}
                         >
-                          <img
+                          <Image
                             src={img.asset.url}
                             alt={img.alt || ''}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover/thumb:scale-110"
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover/thumb:scale-110"
+                            sizes="150px"
                           />
                         </button>
                       ) : (

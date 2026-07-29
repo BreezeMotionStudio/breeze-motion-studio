@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
+import Image from 'next/image'
 import PortableTextContent from '@/components/ui/PortableTextContent'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { resolveBg } from '@/lib/sectionBackground'
@@ -74,12 +75,7 @@ export function AboutMission({ s }: Props) {
     >
       {hasBgImage && (
         <>
-          <img
-            src={`${bgImg.asset.url}?w=1920&auto=format&q=80`}
-            alt={bgImg.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-          />
+          <Image src={bgImg.asset.url} alt={bgImg.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
 import { CaseStudyPdfViewer } from '@/components/CaseStudyPdfViewer'
 
@@ -36,13 +37,15 @@ export function MoreCaseStudies({ items, buttonLabel }: Props) {
             <button
               key={item._id}
               onClick={() => setActiveId(item._id)}
-              className="w-24 sm:w-28 aspect-[1/1.4142] overflow-hidden rounded-sm border border-[#E6E6E6] shadow-sm hover:scale-105 hover:shadow-md transition-transform duration-200 cursor-pointer"
+              className="relative w-24 sm:w-28 aspect-[1/1.4142] overflow-hidden rounded-sm border border-[#E6E6E6] shadow-sm hover:scale-105 hover:shadow-md transition-transform duration-200 cursor-pointer"
               aria-label={`View case study: ${item.title}`}
             >
-              <img
-                src={`${item.previewUrl}?w=240&auto=format&q=70`}
+              <Image
+                src={item.previewUrl}
                 alt={item.previewAlt || item.title}
-                className="w-full h-full object-cover object-top"
+                fill
+                className="object-cover object-top"
+                sizes="112px"
               />
             </button>
           ))}

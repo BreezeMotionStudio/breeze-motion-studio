@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { fetchSafe } from '@/lib/sanity/fetchSafe'
 import {
   STUDIOS_QUERY,
@@ -48,7 +49,7 @@ function StudiosHero({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -71,7 +72,7 @@ function StudiosIntro({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -109,10 +110,12 @@ function StudiosGrid({ studios, sectionBg, exploreLabel }: { studios: Studio[]; 
             style={{ aspectRatio: '4/3' }}
           >
             {studio.heroImage?.asset?.url ? (
-              <img
-                src={`${studio.heroImage.asset.url}?w=1800&auto=format&q=90`}
+              <Image
+                src={studio.heroImage.asset.url}
                 alt={studio.heroImage.alt || studio.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+                fill
+                className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+                sizes="(min-width: 768px) 50vw, 100vw"
               />
             ) : (
               <div className="absolute inset-0 bg-[#1a1a1a]" />
@@ -154,10 +157,12 @@ function StudiosCta({ s }: { s: Section }) {
     >
       {hasBgImage && (
         <>
-          <img
-            src={`${s.sectionBg.bgImage.asset.url}?w=1920&auto=format&q=80`}
+          <Image
+            src={s.sectionBg.bgImage.asset.url}
             alt={s.sectionBg.bgImage.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-black/65" />
         </>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY, MORE_CASE_STUDIES_QUERY } from "@/lib/sanity/queries";
 import { resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
@@ -116,11 +117,13 @@ function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel,
                 </div>
                 <div className="flex flex-col justify-center gap-4">
                   {cs.coverImage?.asset?.url && (
-                    <div className="aspect-[16/6] overflow-hidden rounded-xl">
-                      <img
+                    <div className="relative aspect-[16/6] overflow-hidden rounded-xl">
+                      <Image
                         src={cs.coverImage.asset.url}
                         alt={cs.coverImage.alt || cs.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(min-width: 768px) 66vw, 100vw"
                       />
                     </div>
                   )}
@@ -159,11 +162,12 @@ function CaseStudiesCta({ s }: { s: Section }) {
     >
       {hasBgImage && (
         <>
-          <img
-            src={`${bgImg.asset.url}?w=1920&auto=format&q=80`}
+          <Image
+            src={bgImg.asset.url}
             alt={bgImg.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-black/65" />
         </>

@@ -1,11 +1,12 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
 
 type SliderImage = {
   _key?: string
-  asset?: { url: string }
+  asset?: { url: string; metadata?: { dimensions?: { width: number; height: number } } }
   alt?: string
   caption?: string
 }
@@ -98,11 +99,12 @@ export function CaseStudyImageSlider({ images }: { images: SliderImage[] }) {
               className="h-72 md:h-96 shrink-0 cursor-pointer overflow-hidden group"
               onClick={() => setLightbox({ src: `${img.asset!.url}?auto=format&q=92`, alt: img.alt || img.caption || '' })}
             >
-              <img
-                src={`${img.asset!.url}?w=800&auto=format&q=80`}
+              <Image
+                src={img.asset!.url}
                 alt={img.alt || img.caption || ''}
+                width={img.asset!.metadata?.dimensions?.width || 1200}
+                height={img.asset!.metadata?.dimensions?.height || 800}
                 className="h-full w-auto object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-                loading="lazy"
                 onLoad={checkScrollable}
               />
             </div>

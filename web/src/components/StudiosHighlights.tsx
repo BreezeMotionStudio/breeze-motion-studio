@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { sectionBgStyle } from '@/lib/sectionBackground'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 
@@ -29,13 +30,14 @@ function HighlightCard({ project }: { project: Project }) {
   const href = project.slug?.current ? `/projects/${project.slug.current}` : null
   const inner = (<>
       {/* Image */}
-      <div className="aspect-[3/2] mb-4 overflow-hidden rounded-sm bg-white/5">
+      <div className="relative aspect-[3/2] mb-4 overflow-hidden rounded-sm bg-white/5">
         {project.coverImage?.asset?.url ? (
-          <img
-            src={`${project.coverImage.asset.url}?w=640&auto=format&q=80`}
+          <Image
+            src={project.coverImage.asset.url}
             alt={project.coverImage.alt || project.title}
-            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-            loading="lazy"
+            fill
+            className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+            sizes="(min-width: 768px) 33vw, 100vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

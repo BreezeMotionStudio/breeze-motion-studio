@@ -2,6 +2,7 @@
 
 import {useState, useCallback} from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {StudioCard} from '@/components/StudioCard'
 import {Button} from '@/components/ui/Button'
 import {btnSpacingClass} from '@/lib/buttonSpacing'
@@ -59,7 +60,7 @@ function SectionBg({videoUrl, image}: {videoUrl?: string; image?: {asset?: {url:
   if (image?.asset?.url) {
     return (
       <>
-        <img className="absolute inset-0 w-full h-full object-cover" src={image.asset.url} alt={image.alt || ''} />
+        <Image src={image.asset.url} alt={image.alt || ''} fill className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-black/55" />
       </>
     )
@@ -106,8 +107,8 @@ export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) 
 
         {s.parentLogo?.asset?.url ? (
           <div className="flex flex-col items-center mt-6">
-            <Link href="/studios" className={`block w-40 h-40 overflow-hidden bg-[#111111] border border-white/15 flex items-center justify-center transition-transform duration-300 hover:scale-105${s.parentLogo.roundCrop ? ' rounded-full' : ' rounded-lg'}`}>
-              <img src={s.parentLogo.asset.url} alt={s.parentLogo.alt || ''} className="w-full h-full object-cover" />
+            <Link href="/studios" className={`relative block w-40 h-40 overflow-hidden bg-[#111111] border border-white/15 flex items-center justify-center transition-transform duration-300 hover:scale-105${s.parentLogo.roundCrop ? ' rounded-full' : ' rounded-lg'}`}>
+              <Image src={s.parentLogo.asset.url} alt={s.parentLogo.alt || ''} fill className="object-cover" sizes="160px" />
             </Link>
             {/* Connector tree — desktop only */}
             <div className="w-full hidden lg:block">

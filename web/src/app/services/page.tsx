@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { SERVICES_PAGE_QUERY, SERVICE_CATEGORIES_QUERY } from "@/lib/sanity/queries";
 import { Button } from "@/components/ui/Button";
@@ -41,7 +42,7 @@ function ServicesHero({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -64,7 +65,7 @@ function ServicesIntro({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -87,10 +88,12 @@ function ServicesCta({ s }: { s: Section }) {
     >
       {hasBgImage && (
         <>
-          <img
+          <Image
             src={bgImg.asset.url}
             alt={bgImg.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-black/65" />
         </>
@@ -171,10 +174,12 @@ export default async function ServicesPage() {
               >
                 {stripBgImg?.asset?.url && (
                   <>
-                    <img
+                    <Image
                       src={stripBgImg.asset.url}
                       alt={stripBgImg.alt || ""}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="100vw"
                     />
                     <div className="absolute inset-0 bg-black/65" />
                   </>

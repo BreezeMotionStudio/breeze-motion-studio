@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 function getYouTubeVideoId(url: string): string | null {
   try {
     const u = new URL(url)
@@ -61,10 +63,12 @@ export function StudioCard({href, title, purpose, videoUrl, image}: Props) {
             />
           )
         ) : image?.asset?.url ? (
-          <img
+          <Image
             src={image.asset.url}
             alt={image.alt || title}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           />
         ) : null}
       </div>

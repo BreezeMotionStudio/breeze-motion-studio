@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { resolveBg, resolveTextClass, resolveIsLight } from '@/lib/sectionBackground'
 import { Button } from '@/components/ui/Button'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
@@ -99,7 +100,7 @@ export function HomeTestimonials({ s, testimonials }: { s: any; testimonials: Te
       )}
       {!s.bgVideoUrl && s.bgImage?.asset?.url && (
         <>
-          <img className="absolute inset-0 w-full h-full object-cover" src={s.bgImage.asset.url} alt={s.bgImage.alt || ''} />
+          <Image src={s.bgImage.asset.url} alt={s.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/55" />
         </>
       )}

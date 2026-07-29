@@ -1,6 +1,7 @@
 'use client'
 
 import {useState, useEffect, useRef} from 'react'
+import Image from 'next/image'
 
 type SlideImage = {asset?: {url: string}; alt?: string}
 
@@ -43,11 +44,15 @@ export function AboutSlideshow({images, side}: {images?: SlideImage[]; side: 'le
 
   if (count === 1) {
     return (
-      <img
-        src={images[0].asset?.url ?? ''}
-        alt={images[0].alt ?? ''}
-        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-      />
+      <div className="relative w-full h-full">
+        <Image
+          src={images[0].asset?.url ?? ''}
+          alt={images[0].alt ?? ''}
+          fill
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          sizes="(min-width: 768px) 25vw, 100vw"
+        />
+      </div>
     )
   }
 
@@ -61,11 +66,13 @@ export function AboutSlideshow({images, side}: {images?: SlideImage[]; side: 'le
       }}
     >
       {images.map((img, i) => (
-        <div key={i} style={{width: `${100 / count}%`}} className="h-full shrink-0">
-          <img
+        <div key={i} style={{width: `${100 / count}%`}} className="relative h-full shrink-0">
+          <Image
             src={img.asset?.url ?? ''}
             alt={img.alt ?? ''}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            fill
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            sizes="(min-width: 768px) 25vw, 100vw"
           />
         </div>
       ))}

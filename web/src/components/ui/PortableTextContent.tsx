@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { getImageDimensions } from "@sanity/asset-utils";
 import { urlFor } from "@/lib/sanity/image";
 import { MARK_FONT_VARS, MARK_SIZE_VALUES, resolveMarkColor } from "@/lib/textMarkStyles";
 
@@ -8,14 +10,24 @@ const components: PortableTextComponents = {
   types: {
     image: ({ value }) => {
       if (!value?.asset) return null;
-      const url = urlFor(value).width(1200).fit("max").auto("format").url();
+      const url = urlFor(value).fit("max").url();
+      const { width, height } = getImageDimensions(value);
       return (
         <figure className="my-8">
-          <img
-            src={url}
-            alt={value.alt || ""}
-            className={`w-full ${value.roundCrop ? "rounded-full aspect-square object-cover max-w-md mx-auto" : ""}`}
-          />
+          {value.roundCrop ? (
+            <div className="relative rounded-full aspect-square max-w-md mx-auto overflow-hidden">
+              <Image src={url} alt={value.alt || ""} fill className="object-cover" sizes="448px" />
+            </div>
+          ) : (
+            <Image
+              src={url}
+              alt={value.alt || ""}
+              width={width}
+              height={height}
+              className="w-full h-auto"
+              sizes="(min-width: 768px) 700px, 100vw"
+            />
+          )}
           {value.caption && (
             <figcaption className="text-sm text-bms-grey-400 mt-2 text-center">
               {value.caption}
