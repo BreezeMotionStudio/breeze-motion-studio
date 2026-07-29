@@ -21,6 +21,7 @@ type ButtonProps = {
   href?: string
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
+  disabled?: boolean
   children: React.ReactNode
   className?: string
   'aria-label'?: string
@@ -32,11 +33,19 @@ export function Button({
   href,
   onClick,
   type = 'button',
+  disabled = false,
   children,
   className = '',
   'aria-label': ariaLabel,
 }: ButtonProps) {
-  const classes = ['inline-block', SIZES[size], BASE, VARIANTS[variant], className]
+  const classes = [
+    'inline-block',
+    SIZES[size],
+    BASE,
+    VARIANTS[variant],
+    disabled ? 'opacity-50 pointer-events-none' : '',
+    className,
+  ]
     .filter(Boolean)
     .join(' ')
 
@@ -49,7 +58,7 @@ export function Button({
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes} aria-label={ariaLabel}>
+    <button type={type} onClick={onClick} disabled={disabled} className={classes} aria-label={ariaLabel}>
       {children}
     </button>
   )

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import PortableTextContent from "@/components/ui/PortableTextContent";
 import { SimpleRichText } from "@/components/ui/SimpleRichText";
 import { sectionBgStyle, resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
-import { Button } from "@/components/ui/Button";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
+import { ContactForm } from "@/components/ContactForm";
 import { textStyleToCss } from "@/lib/textMarkStyles";
 
 export const revalidate = 60;
@@ -30,7 +31,7 @@ function ContactHero({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -53,7 +54,7 @@ function ContactIntro({ s }: { s: Section }) {
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -87,7 +88,7 @@ function ContactDetailsForm({
     >
       {s.sectionBg?.bgType === 'image' && s.sectionBg?.bgImage?.asset?.url && (
         <>
-          <img src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+          <Image src={s.sectionBg.bgImage.asset.url} alt={s.sectionBg.bgImage.alt || ''} fill className="object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-black/65" />
         </>
       )}
@@ -136,7 +137,7 @@ function ContactDetailsForm({
         >
           {s.formBg?.bgType === 'image' && s.formBg?.bgImage?.asset?.url && (
             <>
-              <img src={s.formBg.bgImage.asset.url} alt={s.formBg.bgImage.alt || ''} className="absolute inset-0 w-full h-full object-cover" />
+              <Image src={s.formBg.bgImage.asset.url} alt={s.formBg.bgImage.alt || ''} fill className="object-cover" sizes="(min-width: 768px) 66vw, 100vw" />
               <div className="absolute inset-0 bg-black/60" />
             </>
           )}
@@ -144,33 +145,13 @@ function ContactDetailsForm({
             <h2 className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white mb-8">
               {s.formHeading ? <SimpleRichText value={s.formHeading} /> : "Send Us a Message"}
             </h2>
-            <form className="flex flex-col gap-5">
-              <input
-                type="text"
-                placeholder={s.namePlaceholder || 'Your name'}
-                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)]"
-              />
-              <input
-                type="email"
-                placeholder={s.emailPlaceholder || 'Your email'}
-                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)]"
-              />
-              <input
-                type="text"
-                placeholder={s.companyPlaceholder || 'Company / Organisation (optional)'}
-                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)]"
-              />
-              <textarea
-                placeholder={s.messagePlaceholder || 'Tell us about your project'}
-                rows={9}
-                className="w-full bg-transparent border border-white/30 text-white placeholder-white/70 px-4 py-3 focus:outline-none focus:border-white font-[family-name:var(--font-body)] resize-none"
-              />
-              <div>
-                <Button type="submit" variant="white" size="lg">
-                  {s.submitLabel || 'Send Message'}
-                </Button>
-              </div>
-            </form>
+            <ContactForm
+              namePlaceholder={s.namePlaceholder}
+              emailPlaceholder={s.emailPlaceholder}
+              companyPlaceholder={s.companyPlaceholder}
+              messagePlaceholder={s.messagePlaceholder}
+              submitLabel={s.submitLabel}
+            />
           </div>
         </div>
       </div>
