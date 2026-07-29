@@ -14,6 +14,7 @@ import { StudiosBts } from '@/components/StudiosBts'
 import { StudiosLatestProjects } from '@/components/StudiosLatestProjects'
 import { Button } from '@/components/ui/Button'
 import { btnSpacingClass } from '@/lib/buttonSpacing'
+import { buildMetadata } from '@/lib/openGraph'
 
 export const revalidate = 60
 
@@ -31,12 +32,16 @@ type Studio = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchSafe(STUDIOS_PAGE_QUERY, {}, null)
-  return {
+  const hero = page?.sections?.find((s: Section) => s._type === 'studiosHero')
+  return buildMetadata({
     title: page?.seoTitle || 'Studios',
     description:
       page?.seoDescription ||
       'Explore our specialized studios — Machine Studio, Commercial Studio, Creative Studio, and Strategy Studio.',
-  }
+    path: '/studios',
+    imageUrl: hero?.heroImage?.asset?.url,
+    imageAlt: hero?.heroImage?.alt,
+  })
 }
 
 // ── Fixed section components ────────────────────────────────────────────────

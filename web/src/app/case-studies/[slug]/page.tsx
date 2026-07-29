@@ -9,6 +9,7 @@ import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { Button } from '@/components/ui/Button'
 import { AnimatedLine } from '@/components/AnimatedLine'
 import { CaseStudyImageSlider } from '@/components/CaseStudyImageSlider'
+import { buildMetadata } from '@/lib/openGraph'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 60
@@ -19,10 +20,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const cs = await fetchSafe(CASE_STUDY_BY_SLUG_QUERY, { slug }, null)
   if (!cs) return { title: 'Case Study Not Found' }
-  return {
+  return buildMetadata({
     title: cs.seoTitle || cs.title,
     description: cs.seoDescription || cs.summary,
-  }
+    path: `/case-studies/${slug}`,
+    imageUrl: cs.coverImage?.asset?.url,
+    imageAlt: cs.coverImage?.alt,
+  })
 }
 
 function deliverableAnchor(label: string): 'videos' | 'images' | 'bts' | null {

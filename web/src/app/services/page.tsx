@@ -10,6 +10,7 @@ import { ServiceCombinationsSection } from "@/components/ServiceCombinationsSect
 import { MissionReveal } from "@/components/MissionReveal";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { resolveBg, resolveTextClass } from "@/lib/sectionBackground";
+import { buildMetadata } from "@/lib/openGraph";
 
 export const revalidate = 60;
 
@@ -26,12 +27,16 @@ type ServiceCategory = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchSafe(SERVICES_PAGE_QUERY, {}, null);
-  return {
+  const hero = page?.sections?.find((s: Section) => s._type === "servicesHero");
+  return buildMetadata({
     title: page?.seoTitle || "Services",
     description:
       page?.seoDescription ||
       "Explore the full range of services offered by Breeze Motion Studio.",
-  };
+    path: "/services",
+    imageUrl: hero?.heroImage?.asset?.url,
+    imageAlt: hero?.heroImage?.alt,
+  });
 }
 
 function ServicesHero({ s }: { s: Section }) {

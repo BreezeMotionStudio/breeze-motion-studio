@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { MoreCaseStudies } from "@/components/MoreCaseStudies";
+import { buildMetadata } from "@/lib/openGraph";
 
 export const revalidate = 60;
 
@@ -41,12 +42,16 @@ type MoreCaseStudyItem = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchSafe(CASE_STUDIES_PAGE_QUERY, {}, null);
-  return {
+  const hero = page?.sections?.find((s: Section) => s._type === "caseStudiesHero");
+  return buildMetadata({
     title: page?.seoTitle || "Case Studies",
     description:
       page?.seoDescription ||
       "Curated, narrative-driven deep dives into selected projects and client relationships.",
-  };
+    path: "/case-studies",
+    imageUrl: hero?.heroImage?.asset?.url,
+    imageAlt: hero?.heroImage?.alt,
+  });
 }
 
 function CaseStudiesHero({ s }: { s: Section }) {

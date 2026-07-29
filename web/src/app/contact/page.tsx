@@ -7,6 +7,7 @@ import { SimpleRichText } from "@/components/ui/SimpleRichText";
 import { sectionBgStyle, resolveBg, resolveTextClass, resolveIsLight } from "@/lib/sectionBackground";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { ContactForm } from "@/components/ContactForm";
+import { buildMetadata } from "@/lib/openGraph";
 import { textStyleToCss } from "@/lib/textMarkStyles";
 
 export const revalidate = 60;
@@ -15,12 +16,16 @@ type Section = Record<string, any> & { _type: string; _key: string };
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchSafe(CONTACT_PAGE_QUERY, {}, null);
-  return {
+  const hero = page?.sections?.find((s: Section) => s._type === "contactHero");
+  return buildMetadata({
     title: page?.seoTitle || "Contact",
     description:
       page?.seoDescription ||
       "Get in touch with Breeze Motion Studio. All projects start with a conversation.",
-  };
+    path: "/contact",
+    imageUrl: hero?.heroImage?.asset?.url,
+    imageAlt: hero?.heroImage?.alt,
+  });
 }
 
 function ContactHero({ s }: { s: Section }) {

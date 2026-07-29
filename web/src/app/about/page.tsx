@@ -10,6 +10,7 @@ import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { AboutMission } from "@/components/AboutMission";
 import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
+import { buildMetadata } from "@/lib/openGraph";
 
 export const revalidate = 60;
 
@@ -17,12 +18,16 @@ type Section = Record<string, any> & { _type: string; _key: string };
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchSafe(ABOUT_PAGE_QUERY, {}, null);
-  return {
+  const hero = page?.sections?.find((s: Section) => s._type === "aboutHero");
+  return buildMetadata({
     title: page?.seoTitle || "About",
     description:
       page?.seoDescription ||
       "Learn about Breeze Motion Studio — a fully remote, founder-led multi-media production and digital systems studio.",
-  };
+    path: "/about",
+    imageUrl: hero?.heroImage?.asset?.url,
+    imageAlt: hero?.heroImage?.alt,
+  });
 }
 
 function AboutHero({ s }: { s: Section }) {

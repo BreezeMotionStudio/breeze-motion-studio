@@ -6,18 +6,22 @@ import { ScrollObserver } from "@/components/ScrollObserver";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { SITE_SETTINGS_QUERY, STUDIOS_QUERY } from "@/lib/sanity/queries";
 import { SITE_URL } from "@/lib/siteUrl";
+import { buildMetadata } from "@/lib/openGraph";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSafe(SITE_SETTINGS_QUERY, {}, null)
   const siteTitle = settings?.siteTitle || 'Breeze Motion Studio'
+  const description =
+    settings?.description ||
+    'High-end audio-visual content and structured digital solutions for corporate, commercial, industrial, and creative clients.'
+  const logo = settings?.plainLogo?.logoImage?.asset?.url || settings?.iconLogo?.logoImage?.asset?.url
+
   return {
+    ...buildMetadata({ title: siteTitle, description, path: '/', imageUrl: logo, imageAlt: siteTitle }),
     title: {
       default: siteTitle,
       template: `%s | ${siteTitle}`,
     },
-    description:
-      settings?.description ||
-      'High-end audio-visual content and structured digital solutions for corporate, commercial, industrial, and creative clients.',
   }
 }
 

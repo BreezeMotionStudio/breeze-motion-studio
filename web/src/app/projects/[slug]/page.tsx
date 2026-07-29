@@ -8,6 +8,7 @@ import { VideoEmbed } from '@/components/ui/VideoEmbed'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { CaseStudyPdfButton } from '@/components/CaseStudyPdfButton'
 import { ProjectImageGrid } from '@/components/ProjectImageGrid'
+import { buildMetadata } from '@/lib/openGraph'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 60
@@ -20,10 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const project = await fetchSafe(PROJECT_BY_SLUG_QUERY, { slug }, null)
   if (!project) return { title: 'Project Not Found' }
-  return {
+  return buildMetadata({
     title: project.seoTitle || project.title,
     description: project.seoDescription || project.summary,
-  }
+    path: `/projects/${slug}`,
+    imageUrl: project.coverImage?.asset?.url,
+    imageAlt: project.coverImage?.alt,
+  })
 }
 
 export default async function ProjectPage({ params }: Props) {

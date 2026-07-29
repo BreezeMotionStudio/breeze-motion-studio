@@ -9,6 +9,7 @@ import { StudioProjectsGrid } from '@/components/StudioProjectsGrid'
 import { Button } from '@/components/ui/Button'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
+import { buildMetadata } from '@/lib/openGraph'
 
 export const revalidate = 60
 
@@ -18,10 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const studio = await fetchSafe(STUDIO_BY_SLUG_QUERY, { slug }, null)
   if (!studio) return { title: 'Studio Not Found' }
-  return {
+  return buildMetadata({
     title: studio.seoTitle || studio.title,
     description: studio.seoDescription || studio.purpose,
-  }
+    path: `/studios/${slug}`,
+    imageUrl: studio.heroImage?.asset?.url,
+    imageAlt: studio.heroImage?.alt,
+  })
 }
 
 export default async function StudioPage({ params }: Props) {
