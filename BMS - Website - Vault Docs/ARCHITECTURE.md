@@ -307,6 +307,16 @@
 
 ---
 
+### 25. Open Graph / Twitter Card Metadata — Shared `buildMetadata()` Helper (Session 36)
+
+**Decision:** `web/src/lib/openGraph.ts` exports `buildMetadata({title, description, path, imageUrl, imageAlt})`, returning a full `Metadata` object with `openGraph` and `twitter: {card: 'summary_large_image'}` populated. Every page's `generateMetadata()` calls this instead of returning a bare `{title, description}` object, so social/messaging link previews (Slack, iMessage, LinkedIn, etc.) show a proper title, description, and image instead of a bare URL.
+
+**Rationale:** No page had any Open Graph metadata before this — previously only `title`/`description` were set, which search engines use but link-preview surfaces don't. This doesn't affect search ranking (Open Graph isn't a ranking signal) but does affect how the site looks whenever a link to it is shared anywhere outside a search engine.
+
+**Where used / how to extend:** Wired into the root `layout.tsx` (using the site logo — this also covers `/` since the homepage has no `generateMetadata` of its own and inherits the layout's) and all 8 other pages' `generateMetadata()`. Each page passes whatever hero/cover image its own query already fetches — no new Sanity queries were added for this. Any new page's `generateMetadata()` should call `buildMetadata()` rather than returning a plain metadata object.
+
+---
+
 ## Data Flow
 
 ### Content Creation Flow

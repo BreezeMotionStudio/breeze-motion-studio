@@ -33,7 +33,7 @@
 | Mobile responsiveness audit | ✅ Done | Session 34 — full manual/real-device pass across every page, on top of Session 33's automated pass; see decision 20 in `ARCHITECTURE.md` |
 | Case study PDF system | ✅ Done | Session 36 — per-project PDF + required PNG preview replaces most dedicated case-study pages; see `CONTENT_MODEL.md` |
 | Case Studies page "View More" | ✅ Done | Session 36 — reveals every project's case study (featured or not) as small clickable thumbnails |
-| SEO implementation | ✅ Done | Session 36 — per-page meta tags (earlier session) + sitemap.xml, robots.txt, Organization JSON-LD (this session) |
+| SEO implementation | ✅ Done | Session 36 — per-page meta tags (earlier session) + sitemap.xml, robots.txt, Organization JSON-LD, and Open Graph/Twitter card previews with page-specific images (this session) |
 | Contact form integration | ✅ Done | Session 36 — Resend-powered; temporarily force-routed to rebekah@ pending domain verification, see decision 22 in `ARCHITECTURE.md` |
 | Performance optimization | ✅ Done | Session 36 — every `<img>` migrated to `next/image` via a custom Sanity CDN loader (3 deliberate lightbox exceptions); see decision 23 in `ARCHITECTURE.md` |
 | Deployment pipeline | Partial | Vercel linked, needs frontend config |
@@ -67,6 +67,18 @@
 - ✅ 3 click-to-enlarge lightbox/modal previews deliberately left as plain `<img>` (on-demand full-size views, outside the initial-load performance budget)
 - 🐛 **Found & removed:** one genuinely dead function (`AboutSideImage` in the homepage, defined but never called)
 - ✅ End-of-session verification: `tsc --noEmit` (0 errors), `npm run lint` (0 errors, warnings down from 149 → 83, all remaining ones pre-existing/accepted), `npm run build` (succeeds, all routes compile), full page-by-page HTTP smoke test (all 200s)
+
+**Open Graph / Twitter card metadata (see `ARCHITECTURE.md` decision 25):**
+- ✅ New shared `buildMetadata()` helper (`web/src/lib/openGraph.ts`) wired into every page's `generateMetadata()` — each page now gets a proper social-share preview card (title, description, image) instead of none at all
+- ✅ Each page uses its own hero/cover image already available from its existing query (no new fetches added); homepage uses the site logo; a branded default image covers any page with nothing more specific
+- ✅ Verified live via `curl` on every route — each has the correct page-specific `og:image`, not one generic image reused everywhere
+
+**Studio structure fix:**
+- ✅ Content Library's "Case Studies" list renamed to **"Featured Case Studies"** and its filter changed from a narrative-field-presence heuristic to checking `showAsCaseStudy == true` directly — the old heuristic became unreliable once those narrative fields were hidden-unless-featured earlier this session
+
+**Investigated and deliberately left alone:**
+- 🔍 Found that the brand heading font (Cormorant SC) never actually loads anywhere in the codebase (no `next/font`/`@font-face`/font `<link>` — confirmed by reading every relevant file) and silently falls back to the browser's default serif. Raised with Rebekah; she confirmed she likes the current fallback look and explicitly declined the fix. **Do not "fix" this without asking again** — see `feedback_font_fallback_is_intentional` session memory.
+- 🔍 Reviewed the legacy `caseStudy` archive (12 documents, retired document type) — confirmed with Rebekah to keep all 12 indefinitely as reference material for when she uploads matching new projects soon, rather than deleting or bulk-migrating now. See `project_legacy_case_study_archive` session memory.
 
 ---
 
