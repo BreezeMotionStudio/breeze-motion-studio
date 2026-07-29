@@ -75,7 +75,6 @@ function CaseStudiesIntro({ s }: { s: Section }) {
 }
 
 function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel, listingSectionTitle, sectionBg, moreCaseStudies, viewMoreLabel }: { caseStudies: CaseStudy[]; listingKickerLabel?: string; listingCtaLabel?: string; listingSectionTitle?: string; sectionBg?: Section; moreCaseStudies: MoreCaseStudyItem[]; viewMoreLabel?: string }) {
-  const onDark = !resolveIsLight(sectionBg);
   return (
     <section
       className={`bg-white py-20 ${resolveTextClass(sectionBg, undefined, true)}`}
@@ -143,7 +142,7 @@ function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel,
             <strong>Sanity Studio → Content Library → Case Studies</strong>.
           </p>
         )}
-        <MoreCaseStudies items={moreCaseStudies} buttonLabel={viewMoreLabel} onDark={onDark} />
+        <MoreCaseStudies items={moreCaseStudies} buttonLabel={viewMoreLabel} />
       </div>
     </section>
   );

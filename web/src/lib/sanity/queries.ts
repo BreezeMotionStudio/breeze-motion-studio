@@ -302,7 +302,7 @@ export const CASE_STUDIES_QUERY = defineQuery(
 );
 
 export const MORE_CASE_STUDIES_QUERY = defineQuery(
-  `*[_type == "project" && showAsCaseStudy != true && defined(caseStudyPdf.asset) && defined(caseStudyPdfPreview.asset)] | order(completedAt desc){
+  `*[_type == "project" && defined(caseStudyPdf.asset) && defined(caseStudyPdfPreview.asset)] | order(completedAt desc){
     _id,
     title,
     caseStudyPdf{asset->{url, originalFilename}},
