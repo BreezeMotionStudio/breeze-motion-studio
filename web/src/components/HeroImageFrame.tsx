@@ -17,7 +17,10 @@ const CLIP = 'polygon(35% 0%, 100% 0%, 100% 100%, 0% 100%)'
  * Renders a visible placeholder when no image URL is provided.
  * When `videoUrl` is set it takes priority over `url` and plays on loop.
  */
-export function HeroImageFrame({ url, videoUrl, alt = '', overlay = true }: HeroImageFrameProps) {
+export function HeroImageFrame({ url, videoUrl, alt, overlay = true }: HeroImageFrameProps) {
+  // Sanity's GROQ projection returns `null` (not `undefined`) for an unset alt
+  // field, which skips the destructuring default above — coalesce explicitly.
+  const safeAlt = alt ?? ''
   if (!url && !videoUrl) {
     return (
       <div
@@ -62,7 +65,7 @@ export function HeroImageFrame({ url, videoUrl, alt = '', overlay = true }: Hero
         ) : (
           <Image
             src={url!}
-            alt={alt}
+            alt={safeAlt}
             fill
             className="object-cover"
             sizes="57vw"

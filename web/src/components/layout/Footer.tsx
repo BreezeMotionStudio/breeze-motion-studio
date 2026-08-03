@@ -147,6 +147,7 @@ export default function Footer({
                   width={roundSize}
                   height={roundSize}
                   className="w-full h-full object-cover"
+                  unoptimized={!roundLogo?.logoImage?.asset?.url}
                 />
               </div>
             ) : showPlain ? (
@@ -157,6 +158,7 @@ export default function Footer({
                 height={plainSize}
                 style={{ height: plainSize, width: "auto" }}
                 className="shrink-0"
+                unoptimized={!plainLogo?.logoImage?.asset?.url}
               />
             ) : null}
           </Link>

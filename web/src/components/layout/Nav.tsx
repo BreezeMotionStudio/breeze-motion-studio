@@ -87,6 +87,7 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, 
               height={plainSize}
               style={{ height: plainSize, width: "auto" }}
               className="shrink-0"
+              unoptimized={!plainLogo?.logoImage?.asset?.url}
               priority
             />
           )}
@@ -101,6 +102,7 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, 
                 width={roundSize}
                 height={roundSize}
                 className="w-full h-full object-cover"
+                unoptimized={!roundLogo?.logoImage?.asset?.url}
                 priority
               />
             </div>
@@ -113,6 +115,7 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, 
               height={iconSize}
               style={{ height: iconSize, width: "auto" }}
               className="shrink-0"
+              unoptimized={!iconLogo?.logoImage?.asset?.url}
               priority
             />
           )}
