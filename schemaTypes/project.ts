@@ -249,7 +249,7 @@ export const project = defineType({
       type: 'boolean',
       group: 'caseStudy',
       description:
-        'Only for the handful of specially designed, full-page case studies. When enabled, this project appears on the public Case Studies listing page with its own dedicated page, and the fields below become available. Most projects should leave this off and use the Case Study PDF field instead.',
+        'Only for the handful of specially designed, full-page case studies. When enabled, this project appears on the public Case Studies listing page with its own dedicated page. Most projects should leave this off and use the Case Study PDF field instead. The case study fields below are always visible so you can fill them in regardless of this toggle.',
       initialValue: false,
     }),
     defineField({
@@ -286,7 +286,6 @@ export const project = defineType({
       group: 'caseStudy',
       description: 'Lower numbers appear first. Only relevant when featured above.',
       initialValue: 0,
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyOverview',
@@ -295,14 +294,12 @@ export const project = defineType({
       rows: 4,
       group: 'caseStudy',
       description: 'One paragraph framing the project for the reader',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyChallenge',
       title: 'The Challenge',
       type: 'blockContent',
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyChallengeImage',
@@ -311,14 +308,12 @@ export const project = defineType({
       options: {hotspot: true},
       group: 'caseStudy',
       fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyApproach',
       title: 'The Approach',
       type: 'blockContent',
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyApproachImage',
@@ -327,14 +322,12 @@ export const project = defineType({
       options: {hotspot: true},
       group: 'caseStudy',
       fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyOutcome',
       title: 'The Outcome',
       type: 'blockContent',
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudyOutcomeImage',
@@ -343,7 +336,6 @@ export const project = defineType({
       options: {hotspot: true},
       group: 'caseStudy',
       fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'testimonial',
@@ -351,7 +343,6 @@ export const project = defineType({
       type: 'reference',
       to: [{type: 'testimonial'}],
       group: 'caseStudy',
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
     defineField({
       name: 'caseStudySliderImages',
@@ -370,7 +361,6 @@ export const project = defineType({
           ],
         }),
       ],
-      hidden: ({parent}) => !parent?.showAsCaseStudy,
     }),
 
     // ─── Settings ──────────────────────────────────────────────────────────────
