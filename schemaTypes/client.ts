@@ -70,6 +70,14 @@ export const client = defineType({
       description: 'Which studios does this client work with?',
     }),
     defineField({
+      name: 'individual',
+      title: 'Individual / Personal Client',
+      type: 'boolean',
+      description:
+        'Turn on for a personal client (not a company). Hides their name from the large hero heading on their project page and shows the project title there instead — the name still appears everywhere else (client lists, case study byline, etc).',
+      initialValue: false,
+    }),
+    defineField({
       name: 'approved',
       title: 'Approved for Public Display',
       type: 'boolean',

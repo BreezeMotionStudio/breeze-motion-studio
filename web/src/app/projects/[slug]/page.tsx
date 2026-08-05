@@ -103,7 +103,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
           </div>
           <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide text-black">
-            {project.client?.name || project.title}
+            {project.client?.individual ? project.title : project.client?.name || project.title}
           </h1>
         </div>
       </section>

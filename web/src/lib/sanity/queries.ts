@@ -259,7 +259,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(
     caseStudyPdfPreview{asset->{url, metadata{lqip, dimensions}}, alt},
     deliverables,
     services[]->{_id, title},
-    client->{name, industry, logo{asset->{url}, alt}},
+    client->{name, individual, industry, logo{asset->{url}, alt}},
     studio->{title, slug},
     testimonial->{quote, attribution, role},
     seoTitle,
