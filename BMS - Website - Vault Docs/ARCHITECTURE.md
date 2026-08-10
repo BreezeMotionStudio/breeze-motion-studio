@@ -1,6 +1,6 @@
 # Architecture — Breeze Motion Studio Website
 
-**Last Updated:** 2026-04-14 (Session 23 — continued)
+**Last Updated:** 2026-08-11 (Session 41)
 
 ## System Overview
 
@@ -314,6 +314,26 @@
 **Rationale:** No page had any Open Graph metadata before this — previously only `title`/`description` were set, which search engines use but link-preview surfaces don't. This doesn't affect search ranking (Open Graph isn't a ranking signal) but does affect how the site looks whenever a link to it is shared anywhere outside a search engine.
 
 **Where used / how to extend:** Wired into the root `layout.tsx` (using the site logo — this also covers `/` since the homepage has no `generateMetadata` of its own and inherits the layout's) and all 8 other pages' `generateMetadata()`. Each page passes whatever hero/cover image its own query already fetches — no new Sanity queries were added for this. Any new page's `generateMetadata()` should call `buildMetadata()` rather than returning a plain metadata object.
+
+---
+
+### 26. Individual-Client Toggle — Hide Personal Names from Project Hero (Session 39, 2026-08-05)
+
+**Decision:** New `client.individual` boolean. `projects/[slug]/page.tsx`'s hero heading falls back to `project.title` instead of `client.name` when the linked client has `individual: true`.
+
+**Rationale:** Personal photoshoot clients (portrait series, private shoots) had their real name rendered as the large hero heading. For clients who aren't a business, publishing their name that prominently isn't appropriate — the project title works as the heading instead. Company clients are unaffected (`individual` left unset/false).
+
+**Where used / how to extend:** Set `individual: true` on any personal/non-business `client` document. Also keep the client's real name out of image alt text sitewide for the same reason — see session memory `project_individual_client_toggle.md`.
+
+---
+
+### 27. Studio Showcase Video — Optional Section Above Projects Grid (Session 40, 2026-08-10)
+
+**Decision:** `studio.showcaseVideo` (file upload) / `studio.showcaseVideoUrl` (YouTube/Vimeo/direct link, upload takes priority) drive a new section on `/studios/[slug]` between Overview and the Projects grid. No title — video only. Hidden entirely when a studio has neither field set. Background independently editable via `studioPageTemplate.showcaseVideoSectionBg`.
+
+**Rationale:** Gives each studio a flagship reel without forcing one to exist — most studios don't have one yet, so the section simply doesn't render rather than showing an empty placeholder.
+
+**Where used / how to extend:** Populate either field on a `studio` document to turn the section on for that studio's page. Prefer the URL field (YouTube/Vimeo embed) over uploading a file, to avoid Sanity bandwidth cost on large video files.
 
 ---
 

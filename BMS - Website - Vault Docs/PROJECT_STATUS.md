@@ -1,8 +1,8 @@
 # Project Status — Breeze Motion Studio Website
 
-## Current Phase: Core Implementation
+## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-07-29 (Session 36)
+**Last Updated:** 2026-08-11 (Session 41)
 
 ---
 
@@ -38,10 +38,62 @@
 | Performance optimization | ✅ Done | Session 36 — every `<img>` migrated to `next/image` via a custom Sanity CDN loader (3 deliberate lightbox exceptions); see decision 23 in `ARCHITECTURE.md` |
 | Deployment pipeline | Partial | Vercel linked, needs frontend config |
 | Domain / DNS | Not Started | Namecheap domain → Vercel — deliberately deferred until all client projects are uploaded to Sanity |
+| Console error cleanup | ✅ Done | Session 37 — null hero alt, deprecated Sanity import, logo loader warning all fixed |
+| Case study fields visible for all projects | ✅ Done | Session 38 — Rebekah can now write case study copy ahead of featuring a project |
+| Individual-client hero toggle | ✅ Done | Session 39 — see `ARCHITECTURE.md` decision 26 |
+| Studio showcase video section | ✅ Done | Session 40 — see `ARCHITECTURE.md` decision 27; not yet populated for any studio |
+| Full-site empty-text-block audit | ✅ Done | Session 41 — see below; 5 personal-client case studies deliberately left blank pending Rebekah's input |
 
 ---
 
 ## Development Log
+
+### 2026-08-11 (Session 41) — Dev Server Hang Fix, Full-Site Text Audit, Orphan Draft Cleanup
+
+**Dev server unresponsive again ("pages not loading"):**
+- 🐛 **Bug found & fixed:** same failure mode as Session 35 — `next dev` process still `LISTENING` on port 3000 but not answering any request (curl timed out). Killed the hung PID, started a fresh `npm run dev`, confirmed HTTP 200.
+- 🔍 The Sanity Studio "won't publish" report turned out not to be a bug — the publish had actually completed (likely just slow while the hung Next.js process was starving CPU/memory), and the Publish button greying out afterward is expected Studio behavior once a document has no unpublished changes left.
+
+**Full-site audit for empty/unpopulated text fields (per the standing CMS-sync rule):**
+- ✅ 4 page singletons (`homePage`, `aboutPage`, `contactPage`, `servicesPage`) had empty `seoTitle`/`seoDescription` — populated with the same copy the frontend's `||` fallback was already using (moved out of hardcoded fallback strings and into Sanity, per rule 1). Note: `homePage`'s SEO fields aren't actually wired into any `generateMetadata()` (the homepage inherits root `layout.tsx`'s metadata, sourced from `siteSettings` instead) — populated anyway for CMS completeness, but there was no rendering change to verify.
+- ✅ `serviceCategory` "Digital Platforms & Systems" was missing its full `description` (had `shortDescription` only, unlike all 5 other categories) — written to match the existing bullet-list pattern, sourced from its own already-populated `serviceGroups`/`services` fields (no new claims introduced).
+- ✅ `project` "Company Promo Video" (Trihedron) was missing `caseStudyOverview` (had Challenge/Approach/Outcome/Summary) — written by synthesizing the already-approved Summary/Challenge copy on that same document, not new facts.
+- ⛔ **Deliberately left blank:** 4 personal/individual-client projects (Tinaire Van De Merwe "The Harpy", Al & Tee "Devotion", Erin Smith "The BlackSmith", Tammy "Skater Esque") have zero case study narrative (`caseStudyOverview`/`Challenge`/`Approach`/`Outcome`) — these only became visible in Studio after Session 38's toggle change. Writing a Challenge/Approach/Outcome narrative requires firsthand knowledge of what actually happened on each shoot, which isn't something to invent for real client work. **Rebekah still needs to write these herself** (or brief a future session with the actual details) — flagged here rather than filled with generic copy.
+- ✅ Confirmed via code check that a generic sweep for empty `heading`/`text`/`label` across every page section was mostly false positives (many section types use differently-named fields — e.g. `homeHero` uses `title`/`subtitle`, not `heading`/`text` — or have no text field by design, e.g. pure content-grid sections). No further real gaps found beyond the ones above.
+
+**Orphan draft cleanup:**
+- ✅ Found and published 2 long-standing orphan drafts, both simply an uploaded image never published (not incomplete content): `serviceCategory` "Image & Photography" (category image, drafted 2026-07-27) and `client` "AE Manufacturing [Pty] Ltd." (logo, drafted back in February — previously flagged in Session 34's log as "not this session's to resolve," now resolved). Dataset has zero orphan drafts as of this session.
+
+**New architecture decisions documented:** `ARCHITECTURE.md` decisions 26 (individual-client hero toggle) and 27 (studio showcase video section) — both had shipped in Sessions 39-40 but hadn't been written up yet.
+
+---
+
+### 2026-08-10 (Session 40) — Studio Showcase Video Section
+
+- ✅ New optional video section on `/studios/[slug]`, between Overview and the Projects grid — `studio.showcaseVideo` (upload) or `studio.showcaseVideoUrl` (YouTube/Vimeo/direct link), upload takes priority, section hidden entirely if neither is set. No title. Background independently editable via `studioPageTemplate.showcaseVideoSectionBg` (new `showcaseVideo` field group). See `ARCHITECTURE.md` decision 27.
+- ⏳ Not yet populated for any of the 3 studios — pending video assets from Rebekah.
+
+---
+
+### 2026-08-05 (Session 39) — Individual-Client Hero Toggle
+
+- ✅ New `client.individual` boolean — when true, `projects/[slug]/page.tsx`'s hero heading falls back to the project title instead of the client's real name. Fixes personal photoshoot clients (portrait series) having their name displayed as the large hero heading. See `ARCHITECTURE.md` decision 26, session memory `project_individual_client_toggle.md`.
+
+---
+
+### 2026-08-04 (Session 38) — Case Study Fields Always Visible in Studio
+
+- ✅ `project.ts`: case study fields (`caseStudyOverview`/`Challenge`/`Approach`/`Outcome`) no longer hidden unless `showAsCaseStudy` is on — Rebekah wants to write case study copy for any project in advance, not only the curated featured set.
+
+---
+
+### 2026-08-03 (Session 37) — Console Error Cleanup
+
+- 🐛 **Bug found & fixed:** `HeroImageFrame`'s alt-text default only caught `undefined`, not the `null` that Sanity's GROQ projection returns for an unset `alt` field — `next/image` was flagging missing alt on every hero image across About/Services/Studios/Case Studies/Contact.
+- 🐛 **Bug found & fixed:** switched to `@sanity/image-url`'s named export (deprecated default-export usage was warning).
+- 🐛 **Bug found & fixed:** local fallback logo images marked `unoptimized` to silence the custom-loader width warning (the custom Sanity CDN loader can't size a local `/public` file).
+
+---
 
 ### 2026-07-29 (Session 36) — Case Study PDF System, Contact Form Email, SEO, Image Performance
 
