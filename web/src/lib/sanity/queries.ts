@@ -227,6 +227,7 @@ export const STUDIO_BY_SLUG_QUERY = defineQuery(
     ...,
     heroImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
     heroVideo{asset->{_id, url, mimeType}},
+    showcaseVideo{asset->{_id, url, mimeType}},
     "projects": *[_type == "project" && references(^._id)] | order(select(manualOrder == true => displayOrder, 9999) asc, completedAt desc){
       _id,
       title,
@@ -390,6 +391,7 @@ export const STUDIO_PAGE_TEMPLATE_QUERY = defineQuery(
     overviewSectionBg { ${sectionBgFragment} },
     overviewLabel,
     overviewSubtext,
+    showcaseVideoSectionBg { ${sectionBgFragment} },
     projectsSectionBg { ${sectionBgFragment} },
     projectsLabel,
     ctaSectionBg { ${sectionBgFragment} },

@@ -6,6 +6,7 @@ import { STUDIO_BY_SLUG_QUERY, STUDIO_PAGE_TEMPLATE_QUERY } from '@/lib/sanity/q
 import { notFound } from 'next/navigation'
 import { HeroImageFrame } from '@/components/HeroImageFrame'
 import { StudioProjectsGrid } from '@/components/StudioProjectsGrid'
+import { VideoEmbed } from '@/components/ui/VideoEmbed'
 import { Button } from '@/components/ui/Button'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { resolveBg, resolveTextClass } from '@/lib/sectionBackground'
@@ -90,6 +91,29 @@ export default async function StudioPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* Showcase Video — only rendered when a video is uploaded or linked in Sanity */}
+      {(() => {
+        const uploadedUrl = studio.showcaseVideo?.asset?.url
+        const linkedUrl = studio.showcaseVideoUrl
+        const isEmbedLink = !uploadedUrl && !!linkedUrl && /youtube\.com|youtu\.be|vimeo\.com/.test(linkedUrl)
+        const src = uploadedUrl || linkedUrl
+        if (!src) return null
+        return (
+          <section
+            className={`bg-black py-16 ${resolveTextClass(tmpl?.showcaseVideoSectionBg)}`}
+            style={resolveBg(tmpl?.showcaseVideoSectionBg)}
+          >
+            <div className="scroll-catchup max-w-5xl mx-auto px-6">
+              {isEmbedLink ? (
+                <VideoEmbed url={src} title={`${studio.title} showcase video`} />
+              ) : (
+                <video className="w-full h-auto rounded-sm" src={src} controls playsInline />
+              )}
+            </div>
+          </section>
+        )
+      })()}
 
       {/* Projects */}
       <section

@@ -9,6 +9,7 @@ export const studioPageTemplate = defineType({
   groups: [
     {name: 'hero', title: 'Hero'},
     {name: 'overview', title: 'Overview'},
+    {name: 'showcaseVideo', title: 'Showcase Video'},
     {name: 'projects', title: 'Projects'},
     {name: 'cta', title: 'CTA'},
   ],
@@ -51,6 +52,15 @@ export const studioPageTemplate = defineType({
       type: 'simpleRichText',
       group: 'overview',
       description: 'Short line shown below the studio description. Default: "View the projects below."',
+    }),
+
+    // ─── Showcase Video ────────────────────────────────────────────────────────
+    defineField({
+      name: 'showcaseVideoSectionBg',
+      title: 'Showcase Video Background',
+      type: 'sectionBackground',
+      group: 'showcaseVideo',
+      description: 'Default: black. Section above the project grid, shown only when a studio has a showcase video uploaded — video only, no title.',
     }),
 
     // ─── Projects ──────────────────────────────────────────────────────────────

@@ -114,6 +114,21 @@ export const studio = defineType({
       hidden: ({document}) => document?.heroMediaType !== 'video',
     }),
     defineField({
+      name: 'showcaseVideo',
+      title: 'Studio Page — Showcase Video (Upload)',
+      type: 'file',
+      options: {accept: 'video/*'},
+      group: 'media',
+      description: 'Upload a video for the showcase section above the Projects grid on this studio\'s page. Takes priority over the URL below. Leave both empty to hide the section entirely.',
+    }),
+    defineField({
+      name: 'showcaseVideoUrl',
+      title: 'Studio Page — Showcase Video URL',
+      type: 'url',
+      group: 'media',
+      description: 'Alternative to uploading a file above — a YouTube/Vimeo link (embeds as a player) or a direct link to a video file. Ignored if a video is uploaded above. Prefer YouTube/Vimeo over uploading large files to avoid bandwidth cost.',
+    }),
+    defineField({
       name: 'displayOrder',
       title: 'Display Order',
       type: 'number',
