@@ -317,13 +317,15 @@
 
 ---
 
-### 26. Individual-Client Toggle — Hide Personal Names from Project Hero (Session 39, 2026-08-05)
+### 26. Individual-Client Toggle — Hide Personal Names from Project Hero (Session 39, 2026-08-05; redesigned Session 43, 2026-08-15)
 
-**Decision:** New `client.individual` boolean. `projects/[slug]/page.tsx`'s hero heading falls back to `project.title` instead of `client.name` when the linked client has `individual: true`.
+**Decision:** New `client.individual` boolean, `off` by default.
 
-**Rationale:** Personal photoshoot clients (portrait series, private shoots) had their real name rendered as the large hero heading. For clients who aren't a business, publishing their name that prominently isn't appropriate — the project title works as the heading instead. Company clients are unaffected (`individual` left unset/false).
+As of Session 43, `projects/[slug]/page.tsx`'s hero `<h1>` always shows `project.title` (was previously `client.individual ? project.title : client.name || project.title`). The client's real name instead renders as a small pill tag next to the year, and that pill is now suppressed entirely (`!project.client?.individual && project.client?.name`) when the client is an individual — so a personal client's name doesn't appear anywhere in the hero, not even in a badge. The same suppression was extended to `case-studies/[slug]/page.tsx`'s client-name badge (`!cs.client?.individual && cs.client?.name`), which had been overlooked when the toggle first shipped. `CASE_STUDY_BY_SLUG_QUERY` now fetches `client->{name, individual}` to support this.
 
-**Where used / how to extend:** Set `individual: true` on any personal/non-business `client` document. Also keep the client's real name out of image alt text sitewide for the same reason — see session memory `project_individual_client_toggle.md`.
+**Rationale:** The original Session 39 fix only addressed the hero *heading* — but the client name badge (a separate, smaller element) still rendered a personal client's real name underneath the now-anonymized title, defeating the point. Making the project title the permanent heading (rather than conditionally swapping between title/name) also gives every project page a consistent heading element regardless of client type, with the name only ever appearing as supplementary metadata. The Case Studies detail page had the same badge pattern and the same gap, so it received the identical fix.
+
+**Where used / how to extend:** Set `individual: true` on any personal/non-business `client` document. Also keep the client's real name out of image alt text sitewide for the same reason — see session memory `project_individual_client_toggle.md`. Any future page that renders a client-name badge should follow the same `!client?.individual && client?.name` guard rather than a bare `client?.name` check.
 
 ---
 

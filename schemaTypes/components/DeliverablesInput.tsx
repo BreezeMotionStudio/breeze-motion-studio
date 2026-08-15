@@ -86,6 +86,14 @@ export function DeliverablesInput(props: Props) {
     onChange(set(next))
   }
 
+  function move(i: number, direction: -1 | 1) {
+    const j = i + direction
+    if (j < 0 || j >= items.length) return
+    const next = [...items]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    onChange(set(next))
+  }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value
     setDraft(v)
@@ -146,17 +154,17 @@ export function DeliverablesInput(props: Props) {
         </datalist>
       </div>
 
-      {/* Chips */}
+      {/* List — order matches display order on the site */}
       {items.length > 0 && (
-        <div style={{display: 'flex', flexWrap: 'wrap', gap: 6}}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
           {items.map((item, i) => (
-            <span
+            <div
               key={i}
               style={{
-                display: 'inline-flex',
+                display: 'flex',
                 alignItems: 'center',
-                gap: 6,
-                padding: '4px 8px 4px 10px',
+                gap: 8,
+                padding: '6px 8px 6px 10px',
                 fontSize: 12,
                 border: '1px solid var(--card-border-color, #ccc)',
                 borderRadius: 3,
@@ -164,7 +172,45 @@ export function DeliverablesInput(props: Props) {
                 color: 'var(--card-fg-color, #111)',
               }}
             >
-              {item}
+              <span style={{flex: 1}}>{item}</span>
+              <div style={{display: 'flex', gap: 2}}>
+                <button
+                  type="button"
+                  onClick={() => move(i, -1)}
+                  disabled={i === 0}
+                  title="Move up"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: i === 0 ? 'default' : 'pointer',
+                    padding: '0 4px',
+                    fontSize: 13,
+                    lineHeight: 1,
+                    color: 'inherit',
+                    opacity: i === 0 ? 0.2 : 0.6,
+                  }}
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  onClick={() => move(i, 1)}
+                  disabled={i === items.length - 1}
+                  title="Move down"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: i === items.length - 1 ? 'default' : 'pointer',
+                    padding: '0 4px',
+                    fontSize: 13,
+                    lineHeight: 1,
+                    color: 'inherit',
+                    opacity: i === items.length - 1 ? 0.2 : 0.6,
+                  }}
+                >
+                  ▼
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => remove(i)}
@@ -184,7 +230,7 @@ export function DeliverablesInput(props: Props) {
               >
                 ×
               </button>
-            </span>
+            </div>
           ))}
         </div>
       )}

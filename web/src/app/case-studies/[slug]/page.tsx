@@ -105,7 +105,7 @@ export default async function CaseStudyPage({ params }: Props) {
             {cs.title}
           </h1>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
-            {cs.client?.name && (
+            {!cs.client?.individual && cs.client?.name && (
               <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-white/40">
                 {cs.client.name}
               </span>

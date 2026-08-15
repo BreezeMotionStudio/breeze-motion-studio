@@ -91,9 +91,9 @@ export default async function ProjectPage({ params }: Props) {
             </Link>
           )}
           <div className="flex flex-wrap gap-3 mb-4">
-            {project.title && (
+            {!project.client?.individual && project.client?.name && (
               <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-black text-white px-3 py-1">
-                {project.title}
+                {project.client.name}
               </span>
             )}
             {project.year && (
@@ -103,7 +103,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
           </div>
           <h1 className="font-[family-name:var(--font-brand)] text-3xl sm:text-5xl md:text-7xl uppercase tracking-wide text-black">
-            {project.client?.individual ? project.title : project.client?.name || project.title}
+            {project.title}
           </h1>
         </div>
       </section>

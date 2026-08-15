@@ -325,7 +325,7 @@ export const CASE_STUDY_BY_SLUG_QUERY = defineQuery(
     deliverables,
     deliverableImages[]{_key, asset->{url, metadata{dimensions}}, alt, caption},
     caseStudySliderImages[]{_key, asset->{url, metadata{dimensions}}, alt, caption},
-    client->{name},
+    client->{name, individual},
     testimonial->{quote, attribution, role, client->{name}},
     seoTitle,
     seoDescription

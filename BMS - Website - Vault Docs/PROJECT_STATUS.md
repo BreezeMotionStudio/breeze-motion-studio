@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-11 (Session 41)
+**Last Updated:** 2026-08-15 (Session 43)
 
 ---
 
@@ -40,13 +40,46 @@
 | Domain / DNS | Not Started | Namecheap domain → Vercel — deliberately deferred until all client projects are uploaded to Sanity |
 | Console error cleanup | ✅ Done | Session 37 — null hero alt, deprecated Sanity import, logo loader warning all fixed |
 | Case study fields visible for all projects | ✅ Done | Session 38 — Rebekah can now write case study copy ahead of featuring a project |
-| Individual-client hero toggle | ✅ Done | Session 39 — see `ARCHITECTURE.md` decision 26 |
+| Individual-client hero toggle | ✅ Done | Session 39, redesigned Session 43 — see `ARCHITECTURE.md` decision 26 |
 | Studio showcase video section | ✅ Done | Session 40 — see `ARCHITECTURE.md` decision 27; not yet populated for any studio |
 | Full-site empty-text-block audit | ✅ Done | Session 41 — see below; 5 personal-client case studies deliberately left blank pending Rebekah's input |
+| SAR Company Promo Video — alt/SEO fill | 🔄 Partial | Session 42 — cover image + SEO fields done; 90 deliverableImages/13 btsImages alt text and 9 video titles deferred by choice |
+| ZEISS T-Scan Hawk II — Unboxing upload audit | 🔄 Partial | Session 43 — see below; gallery alt text deferred, case study PDF pending |
 
 ---
 
 ## Development Log
+
+### 2026-08-15 (Session 43) — Project Hero Redesign, Deliverables Reorder UI, ZEISS Upload Audit
+
+**Project hero redesign — client-name badge now respects the individual toggle (see `ARCHITECTURE.md` decision 26):**
+- 🐛 **Bug found & fixed:** Session 39's individual-client toggle only anonymized the hero `<h1>` — the smaller client-name pill badge underneath it still showed a personal client's real name, defeating the point. `projects/[slug]/page.tsx`'s `<h1>` now always shows `project.title`; the client-name pill is suppressed entirely (not just swapped) when `client.individual` is true.
+- 🐛 **Bug found & fixed:** the same badge pattern on `case-studies/[slug]/page.tsx` had the identical gap (never updated when the toggle first shipped) — same guard applied there; `CASE_STUDY_BY_SLUG_QUERY` now fetches `client.individual`.
+
+**Sanity Studio — Deliverables field reorder controls:**
+- ✅ `schemaTypes/components/DeliverablesInput.tsx` (custom input for `project.deliverables`) gained ▲/▼ move buttons on each chip, alongside the existing remove (×) — list order now matches the order deliverables display in on the site, without needing to remove and re-add items to reorder them.
+
+**ZEISS T-Scan Hawk II — Unboxing: text field audit (per the standing CMS-sync rule):**
+Rebekah had just finished uploading this new Trihedron Engineering Solutions Group project (`zeiss-t-scan-hawk-ii-unboxing`); audited every text/alt field against schema and asked to check for gaps.
+- ✅ Added `coverImage.alt`
+- ✅ Fixed a duplicate image — one asset had been added twice to `deliverableImages` (52 entries → 51 unique)
+- ✅ Removed a stray empty paragraph block in `description`
+- ✅ Fixed 2 typos: "Origional" → "Original" (`deliverables`), and a missing "be" + duplicated "an" in the `caseStudyChallenge` text
+- ⛔ **Deferred by Rebekah's choice:** alt text on all 51 `deliverableImages` (same choice made on the SAR project, Session 42 below — see `project_zeiss_hawk_alt_pending` / `project_sar_promo_alt_seo_pending` session memory)
+- ⛔ **Flagged, not resolved:** the case study narrative (`caseStudyOverview`/`Challenge`/`Approach`/`Outcome`) is fully written but has no way to display on the live site yet — `showAsCaseStudy` is off and no `caseStudyPdf`/`caseStudyPdfPreview` has been uploaded (the "View Case Study" link requires both). Rebekah's stated intent: upload a Case Study PDF + preview PNG herself later, rather than flipping the full-page toggle.
+
+**End-of-session verification:** `tsc --noEmit` clean on `web/`, `npm run lint` — 0 errors, 83 pre-existing warnings (unchanged from Session 36's count, none new).
+
+---
+
+### 2026-08-13 (Session 42) — SAR Company Promo Video: Alt Text & SEO Fill
+
+- ✅ Filled `coverImage.alt` and `seoTitle`/`seoDescription` on the "SAR Company Promo Video" project and published.
+- ⛔ **Deferred by Rebekah's choice:** alt text on the remaining 90 `deliverableImages` and 13 `btsImages`, plus "Title/Label" on 9 `deliverableVideos` (YouTube embeds) — writing accurate alt text for this project's images can't be done from filenames (mostly generic timestamps/video-still exports), so it requires downloading and viewing each image individually. Rebekah chose "just do cover + SEO" rather than the full pass.
+- 🔍 **Confirmed `seoImage` is dead code sitewide:** `generateMetadata()` on the project detail page sources its Open Graph image from `project.coverImage`, never `project.seoImage` — populating that field does nothing on the frontend as currently built. No project has ever had it populated; not worth filling in until/unless the frontend is changed to read it.
+- 🔍 Also confirmed no project sitewide had `seoTitle`/`seoDescription` populated prior to this session — those fields were apparently never part of the original upload workflow, only `coverImage.alt` was (and inconsistently, project to project).
+
+---
 
 ### 2026-08-11 (Session 41) — Dev Server Hang Fix, Full-Site Text Audit, Orphan Draft Cleanup
 
