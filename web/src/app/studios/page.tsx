@@ -243,7 +243,7 @@ export default async function StudiosPage() {
   )
 
   // Resolve each managed item to a { _key, image, label, caption, projectTitle } shape
-  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string; projectTitle?: string; clientName?: string; imageCaption?: string }
+  type BtsImageItem = { _key: string; image: { asset: { url: string }; alt?: string }; label?: string; caption?: string; projectTitle?: string; clientName?: string; imageCaption?: string; projectSlug?: string }
   const resolvedManaged: BtsImageItem[] = btsManaged
     .filter((item: any) => {
       if (item._type === 'projectBts') return item.enabled !== false
@@ -253,7 +253,7 @@ export default async function StudiosPage() {
       if (item._type === 'projectBts') {
         const imgUrl = item.imageOverride?.asset?.url || item.project?.firstBtsImage?.asset?.url
         if (!imgUrl) return []
-        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '', projectTitle: item.project?.title || '', clientName: item.project?.client?.name || '', imageCaption: item.imageOverride ? '' : (item.project?.firstBtsImage?.caption || '') }]
+        return [{ _key: item._key, image: { asset: { url: imgUrl }, alt: item.imageOverride?.alt || item.project?.firstBtsImage?.alt || '' }, label: item.label || '', caption: item.caption || '', projectTitle: item.project?.title || '', clientName: item.project?.client?.name || '', imageCaption: item.imageOverride ? '' : (item.project?.firstBtsImage?.caption || ''), projectSlug: item.project?.slug?.current || '' }]
       }
       // manualBts
       if (!item.image?.asset?.url) return []
@@ -271,15 +271,25 @@ export default async function StudiosPage() {
       projectTitle: p.title || '',
       clientName: p.client?.name || '',
       imageCaption: p.firstBtsImage?.caption || '',
+      projectSlug: p.slug?.current || '',
     }))
 
   const allBtsImages = [...resolvedManaged, ...unmanagedAuto]
 
-  // Extract latest projects from section array (enabled entries only)
+  // Latest projects: managed entries (in curated order) + any other completed
+  // projects not yet added to the curated list, newest first — same
+  // managed-plus-auto-fallback pattern used for Behind the Scenes above.
   const latestProjects = (() => {
-    const arr = latestSection?.latestProjects as any[] | undefined
-    if (!arr?.length) return []
-    return arr.filter((p) => p.enabled !== false).map((p) => p.project).filter(Boolean)
+    const managed = ((latestSection?.latestProjects as any[] | undefined) ?? [])
+      .filter((p) => p.enabled !== false)
+      .map((p) => p.project)
+      .filter(Boolean)
+
+    const managedProjectIds = new Set<string>(managed.map((p: any) => p._id))
+    const allLatest = (latestSection?.allLatestProjects as any[] | undefined) ?? []
+    const unmanaged = allLatest.filter((p: any) => !managedProjectIds.has(p._id))
+
+    return [...managed, ...unmanaged]
   })()
 
   // Build grid studio list — use configured cards (with overrides) or fall back to all studios

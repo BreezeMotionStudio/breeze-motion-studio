@@ -1,10 +1,10 @@
 'use client'
 
-import { useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { sectionBgStyle } from '@/lib/sectionBackground'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
+import { CardCarousel } from '@/components/ui/CardCarousel'
 
 type Project = {
   _id: string
@@ -23,14 +23,11 @@ type Props = {
   projects: Project[]
 }
 
-const PER_PAGE = 3
-const SWIPE_THRESHOLD = 40
-
 function HighlightCard({ project }: { project: Project }) {
   const href = project.slug?.current ? `/projects/${project.slug.current}` : null
-  const inner = (<>
-      {/* Image */}
-      <div className="relative aspect-[3/2] mb-4 overflow-hidden rounded-sm bg-white/5">
+  const inner = (
+    <>
+      <div className="relative aspect-[3/2] overflow-hidden rounded-sm bg-white/5 group">
         {project.coverImage?.asset?.url ? (
           <Image
             src={project.coverImage.asset.url}
@@ -48,60 +45,37 @@ function HighlightCard({ project }: { project: Project }) {
             </svg>
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          {project.client?.name && (
+            <p className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-white/60 leading-tight mb-1">
+              {project.client.name}
+            </p>
+          )}
+          {project.tagline && (
+            <p className="font-[family-name:var(--font-body)] text-xs leading-relaxed line-clamp-2 text-white/70">
+              {project.tagline}
+            </p>
+          )}
+        </div>
       </div>
-
-      {/* Meta row */}
-      <div className="mb-1">
-        <span className="font-[family-name:var(--font-functional)] text-[10px] uppercase tracking-widest text-bms-grey-400">
-          {project.client?.name ?? ''}
-        </span>
-      </div>
-
-      {/* Title */}
-      <h3 className="font-[family-name:var(--font-brand)] text-xl uppercase tracking-wide leading-tight text-white">
+      <h3 className="font-[family-name:var(--font-brand)] text-lg uppercase tracking-wide leading-tight text-white mt-3">
         {project.title}
       </h3>
-
-      {/* Tagline */}
-      {project.tagline && (
-        <p className="font-[family-name:var(--font-body)] text-sm mt-1 leading-relaxed line-clamp-2 text-bms-grey-400">
-          {project.tagline}
-        </p>
-      )}
-    </>)
-  return href
-    ? <Link href={href} className="group block">{inner}</Link>
-    : <div className="group">{inner}</div>
+    </>
+  )
+  return href ? (
+    <Link href={href} className="block">
+      {inner}
+    </Link>
+  ) : (
+    <div>{inner}</div>
+  )
 }
 
 export function StudiosHighlights({ s, projects }: Props) {
-  const [page, setPage] = useState(0)
   const bgStyle = s.sectionBg ? sectionBgStyle(s.sectionBg) : undefined
-  const touchStartX = useRef<number | null>(null)
-
   const source = projects.slice(0, 6)
-  const totalPages = Math.ceil(source.length / PER_PAGE)
-  const visible = source.slice(page * PER_PAGE, (page + 1) * PER_PAGE)
-
-  function nextPage() {
-    setPage((p) => (p + 1) % Math.max(1, totalPages))
-  }
-
-  function prevPage() {
-    setPage((p) => (p - 1 + Math.max(1, totalPages)) % Math.max(1, totalPages))
-  }
-
-  function handleTouchStart(e: React.TouchEvent) {
-    touchStartX.current = e.touches[0].clientX
-  }
-
-  function handleTouchEnd(e: React.TouchEvent) {
-    if (touchStartX.current === null) return
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current
-    touchStartX.current = null
-    if (deltaX > SWIPE_THRESHOLD) prevPage()
-    else if (deltaX < -SWIPE_THRESHOLD) nextPage()
-  }
 
   if (projects.length === 0) {
     return (
@@ -119,49 +93,20 @@ export function StudiosHighlights({ s, projects }: Props) {
   return (
     <section className="bg-black text-white py-20" style={bgStyle}>
       <div className="max-w-5xl mx-auto px-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-14">
-          <div className="flex items-center gap-5">
-            <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
-              {s.heading ? <SimpleRichText value={s.heading} /> : 'Highlights'}
-            </span>
-            <div className="w-16 h-px bg-white/10" />
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex items-center gap-3">
-              <div className="flex gap-2">
-                {Array.from({length: totalPages}).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPage(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
-                      i === page ? 'bg-bms-accent' : 'bg-white/20 hover:bg-white/40'
-                    }`}
-                    aria-label={`Go to page ${i + 1}`}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={nextPage}
-                className="w-11 h-11 flex items-center justify-center border border-white/20 hover:border-bms-accent hover:text-bms-accent transition-colors duration-200"
-                aria-label="Next highlights"
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M5 2l5 5-5 5" />
-                </svg>
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-          {visible.map((project) => (
-            <HighlightCard key={project._id} project={project} />
-          ))}
+        <div className="flex items-center gap-5 mb-14">
+          <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-bms-grey-400">
+            {s.heading ? <SimpleRichText value={s.heading} /> : 'Highlights'}
+          </span>
+          <div className="flex-grow h-px bg-white/10" />
         </div>
       </div>
+
+      <CardCarousel
+        items={source}
+        keyFor={(project) => project._id}
+        renderItem={(project) => <HighlightCard project={project} />}
+        ariaLabel="highlights"
+      />
     </section>
   )
 }

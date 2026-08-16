@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { sectionBgStyle } from '@/lib/sectionBackground'
+import { CardCarousel } from '@/components/ui/CardCarousel'
 
 type BtsImage = {
   _key?: string
@@ -14,6 +16,7 @@ type BtsImage = {
   projectTitle?: string
   clientName?: string
   imageCaption?: string
+  projectSlug?: string
 }
 
 type SectionData = { heading?: any; sectionBg?: any; [key: string]: unknown }
@@ -47,19 +50,14 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
     <section className="bg-[#111] py-20" style={bgStyle}>
       {labelRow}
 
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {valid.map((item, i) => (
-              <div
-                key={item._key || i}
-                className="relative aspect-[4/3] overflow-hidden rounded-sm group cursor-pointer"
-                onClick={() =>
-                  setLightbox({
-                    src: `${item.image!.asset!.url}?auto=format&q=92`,
-                    alt: item.image?.alt || item.label || '',
-                  })
-                }
-              >
+      <CardCarousel
+        items={valid}
+        keyFor={(item, i) => item._key || String(i)}
+        ariaLabel="behind the scenes"
+        itemClassName="px-1.5"
+        renderItem={(item) => {
+            const imageEl = (
+              <div className="relative aspect-[4/3] overflow-hidden rounded-sm group cursor-pointer">
                 <Image
                   src={item.image!.asset!.url}
                   alt={item.image?.alt || item.label || ''}
@@ -88,9 +86,24 @@ export function StudiosBts({ s, btsImages }: { s: SectionData; btsImages: BtsIma
                   </div>
                 )}
               </div>
-          ))}
-        </div>
-      </div>
+            )
+
+            return item.projectSlug ? (
+              <Link href={`/projects/${item.projectSlug}#bts`}>{imageEl}</Link>
+            ) : (
+              <div
+                onClick={() =>
+                  setLightbox({
+                    src: `${item.image!.asset!.url}?auto=format&q=92`,
+                    alt: item.image?.alt || item.label || '',
+                  })
+                }
+              >
+                {imageEl}
+              </div>
+            )
+          }}
+        />
 
       {lightbox && (
         <ImageLightbox

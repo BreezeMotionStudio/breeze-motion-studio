@@ -104,7 +104,7 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         _type,
         _key,
         enabled,
-        project->{ _id, title, client->{name}, "firstBtsImage": btsImages[defined(asset)][0]{ asset->{url}, alt, caption } },
+        project->{ _id, title, slug, client->{name}, "firstBtsImage": btsImages[defined(asset)][0]{ asset->{url}, alt, caption } },
         imageOverride{ asset->{url}, alt },
         image{ asset->{url}, alt },
         label,
@@ -114,6 +114,7 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         "allProjectBts": *[_type == "project" && count(btsImages[defined(asset)]) > 0] | order(completedAt desc, _createdAt desc){
           _id,
           title,
+          slug,
           client->{name},
           "firstBtsImage": btsImages[defined(asset)][0]{ asset->{url}, alt, caption }
         }
@@ -122,6 +123,11 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         _key,
         enabled,
         project->{ _id, title, slug, tagline, completedAt, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug} }
+      },
+      _type == "studiosLatestProjects" => {
+        "allLatestProjects": *[_type == "project" && status == "complete" && defined(coverImage.asset)] | order(completedAt desc, _createdAt desc){
+          _id, title, slug, tagline, completedAt, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug}
+        }
       }
     },
     seoTitle,
