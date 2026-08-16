@@ -339,6 +339,22 @@ As of Session 43, `projects/[slug]/page.tsx`'s hero `<h1>` always shows `project
 
 ---
 
+### 28. Shared Arrow-Scroll `CardCarousel` — Studios Page Highlights / Latest Projects / Behind the Scenes (Session 44, 2026-08-16)
+
+**Decision:** New `web/src/components/ui/CardCarousel.tsx` — a generic, reusable carousel extracted from `HomeTestimonials.tsx`'s viewport-aware sliding mechanism (see Decision 19): a fixed 3-visible window (1 under 640px, 2 under 1024px, 3 above), left/right chevron arrows that reveal exactly one new card per click and wrap around, plus thin-bar page-position dots. Arrows render `absolute`-positioned near the section's outer edge (not beside the card row) via a `relative` wrapper around the whole carousel, with the card track itself still centered in an inner `max-w-5xl` column — so arrows sit close to the browser viewport edge while cards stay in the normal content column. Arrows are always rendered regardless of whether there's anything to scroll (clicking is a harmless no-op when `count <= visible`, since `maxIdx` is then `0`).
+
+All three Studios-page strips (`StudiosHighlights.tsx`, `StudiosLatestProjects.tsx`, `StudiosBts.tsx`) now use this shared component instead of each maintaining separate carousel logic. `StudiosBts.tsx` previously had no scroll mechanism at all (a plain unbounded grid); the other two used a "jump by a full page of 3" pattern with only a single forward arrow and no previous button.
+
+**Card content changes (same session):** Highlights/Latest Projects cards moved their client-name + tagline text onto the cover image as a bottom gradient overlay (matching the pattern BTS cards already used), but the project **title** stays below the image as its own heading — Rebekah found the title didn't fit well inside the overlay alongside the tagline. Behind the Scenes cards now link to `/projects/[slug]#bts` (the project's own Behind the Scenes section, which already has `id="bts"`) instead of opening a lightbox — the lightbox is kept only as a fallback for the rare manually-added BTS entry with no linked project.
+
+**Bug fixed — Latest Projects not auto-populating:** `studiosLatestProjects.latestProjects[]` is a manually curated array in Sanity, and only had 1 project in it despite 8 projects being marked `status == "complete"`. Behind the Scenes already had a fallback for exactly this gap (`allProjectBts`, an auto query merged with the curated list, unmanaged entries appended newest-first). The same pattern was added for Latest Projects: `STUDIOS_PAGE_QUERY`'s `studiosLatestProjects` branch now also fetches `allLatestProjects` (`*[_type == "project" && status == "complete" && defined(coverImage.asset)] | order(completedAt desc, _createdAt desc)`), and `studios/page.tsx` merges curated-first + any complete project not already in that list, before slicing to 6. Highlights was **not** given the same treatment — it also only has 1 curated project (and only 1 project has `isHighlight: true` set), but marking something a "highlight" is a subjective editorial choice, not an objective date-ordering, so auto-filling it isn't the right fix; Rebekah needs to curate more highlights herself if she wants all 6 slots visible.
+
+**Rationale:** The user explicitly asked to reuse whatever "correct method with the correct arrow graphic" already existed on the site rather than inventing a new pattern — `HomeTestimonials.tsx` was the only place already solving "N visible, arrows advance one at a time, viewport-aware" (a bug fixed there in Session 33, Decision 19). Extracting it once avoids the same viewport-reflow bug being reintroduced independently in three more places.
+
+**Where used / how to extend:** `CardCarousel<T>` takes `items`, a `keyFor`/`renderItem` pair, an `ariaLabel`, and an optional `itemClassName` for per-instance card gutter width (Highlights/Latest use `px-4`, BTS uses the tighter `px-1.5` to match its original grid density). Any future "N visible, arrow-advances-one" carousel should use this component rather than reimplementing the sliding-window math a fourth time. `HomeTestimonials.tsx` itself was left as-is (not migrated) since its quote/attribution layout differs enough from an image-card grid that sharing the component wasn't a clean fit this session.
+
+---
+
 ## Data Flow
 
 ### Content Creation Flow

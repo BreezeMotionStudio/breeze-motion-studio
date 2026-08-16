@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-15 (Session 43)
+**Last Updated:** 2026-08-16 (Session 44)
 
 ---
 
@@ -45,10 +45,29 @@
 | Full-site empty-text-block audit | ✅ Done | Session 41 — see below; 5 personal-client case studies deliberately left blank pending Rebekah's input |
 | SAR Company Promo Video — alt/SEO fill | 🔄 Partial | Session 42 — cover image + SEO fields done; 90 deliverableImages/13 btsImages alt text and 9 video titles deferred by choice |
 | ZEISS T-Scan Hawk II — Unboxing upload audit | 🔄 Partial | Session 43 — see below; gallery alt text deferred, case study PDF pending |
+| DRILL-CORE BOT SHOWCASE upload — full text/alt fill | ✅ Done | Session 44 — see below; only `seoImage` left unpopulated (confirmed dead code, see Session 42) |
+| Studios page carousel redesign (Highlights/Latest/BTS) | ✅ Done | Session 44 — see `ARCHITECTURE.md` decision 28 |
 
 ---
 
 ## Development Log
+
+### 2026-08-16 (Session 44) — DRILL-CORE BOT SHOWCASE Text Fill, Studios Page Carousel Redesign
+
+**DRILL-CORE BOT SHOWCASE (SAR Electronics x Hall Core Drilling) — new project, full text/alt fill per the standing CMS-sync rule:**
+- ✅ Wrote tagline, summary, full `description`, all four case study fields (`Overview`/`Challenge`/`Approach`/`Outcome`), `seoTitle`/`seoDescription`, and `coverImage.alt`
+- ✅ Alt text added to all 52 `deliverableImages` (split: "Stylized marketing image N" for the 16 high-res enhanced JPGs, "Frame grab N" for the 36 PNG video-still exports) and both `btsImages`; "Title/Label" added to both the deliverable and BTS video embeds
+- 🔁 Iterated on copy per Rebekah's feedback: rebalanced filming vs. photography to read as two equal parallel capture efforts (not photography as a derivative of the video footage); removed language implying it was the machine's *first* test sequence (keep ambiguous — it wasn't); shortened `summary` (was 596 characters, over the 500-char schema limit, blocking publish) and `caseStudyApproach`
+- Only `seoImage` remains unpopulated — confirmed dead code sitewide since Session 42 (the frontend sources Open Graph images from `coverImage`, never `seoImage`), so not worth filling
+
+**Studios page — Highlights/Latest Projects/BTS carousel redesign (see `ARCHITECTURE.md` decision 28):**
+- ✅ New shared `CardCarousel.tsx`, reusing `HomeTestimonials`' viewport-aware sliding mechanism (Decision 19) — 3 cards visible, one revealed per arrow click, wraps around — now powers all three Studios-page strips instead of each having separate logic
+- 🐛 **Bug found & fixed:** Latest Projects only ever showed the 1 project manually curated in Sanity's `latestProjects[]`, despite 8 projects being marked `status == "complete"`. Added the same managed-list-plus-auto-fill pattern BTS already used (`allProjectBts` → new `allLatestProjects`), merging curated-first with any complete project not yet added, before slicing to 6. Highlights was deliberately *not* given the same auto-fill (also only 1 curated/flagged) — being a "highlight" is a subjective editorial call, not a date-ordering, so that gap needs Rebekah to curate more highlights herself
+- ✅ Behind the Scenes previously had no scroll mechanism at all (static unbounded grid) — now uses the same carousel; BTS cards now link to `/projects/[slug]#bts` instead of opening a lightbox (lightbox kept only as a fallback for BTS entries with no linked project)
+- ✅ Card layout iterated per feedback: text moved onto the image as a bottom overlay (matching BTS's existing style) for client name + tagline, but the title stayed/moved back below the image — didn't fit well inside the overlay; arrows repositioned per feedback from beside the cards → near the screen edge → nudged back in twice to a middle ground
+- **End-of-session verification:** `tsc --noEmit` clean, `npm run lint` — 0 errors, only pre-existing accepted warning categories (`no-explicit-any`, `set-state-in-effect`), verified visually via headless screenshots at desktop (1440px) and mobile (390px) widths including interactive arrow-click behavior. Committed `a555689`, pushed to `master`.
+
+---
 
 ### 2026-08-15 (Session 43) — Project Hero Redesign, Deliverables Reorder UI, ZEISS Upload Audit
 
