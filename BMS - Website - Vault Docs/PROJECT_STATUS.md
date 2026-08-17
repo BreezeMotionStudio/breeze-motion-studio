@@ -2,7 +2,7 @@
 
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-16 (Session 44)
+**Last Updated:** 2026-08-17 (Session 45)
 
 ---
 
@@ -47,10 +47,30 @@
 | ZEISS T-Scan Hawk II — Unboxing upload audit | 🔄 Partial | Session 43 — see below; gallery alt text deferred, case study PDF pending |
 | DRILL-CORE BOT SHOWCASE upload — full text/alt fill | ✅ Done | Session 44 — see below; only `seoImage` left unpopulated (confirmed dead code, see Session 42) |
 | Studios page carousel redesign (Highlights/Latest/BTS) | ✅ Done | Session 44 — see `ARCHITECTURE.md` decision 28 |
+| Death By Coffee — 2 new Commercial Studio projects, full text/case study fill | ✅ Done | Session 45 — Company Promo Video & Image Collection + Video Showcase for Coffee Trailers; see below |
 
 ---
 
 ## Development Log
+
+### 2026-08-17 (Session 45) — Death By Coffee: Two New Commercial Studio Projects, Full Text & Case Study Fill
+
+**"Company Promo Video & Image Collection" (Death By Coffee Family Roastery) — new project, full text/case study fill per the standing CMS-sync rule:**
+- ✅ Wrote `summary`, `tagline`, `coverImage.alt`, full `description`, all four case study fields (`Overview`/`Challenge`/`Approach`/`Outcome`, each paired with a supporting image chosen from the project's own BTS shots — window-shoot for Challenge, artist-painting-in-background for Approach, editing-suite for Outcome), and `seoTitle`/`seoDescription`
+- 🔁 Iterated per Rebekah's feedback: shortened all four case study fields to single-paragraph length (~280-390 chars) matching sibling projects (Trihedron/ZEISS/SOGA/SAR) after an initial two-paragraph draft ran long; later inserted one line about the video's "fully customized soundtrack remix" into the Approach section specifically, matching the sitewide convention of mentioning audio/music production once, in Approach only (see Trihedron's "audio track creation," SAR's "original music track composed... for the brand")
+- Rebekah made her own manual edits directly in Studio to Challenge/Approach/Outcome after the initial fill, then separately uploaded `caseStudyPdf` + `caseStudyPdfPreview` and linked a `testimonial` — the "View Case Study" button is now live on the project page (PDF/PNG tier, per `ARCHITECTURE.md` decision 22)
+- ✅ `status` set to Complete, `completedAt` 2022-05-01 (Rebekah confirmed month/year only, day defaulted)
+- ⛔ **Deferred by Rebekah's choice:** alt text on the 45 `deliverableImages` + 5 `btsImages` (same pattern as SAR/ZEISS below)
+
+**"Video Showcase for Coffee Trailers" (Death By Coffee Family Roastery) — new project, full text/case study fill:**
+- ✅ Wrote `coverImage.alt`, `tagline`, `summary`, `description`, all four case study fields (each paired with a supporting image from the deliverable set), and `seoTitle`/`seoDescription`
+- Wrote the Challenge/Approach/Outcome narrative honestly reflecting Rebekah's brief that this ~1-hour shoot had "very little challenge" (beautiful lighting, pristine trailer already in good condition, easygoing regulars) rather than inventing manufactured difficulty to fit the usual case study shape
+- ✅ `status` set to Complete, `completedAt` 2025-05-01 (Rebekah confirmed May 2025; `year` was already correctly set to 2025)
+- ⛔ **Deferred by Rebekah's choice:** alt text on all 55 `deliverableImages` (no BTS images on this project)
+
+No schema or code changes this session — all work was Sanity content via MCP tools. `git status` clean at session end, nothing to commit/push.
+
+---
 
 ### 2026-08-16 (Session 44) — DRILL-CORE BOT SHOWCASE Text Fill, Studios Page Carousel Redesign
 
