@@ -1,8 +1,12 @@
 # Project Status — Breeze Motion Studio Website
 
+## Standing Process Rules
+
+- **Client-folder-to-project builds are text-only.** When asked to scan a client's project folder and create/build the corresponding `client`/`project` documents in Sanity, only research and write the text fields (client `description`/`industry`, project `title`/`tagline`/`summary`/`description`, `caseStudyOverview`/`Challenge`/`Approach`/`Outcome`, `seoTitle`/`seoDescription`, etc.), then publish. Never select, upload, or attach images (`coverImage`, `deliverableImages`, `caseStudySliderImages`, client `logo`, etc.) — Rebekah handles all image uploads herself in Sanity Studio, unless she explicitly asks otherwise for a given request. Set 2026-08-19, after the MAVTECH Automation case study build (Session 46).
+
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-17 (Session 45)
+**Last Updated:** 2026-08-20 (Session 47)
 
 ---
 
@@ -48,10 +52,48 @@
 | DRILL-CORE BOT SHOWCASE upload — full text/alt fill | ✅ Done | Session 44 — see below; only `seoImage` left unpopulated (confirmed dead code, see Session 42) |
 | Studios page carousel redesign (Highlights/Latest/BTS) | ✅ Done | Session 44 — see `ARCHITECTURE.md` decision 28 |
 | Death By Coffee — 2 new Commercial Studio projects, full text/case study fill | ✅ Done | Session 45 — Company Promo Video & Image Collection + Video Showcase for Coffee Trailers; see below |
+| MAVTECH case study — international framing, brand-creation clarity, alt text fill | 🔄 Partial | Session 47 — see below; `showAsCaseStudy` still off, narrative has no live page yet |
+| Lone/odd grid item now centers + enlarges instead of sitting flush left | ✅ Done | Session 47 — `ProjectImageGrid.tsx` only; see `ARCHITECTURE.md` decision 29 |
 
 ---
 
 ## Development Log
+
+### 2026-08-20 (Session 47) — MAVTECH International-Client Rewrite, Grid Centering Rule, Caption Auto-Link
+
+**MAVTECH Automation case study — reframed to highlight international/remote client work:**
+- Rewrote `summary`/`tagline`/`caseStudyOverview`/`Challenge`/`Approach`/`Outcome`/`description` to establish MAVTECH (Coral Springs, FL) as an overseas client relative to Breeze Motion Studio, emphasizing smooth time-zone-managed communication, Mike Valvano's limited availability, and a happy client outcome — per Rebekah's request to use this project as proof of international-client capability, since most other clients are South African
+- Iterated repeatedly across the session as Rebekah made her own direct edits in Studio between rounds (shortened/re-worded Challenge/Approach/Outcome/Overview herself) — each round re-fetched the live document first so her edits were never overwritten, only extended
+- 🔁 `summary` initially exceeded the schema's 500-character limit (557 chars) after the first international-framing pass — shortened to fit while keeping the core facts
+- 🔁 Per Rebekah's correction, restored the word "refresh" in `summary`/`description` after an earlier pass had replaced it with "built from the ground up" — she confirmed something did exist before, just barely, so "refresh" stays accurate
+- ✅ Added a subtle but clear point per Rebekah's request: the brand guideline's colors, typography, and usage rules were *created* by Breeze Motion Studio, not compiled from an existing brand — woven into `caseStudyOverview`/`Approach`/`description` as "a brand guideline with new colors and typography" rather than a heavier rewrite, to preserve her original phrasing
+- ✅ Final QA pass: fixed "Guidline" → "Guideline" typo (deliverable image caption), a double space in another caption, an inconsistent curly apostrophe in `caseStudyOutcome`, and a trailing space in `caseStudyApproach`
+- ✅ Filled in alt text on all 12 images that had none: `coverImage`, all 5 `deliverableImages` (brand guideline, logo/wordmark, website screenshot, brochure, before/after comparison), and all 6 `btsImages` — BTS alt text written from each asset's original filename (e.g. "MAVTECH wix design website BTS", "Creating Logo Illustrator BTS") since there were no captions to go on
+- ✅ Verified `mavtechautomation.com` resolves correctly (HTTP 200, redirects to `www.`) and is genuinely MAVTECH's live site before linking it
+- ⛔ **Flagged, not resolved (asked twice, no answer yet):** `showAsCaseStudy` is `false` on this project — the Case Studies listing query filters on `showAsCaseStudy == true`, so none of this session's narrative work or the 5-image `caseStudySliderImages` set currently has a live page to appear on
+- Provided Rebekah with several shortened alternate versions of Challenge/Approach/Outcome in chat only, explicitly not applied to Sanity, per her request to keep the live copy as-is
+
+**New standing design rule — lone/partial grid rows should center and fill space, not sit flush left (see `ARCHITECTURE.md` decision 29):**
+- ✅ `web/src/components/ProjectImageGrid.tsx` (used for both `deliverableImages` and `btsImages` on project pages): when the image count is odd, the last image now spans the full row width (`md:col-span-2`, `sizes="100vw"`) instead of sitting flush left with empty space beside it
+- ✅ Same file: added `linkifyCaption()` — auto-detects a bare domain/URL inside any image caption and renders it as a real clickable `<a target="_blank">` link, styled to match the site's existing link convention (`text-bms-accent hover:underline`). Used immediately for the MAVTECH website-deliverable-image caption ("...@ mavtechautomation.com")
+- 🔍 Audited the rest of the site for the same odd-item-imbalance risk: About page's "How We Work" steps grid, Homepage's "Featured Work" grid, `HowWeWorkSection.tsx`, `CoreValuesSection.tsx`, and `StudioProjectsGrid.tsx` (studio portfolio listing) all have the same risk (3+ column CMS-driven grids). **Left untouched by Rebekah's explicit choice** when asked — only the deliverable/BTS media grid got the fix this session.
+
+**End-of-session verification:** `tsc --noEmit` clean on `web/`, `npm run lint` — 0 errors, 87 warnings (pre-existing categories only, none introduced by this session's changes). No schema changes. Code change (`ProjectImageGrid.tsx`) committed and pushed to `master` alongside this doc update.
+
+---
+
+### 2026-08-19 (Session 46) — MAVTECH Automation Case Study, New Text-Only Build Rule
+
+**MAVTECH Automation ("Brand & Website Overhaul") — new client + project, full-featured case study:**
+- Researched the client's project folder (diagnosis, proposal, strategy, deliverables review) to write client `description`/`industry`/`contactName`/`contactRole`, and project `tagline`/`summary`/`description`, all four case study fields (`Overview`/`Challenge`/`Approach`/`Outcome`), matched to the existing case study voice (third-person "Breeze Motion Studio," plain/factual, deliverable-focused titles — benchmarked against Trihedron's "Company Promo Video" and SAR's "Media Overhaul")
+- `studio` set to Commercial Studio, `services` set to Graphic Design + Digital Platforms & Systems, `showAsCaseStudy: true`, `status` Complete
+- Business cards (designed but ultimately not needed by the client) and LinkedIn setup (never executed) both omitted from the copy entirely, per Rebekah's call
+- For this build only, images were also selected and uploaded (cover, deliverables, case study slider) via the Sanity CLI — see the new standing rule below, which changes this for all builds going forward
+- ⛔ **Deferred by Rebekah's choice:** `testimonial` reference and any hard metrics — she has one to send over later; `caseStudyOutcome` stays qualitative until then
+
+**New standing rule adopted this session:** client-folder-to-project builds are now text-only going forward — see "Standing Process Rules" at the top of this document.
+
+---
 
 ### 2026-08-17 (Session 45) — Death By Coffee: Two New Commercial Studio Projects, Full Text & Case Study Fill
 

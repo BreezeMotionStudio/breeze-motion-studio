@@ -355,6 +355,16 @@ All three Studios-page strips (`StudiosHighlights.tsx`, `StudiosLatestProjects.t
 
 ---
 
+### 29. Lone Grid Item Centers and Fills the Row; Caption Auto-Link (Session 47, 2026-08-20)
+
+**Decision:** In `web/src/components/ProjectImageGrid.tsx` (the 2-column grid used for both `project.deliverableImages` and `project.btsImages`), when the image count is odd, the last item now gets `md:col-span-2` (and a matching `sizes="100vw"` on its `next/image`) instead of sitting in the left column with empty space beside it on desktop. Rebekah's stated rule: a lone item without a pair should center/fill the available space rather than look flush to one side and imbalanced. Mobile is unaffected (already single-column, so there's no "side" to be flush against).
+
+**Caption auto-link:** Same file gained `linkifyCaption()` — a small regex-based helper that finds a bare domain/URL inside any image `caption` string and renders that substring as a real `<a href target="_blank" rel="noopener noreferrer">` link, styled with the site's existing link convention (`text-bms-accent hover:underline`, matching `VideoEmbed.tsx`/`Footer.tsx`). Caption fields are plain strings in the schema (no rich text/markdown), so this was the lightest way to make a URL typed into a caption (e.g. "...@ mavtechautomation.com") clickable without a schema change. Applies automatically to any caption containing a domain-shaped string, not just the one it was built for.
+
+**Scope, deliberately not extended:** The same odd-item-imbalance risk exists in five other CMS-driven grids sitewide (About page's "How We Work" steps, Homepage's "Featured Work", `HowWeWorkSection.tsx`, `CoreValuesSection.tsx`, `StudioProjectsGrid.tsx`) — all 3+ column grids, so a leftover partial row could have 1 or 2 items depending on breakpoint, which is a more involved fix (centering a partial *row* as a group, not just one lone item). Rebekah was asked and chose to leave these as-is for now; the 2-column deliverable/BTS grid was the only one fixed this session.
+
+---
+
 ## Data Flow
 
 ### Content Creation Flow
