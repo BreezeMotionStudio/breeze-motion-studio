@@ -312,7 +312,7 @@ Standalone documents for the "Example Combinations" section on the services page
 | bgImage | image | No | Per-card background image; `bg-black/70` overlay applied |
 | images | array of image | No | Up to 3 thumbnail images shown on the card; click to open lightbox |
 
-**Published combinations (5):** Brand Startup Collection, Media Overhaul, Industrial/Technical Showcase, System Diagnosis, Private Creative Collection
+**Published combinations (6, in order):** Brand Startup Collection, Brand Refresh Collection, Media Overhaul, Industrial/Technical Showcase, System Diagnosis, Private Creative Collection
 
 **Note:** The order on the services page is controlled by the `combinations[]` reference array in `servicesPage.serviceCombinations` — drag to reorder there, not in the document list itself.
 

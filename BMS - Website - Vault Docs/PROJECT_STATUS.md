@@ -6,7 +6,7 @@
 
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-20 (Session 47)
+**Last Updated:** 2026-08-20 (Session 48)
 
 ---
 
@@ -54,10 +54,34 @@
 | Death By Coffee — 2 new Commercial Studio projects, full text/case study fill | ✅ Done | Session 45 — Company Promo Video & Image Collection + Video Showcase for Coffee Trailers; see below |
 | MAVTECH case study — international framing, brand-creation clarity, alt text fill | 🔄 Partial | Session 47 — see below; `showAsCaseStudy` still off, narrative has no live page yet |
 | Lone/odd grid item now centers + enlarges instead of sitting flush left | ✅ Done | Session 47 — `ProjectImageGrid.tsx` only; see `ARCHITECTURE.md` decision 29 |
+| Services page — new "Brand Refresh Collection" example | ✅ Done | Session 48 — see below; sits under "Brand Startup Collection"; `caseStudySlug` pending MAVTECH going live |
+| Pilates with Raylene — "Full Brand Startup Collection" project, full text fill | 🔄 Partial | Session 48 — see below; images + `showAsCaseStudy` pending, natural `caseStudySlug` candidate for "Brand Startup Collection" |
+| Sole-operator voice rule refined — "I" now rare, not default | ✅ Done | Session 48 — see below |
 
 ---
 
 ## Development Log
+
+### 2026-08-20 (Session 48) — Brand Refresh Services Example, Pilates with Raylene Case Study, Voice Rule Refinement
+
+**Services page — new "Brand Refresh Collection" example combination:**
+- ✅ Created and published a new `serviceCombination` document, "Brand Refresh Collection," for businesses whose brand assets need strengthening or a full revamp back to a consistent standard; inserted into `servicesPage.serviceCombinations.combinations[]` directly under "Brand Startup Collection" (order: Startup → Refresh → Media Overhaul → Industrial Showcase → System Diagnosis → Private Creative Projects)
+- Iterated on the deliverables list per Rebekah's feedback: first made generic/flexible instead of listing fixed assets, then combined the brand/visual-identity line into one item and removed the before/after and brand-guideline-documentation lines — final list: brand & visual identity audit/realignment/redesign, digital presence, print/digital collateral as needed, new photography/video/graphics, "any other area of brand representation in need of modernisation"
+- `caseStudySlug` intentionally left blank — MAVTECH is the intended case study link, but its project still has `showAsCaseStudy: false` (see Session 47); schema explicitly says to leave the field blank until the linked case study is live. Corrected a stale memory note that had claimed MAVTECH was already fully live with `showAsCaseStudy: true`
+- No schema change — `serviceCombination` document type was unchanged, only content
+
+**New project — Pilates with Raylene, "Full Brand Startup Collection":**
+- Rebekah uploaded a new `project` document (client: Raylene Pilates, Commercial Studio) with only `title`/`slug`/`summary: "Pending"` set; filled in all remaining text fields from her info dump (`PILATES_WITH_RAYLENE\INTERNAL_RAYLENE\04_REPORTS\...`) per the text-only build rule above — `tagline`, `summary`, `description`, `deliverables` (9 items), `caseStudyOverview`/`Challenge`/`Approach`/`Outcome`, `seoTitle`/`seoDescription`
+- No images touched (`coverImage`, `deliverableImages`, `btsImages`, etc.) — Rebekah's to add. `showAsCaseStudy` left off, no live page yet
+- Iterated on `caseStudyChallenge`/`Approach`/`Outcome` per Rebekah's feedback: converted from bullet lists to clean flowing paragraphs (project-specific request, not a sitewide format change), then shortened twice while keeping every detail
+- 🔁 Corrected framing after Rebekah flagged that describing Raylene as "technologically challenged"/"frustrated by technology" made her sound incapable — reframed as coming from outside the digital/production world and preferring a patient, step-by-step approach, applied to both `caseStudyChallenge` and `description`
+- This project's title mirrors "Brand Startup Collection," making it the natural `caseStudySlug` candidate for that services example once images are added and `showAsCaseStudy` is turned on
+
+**Voice rule refined — first-person "I" should be rare, not the default:**
+- Rebekah corrected an early draft of the Raylene copy for overusing "I" as the default sentence subject; rewrote to lead with "Breeze Motion Studio" or restructured sentences instead, keeping "I" as an occasional, deliberate touch rather than the default register — applies even to smaller/personal clients (Death By Coffee, Raylene), not just larger third-person-voice clients like MAVTECH
+- This refines, not replaces, the existing "never use we/our/us" rule — both now apply together
+
+---
 
 ### 2026-08-20 (Session 47) — MAVTECH International-Client Rewrite, Grid Centering Rule, Caption Auto-Link
 
