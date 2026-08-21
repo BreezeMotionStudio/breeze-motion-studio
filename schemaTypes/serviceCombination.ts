@@ -17,10 +17,14 @@ export const serviceCombination = defineType({
       of: [defineArrayMember({type: 'string'})],
     }),
     defineField({
-      name: 'caseStudySlug',
-      title: 'Case Study Slug',
-      type: 'string',
-      description: 'Slug of the linked case study (e.g. "brand-starter-rovd"). Leave blank until the case study is published.',
+      name: 'caseStudy',
+      title: 'Featured Case Study',
+      type: 'reference',
+      to: [{type: 'project'}],
+      options: {
+        filter: 'showAsCaseStudy == true',
+      },
+      description: 'Pick the published case study to link this example to. Leave blank until the case study is published.',
     }),
     defineField({
       name: 'bgImage',

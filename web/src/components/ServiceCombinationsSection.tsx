@@ -17,7 +17,7 @@ type Combination = {
   subtitle?: string
   description?: any
   items?: string[]
-  caseStudySlug?: string
+  caseStudy?: { slug?: { current?: string } }
   bgImage?: { asset?: { url: string }; alt?: string }
   images?: CombinationImage[]
 }
@@ -202,9 +202,9 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                     </div>
                   )}
                   <div className="mt-auto">
-                    {combo.caseStudySlug ? (
+                    {combo.caseStudy?.slug?.current ? (
                       <Link
-                        href={`/case-studies/${combo.caseStudySlug}`}
+                        href={`/case-studies/${combo.caseStudy.slug.current}`}
                         className="inline-flex items-center gap-2 font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-[#ffffff] text-black px-5 py-2.5 rounded-md hover:scale-[1.05] transition-transform duration-200 cursor-pointer"
                       >
                         {viewCaseStudyLabel || 'View Case Study'}
