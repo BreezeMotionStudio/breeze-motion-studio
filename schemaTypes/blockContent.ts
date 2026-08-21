@@ -60,7 +60,6 @@ export const blockContent = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alt Text',
-          validation: (rule: any) => rule.required().warning('Alt text is important for accessibility'),
         },
         {
           name: 'caption',

@@ -108,7 +108,6 @@ export const project = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alt Text',
-          validation: (rule) => rule.required().warning('Alt text is important for accessibility'),
         }),
         defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', initialValue: false}),
       ],
