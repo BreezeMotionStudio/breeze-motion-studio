@@ -7,20 +7,12 @@ import { usePathname } from "next/navigation";
 
 type NavLink = { label: string; href: string };
 type NavCta = { label?: string; href?: string };
-type LogoSettings = {
-  enabled?: boolean;
-  sizePreset?: "small" | "medium" | "large";
-  customSize?: number;
-  logoImage?: { asset?: { url?: string } };
-};
 type Studio = { _id: string; title: string; slug: { current: string } };
 
 type NavProps = {
   navLinks?: NavLink[];
   navCta?: NavCta;
-  plainLogo?: LogoSettings;
-  roundLogo?: LogoSettings;
-  iconLogo?: LogoSettings;
+  logoUrl?: string;
   studios?: Studio[];
 };
 
@@ -33,19 +25,7 @@ const defaultLinks: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-const PLAIN_PRESETS = { small: 28, medium: 44, large: 56 };
-const ROUND_PRESETS = { small: 28, medium: 36, large: 48 };
-const ICON_PRESETS = { small: 28, medium: 36, large: 48 };
-
-function resolveSize(
-  settings: LogoSettings | undefined,
-  presets: Record<string, number>,
-  fallback: number
-): number {
-  if (settings?.customSize) return settings.customSize;
-  if (settings?.sizePreset) return presets[settings.sizePreset] ?? fallback;
-  return fallback;
-}
+const LOGO_SIZE = 44;
 
 function ChevronDown() {
   return (
@@ -55,20 +35,12 @@ function ChevronDown() {
   );
 }
 
-export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, studios = [] }: NavProps) {
+export default function Nav({ navLinks, navCta, logoUrl, studios = [] }: NavProps) {
   const [open, setOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
   const pathname = usePathname();
 
   const links = navLinks && navLinks.length > 0 ? navLinks : defaultLinks;
-
-  const showPlain = plainLogo ? plainLogo.enabled !== false : true;
-  const showRound = roundLogo?.enabled === true;
-  const showIcon = iconLogo?.enabled === true;
-
-  const plainSize = resolveSize(plainLogo, PLAIN_PRESETS, 56);
-  const roundSize = resolveSize(roundLogo, ROUND_PRESETS, 36);
-  const iconSize = resolveSize(iconLogo, ICON_PRESETS, 36);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-[#1a1a1a]">
@@ -79,46 +51,20 @@ export default function Nav({ navLinks, navCta, plainLogo, roundLogo, iconLogo, 
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           onClick={() => setOpen(false)}
         >
-          {showPlain && (
+          <div
+            className="rounded-full overflow-hidden shrink-0 border border-[#2a2a2a]"
+            style={{ width: LOGO_SIZE, height: LOGO_SIZE }}
+          >
             <Image
-              src={plainLogo?.logoImage?.asset?.url ?? "/logo.png"}
+              src={logoUrl ?? "/logo.png"}
               alt="Breeze Motion Studio"
-              width={plainSize}
-              height={plainSize}
-              style={{ height: plainSize, width: "auto" }}
-              className="shrink-0"
-              unoptimized={!plainLogo?.logoImage?.asset?.url}
+              width={LOGO_SIZE}
+              height={LOGO_SIZE}
+              className="w-full h-full object-cover"
+              unoptimized={!logoUrl}
               priority
             />
-          )}
-          {showRound && (
-            <div
-              className="rounded-full overflow-hidden shrink-0 border border-[#2a2a2a]"
-              style={{ width: roundSize, height: roundSize }}
-            >
-              <Image
-                src={roundLogo?.logoImage?.asset?.url ?? "/logo-roundcrop.png"}
-                alt="Breeze Motion Studio"
-                width={roundSize}
-                height={roundSize}
-                className="w-full h-full object-cover"
-                unoptimized={!roundLogo?.logoImage?.asset?.url}
-                priority
-              />
-            </div>
-          )}
-          {showIcon && (
-            <Image
-              src={iconLogo?.logoImage?.asset?.url ?? "/logo-icon.png"}
-              alt="Breeze Motion Studio"
-              width={iconSize}
-              height={iconSize}
-              style={{ height: iconSize, width: "auto" }}
-              className="shrink-0"
-              unoptimized={!iconLogo?.logoImage?.asset?.url}
-              priority
-            />
-          )}
+          </div>
           <span className="font-[family-name:var(--font-brand)] text-white uppercase tracking-widest text-sm">
             Breeze Motion Studio
           </span>

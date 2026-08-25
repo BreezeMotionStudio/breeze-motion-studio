@@ -84,7 +84,7 @@ export const project = defineType({
       title: 'Project Description',
       type: 'blockContent',
       group: 'basics',
-      description: 'Full project narrative — shown on the Case Study page only, not on the project page.',
+      description: 'Full project narrative — not shown on the website; kept here for reference when building the Case Study PDF.',
     }),
     defineField({
       name: 'deliverables',
@@ -248,7 +248,7 @@ export const project = defineType({
       type: 'boolean',
       group: 'caseStudy',
       description:
-        'Only for the handful of specially designed, full-page case studies. When enabled, this project appears on the public Case Studies listing page with its own dedicated page. Most projects should leave this off and use the Case Study PDF field instead. The case study fields below are always visible so you can fill them in regardless of this toggle.',
+        'Only for the handful of curated case studies. When enabled, this project appears as a card on the public Case Studies listing page (with "View Case Study" and "View Project" buttons — there is no separate case study page). Most projects should leave this off. The case study fields below are always visible so you can fill them in regardless of this toggle, but they are only used for building the Case Study PDF by hand — none of them render on the website.',
       initialValue: false,
     }),
     defineField({
@@ -258,7 +258,7 @@ export const project = defineType({
       group: 'caseStudy',
       options: {accept: 'application/pdf'},
       description:
-        'Upload the one-page A4 case study PDF for this project. Shown as a "View Case Study" link on the project page for projects that are not featured above.',
+        'Upload the one-page A4 case study PDF for this project. Shown as a "View Case Study" button on the project page, and on this project\'s card on the Case Studies listing page if "Feature on Case Studies Page" is enabled above.',
     }),
     defineField({
       name: 'caseStudyPdfPreview',
@@ -348,7 +348,7 @@ export const project = defineType({
       title: 'Case Study Image Slider — Custom Selection',
       type: 'array',
       group: 'caseStudy',
-      description: 'By default, the image slider at the bottom of the Case Study page automatically shows every image from "Deliverable Images" above, in the same order. To customize what appears in the slider specifically — remove an image, swap one out, add a different one, or reorder — add images here. Once this list has at least one image, it fully replaces the automatic pull for the slider only; the Deliverable Images gallery itself is never affected.',
+      description: 'Not shown on the website. Kept for reference when building the Case Study PDF by hand.',
       options: {layout: 'grid'},
       of: [
         defineArrayMember({

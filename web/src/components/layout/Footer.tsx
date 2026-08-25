@@ -60,12 +60,6 @@ function socialIconFor(platform: string) {
   if (key.includes("soundcloud")) return <SoundCloudIcon />;
   return <GenericSocialIcon />;
 }
-type LogoSettings = {
-  enabled?: boolean;
-  sizePreset?: "small" | "medium" | "large";
-  customSize?: number;
-};
-
 type FooterProps = {
   siteTitle?: string;
   tagline?: string;
@@ -74,8 +68,7 @@ type FooterProps = {
   phone?: string;
   footerLinks?: FooterLink[];
   socialLinks?: SocialLink[];
-  plainLogo?: LogoSettings & { logoImage?: { asset?: { url: string } } };
-  roundLogo?: LogoSettings & { logoImage?: { asset?: { url: string } } };
+  logoUrl?: string;
   footerLinksHeading?: string;
   footerContactHeading?: string;
   footerFollowHeading?: string;
@@ -90,18 +83,7 @@ const defaultFooterLinks: FooterLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-const PLAIN_PRESETS = { small: 28, medium: 44, large: 56 };
-const ROUND_PRESETS = { small: 28, medium: 36, large: 48 };
-
-function resolveSize(
-  settings: LogoSettings | undefined,
-  presets: Record<string, number>,
-  fallback: number
-): number {
-  if (settings?.customSize) return settings.customSize;
-  if (settings?.sizePreset) return presets[settings.sizePreset] ?? fallback;
-  return fallback;
-}
+const LOGO_SIZE = 108;
 
 export default function Footer({
   siteTitle,
@@ -111,8 +93,7 @@ export default function Footer({
   phone,
   footerLinks,
   socialLinks,
-  plainLogo,
-  roundLogo,
+  logoUrl,
   footerLinksHeading,
   footerContactHeading,
   footerFollowHeading,
@@ -123,11 +104,6 @@ export default function Footer({
   const copyrightText =
     copyright || `© ${year} Breeze Motion Studio. All rights reserved.`;
 
-  const showPlain = plainLogo ? plainLogo.enabled !== false : true;
-  const showRound = roundLogo?.enabled === true;
-  const plainSize = resolveSize(plainLogo, PLAIN_PRESETS, 44);
-  const roundSize = resolveSize(roundLogo, ROUND_PRESETS, 36);
-
   return (
     <footer className="bg-black text-white border-t border-[#1a1a1a]">
       {/* Main footer body — 4 columns: Brand | Quick Links | Get In Touch | Follow */}
@@ -136,31 +112,19 @@ export default function Footer({
         {/* Col 1 — Brand */}
         <div className="flex flex-col items-center text-center">
           <Link href="/" className="mb-5 hover:opacity-80 transition-opacity">
-            {showRound ? (
-              <div
-                className="rounded-full overflow-hidden border border-[#2a2a2a]"
-                style={{ width: roundSize, height: roundSize }}
-              >
-                <Image
-                  src={roundLogo?.logoImage?.asset?.url || "/logo-roundcrop.png"}
-                  alt={siteTitle || "Breeze Motion Studio"}
-                  width={roundSize}
-                  height={roundSize}
-                  className="w-full h-full object-cover"
-                  unoptimized={!roundLogo?.logoImage?.asset?.url}
-                />
-              </div>
-            ) : showPlain ? (
+            <div
+              className="rounded-full overflow-hidden shrink-0 border border-[#2a2a2a]"
+              style={{ width: LOGO_SIZE, height: LOGO_SIZE }}
+            >
               <Image
-                src={plainLogo?.logoImage?.asset?.url || "/logo.png"}
+                src={logoUrl || "/logo.png"}
                 alt={siteTitle || "Breeze Motion Studio"}
-                width={plainSize}
-                height={plainSize}
-                style={{ height: plainSize, width: "auto" }}
-                className="shrink-0"
-                unoptimized={!plainLogo?.logoImage?.asset?.url}
+                width={LOGO_SIZE}
+                height={LOGO_SIZE}
+                className="w-full h-full object-cover"
+                unoptimized={!logoUrl}
               />
-            ) : null}
+            </div>
           </Link>
           <p className="font-[family-name:var(--font-brand)] text-white uppercase tracking-widest text-sm mb-3">
             {siteTitle || "Breeze Motion Studio"}

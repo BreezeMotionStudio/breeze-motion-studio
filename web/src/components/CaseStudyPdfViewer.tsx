@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 type Props = {
   previewUrl: string
@@ -11,6 +12,12 @@ type Props = {
 }
 
 export function CaseStudyPdfViewer({ previewUrl, previewAlt, pdfUrl, filename, onClose }: Props) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   useEffect(() => {
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -27,7 +34,9 @@ export function CaseStudyPdfViewer({ previewUrl, previewAlt, pdfUrl, filename, o
   const downloadUrl = `${pdfUrl}?dl=${encodeURIComponent(filename || 'case-study.pdf')}`
   const displayUrl = `${previewUrl}?w=1700&auto=format&q=85`
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex flex-col items-center bg-black/90 backdrop-blur-sm p-4 pt-16 overflow-y-auto"
       onClick={onClose}
@@ -56,6 +65,7 @@ export function CaseStudyPdfViewer({ previewUrl, previewAlt, pdfUrl, filename, o
           Download PDF
         </a>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

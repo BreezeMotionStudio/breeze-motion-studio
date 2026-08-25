@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { fetchSafe } from "@/lib/sanity/fetchSafe";
 import { CASE_STUDIES_QUERY, CASE_STUDIES_PAGE_QUERY, MORE_CASE_STUDIES_QUERY } from "@/lib/sanity/queries";
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { btnSpacingClass } from "@/lib/buttonSpacing";
 import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { MoreCaseStudies } from "@/components/MoreCaseStudies";
+import { CaseStudyPdfButton } from "@/components/CaseStudyPdfButton";
 import { buildMetadata } from "@/lib/openGraph";
 
 export const revalidate = 60;
@@ -24,6 +24,8 @@ type CaseStudy = {
   coverImage?: { asset?: { url: string }; alt?: string };
   client?: { name: string };
   studio?: { title: string; slug: { current: string } };
+  caseStudyPdf?: { asset?: { url: string; originalFilename?: string } };
+  caseStudyPdfPreview?: { asset?: { url: string }; alt?: string };
 };
 type MoreCaseStudy = {
   _id: string;
@@ -80,7 +82,7 @@ function CaseStudiesIntro({ s }: { s: Section }) {
   );
 }
 
-function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel, listingSectionTitle, sectionBg, moreCaseStudies, viewMoreLabel }: { caseStudies: CaseStudy[]; listingKickerLabel?: string; listingCtaLabel?: string; listingSectionTitle?: string; sectionBg?: Section; moreCaseStudies: MoreCaseStudyItem[]; viewMoreLabel?: string }) {
+function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel, listingViewProjectLabel, listingSectionTitle, sectionBg, moreCaseStudies, viewMoreLabel }: { caseStudies: CaseStudy[]; listingKickerLabel?: string; listingCtaLabel?: string; listingViewProjectLabel?: string; listingSectionTitle?: string; sectionBg?: Section; moreCaseStudies: MoreCaseStudyItem[]; viewMoreLabel?: string }) {
   return (
     <section
       className={`bg-white py-20 ${resolveTextClass(sectionBg, undefined, true)}`}
@@ -94,55 +96,72 @@ function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel,
         )}
         {caseStudies && caseStudies.length > 0 ? (
           <div className="flex flex-col gap-8">
-            {caseStudies.map((cs) => (
-              <Link
-                key={cs._id}
-                href={`/case-studies/${cs.slug?.current}`}
-                className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 bg-white rounded-2xl md:rounded-3xl p-8 md:p-12 shadow-lg transition-transform duration-300 ease-out hover:scale-[1.02]"
-              >
-                <div>
-                  <span className="block font-[family-name:var(--font-functional)] text-xs text-[#535D66] uppercase tracking-widest mb-2">
-                    {listingKickerLabel || 'Case Study'}
-                  </span>
-                  <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide mb-3 text-black">
-                    {cs.title}
-                  </h2>
-                  <div className="flex flex-col gap-1">
-                    {cs.client?.name && (
-                      <span className="font-[family-name:var(--font-functional)] text-xs text-[#4B4B4B] uppercase tracking-wide">
-                        {cs.client.name}
-                      </span>
+            {caseStudies.map((cs) => {
+              const pdfUrl = cs.caseStudyPdf?.asset?.url
+              const previewUrl = cs.caseStudyPdfPreview?.asset?.url
+              const hasPdf = !!(pdfUrl && previewUrl)
+              return (
+                <div
+                  key={cs._id}
+                  className="group grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 bg-white rounded-2xl md:rounded-3xl p-8 md:p-12 shadow-lg transition-transform duration-300 ease-out hover:scale-[1.02]"
+                >
+                  <div>
+                    <span className="block font-[family-name:var(--font-functional)] text-xs text-[#535D66] uppercase tracking-widest mb-2">
+                      {listingKickerLabel || 'Case Study'}
+                    </span>
+                    <h2 className="font-[family-name:var(--font-brand)] text-2xl md:text-3xl uppercase tracking-wide mb-3 text-black">
+                      {cs.title}
+                    </h2>
+                    <div className="flex flex-col gap-1">
+                      {cs.client?.name && (
+                        <span className="font-[family-name:var(--font-functional)] text-xs text-[#4B4B4B] uppercase tracking-wide">
+                          {cs.client.name}
+                        </span>
+                      )}
+                      {cs.year && (
+                        <span className="font-[family-name:var(--font-functional)] text-xs text-[#4B4B4B] uppercase tracking-wide">
+                          {cs.year}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center gap-4">
+                    {cs.coverImage?.asset?.url && (
+                      <div className="relative aspect-[16/6] overflow-hidden rounded-xl">
+                        <Image
+                          src={cs.coverImage.asset.url}
+                          alt={cs.coverImage.alt || cs.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(min-width: 768px) 66vw, 100vw"
+                        />
+                      </div>
                     )}
-                    {cs.year && (
-                      <span className="font-[family-name:var(--font-functional)] text-xs text-[#4B4B4B] uppercase tracking-wide">
-                        {cs.year}
-                      </span>
+                    {cs.summary && (
+                      <p className="font-[family-name:var(--font-body)] text-sm text-[#4B4B4B] leading-relaxed">
+                        {cs.summary}
+                      </p>
                     )}
+                    <div className="flex flex-wrap gap-3">
+                      {hasPdf && (
+                        <CaseStudyPdfButton
+                          previewUrl={previewUrl!}
+                          previewAlt={cs.caseStudyPdfPreview?.alt}
+                          pdfUrl={pdfUrl!}
+                          filename={cs.caseStudyPdf?.asset?.originalFilename}
+                          label={listingCtaLabel || 'View Case Study'}
+                          variant="black"
+                          size="md"
+                        />
+                      )}
+                      <Button variant="black" href={`/projects/${cs.slug?.current}`}>
+                        {listingViewProjectLabel || 'View Project'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-col justify-center gap-4">
-                  {cs.coverImage?.asset?.url && (
-                    <div className="relative aspect-[16/6] overflow-hidden rounded-xl">
-                      <Image
-                        src={cs.coverImage.asset.url}
-                        alt={cs.coverImage.alt || cs.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(min-width: 768px) 66vw, 100vw"
-                      />
-                    </div>
-                  )}
-                  {cs.summary && (
-                    <p className="font-[family-name:var(--font-body)] text-sm text-[#4B4B4B] leading-relaxed">
-                      {cs.summary}
-                    </p>
-                  )}
-                  <span className="font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest text-black underline transition-colors duration-300 group-hover:text-black/60">
-                    {listingCtaLabel || 'Read Case Study →'}
-                  </span>
-                </div>
-              </Link>
-            ))}
+              )
+            })}
           </div>
         ) : (
           <p className="text-bms-grey-400 font-[family-name:var(--font-body)]">
@@ -248,6 +267,7 @@ export default async function CaseStudiesPage() {
         caseStudies={caseStudies}
         listingKickerLabel={page?.listingKickerLabel}
         listingCtaLabel={page?.listingCtaLabel}
+        listingViewProjectLabel={page?.listingViewProjectLabel}
         listingSectionTitle={page?.listingSectionTitle}
         sectionBg={page?.listingSectionBg}
         moreCaseStudies={moreCaseStudies}

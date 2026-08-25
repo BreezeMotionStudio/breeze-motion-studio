@@ -116,11 +116,19 @@ export const caseStudiesPage = defineType({
     }),
     defineField({
       name: 'listingCtaLabel',
-      title: 'Listing Card CTA Text',
+      title: 'Listing Card "View Case Study" Button Text',
       type: 'string',
       group: 'sections',
-      description: 'Text shown at the bottom of each case study card. Default: "Read Case Study →".',
-      placeholder: 'Read Case Study →',
+      description: 'Button that opens the case study PDF preview. Default: "View Case Study".',
+      placeholder: 'View Case Study',
+    }),
+    defineField({
+      name: 'listingViewProjectLabel',
+      title: 'Listing Card "View Project" Button Text',
+      type: 'string',
+      group: 'sections',
+      description: 'Button that links to the full project page. Default: "View Project".',
+      placeholder: 'View Project',
     }),
     defineField({
       name: 'listingSectionBg',

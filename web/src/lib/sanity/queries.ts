@@ -11,8 +11,6 @@ export const HOME_PAGE_QUERY = defineQuery(
       imageLeftSlides[]{asset->{url}, alt},
       imageRightSlides[]{asset->{url}, alt},
       sectionImage{asset->{url, metadata{dimensions}}, alt},
-      aboutLogo{asset->{url, metadata{dimensions}}, roundCrop},
-      parentLogo{asset->{url}, alt, roundCrop},
       steps[]{_key, stepNumber, title, description},
       studioCards[]{
         _key,
@@ -73,7 +71,7 @@ export const SERVICES_PAGE_QUERY = defineQuery(
       sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
       collageImages[]{ image { asset->{ url }, alt } },
       orderedCategories[]->{ _id, title, shortDescription, services, serviceGroups[]{ _key, subheading, description, items }, image { asset->{ url }, alt } },
-      combinations[]{ _key, ...@->{ _id, title, subtitle, description, items, caseStudy->{slug}, bgImage { asset->{ url }, alt }, images[]{ asset->{ url }, alt } } }
+      combinations[]{ _key, ...@->{ _id, title, subtitle, description, items, caseStudy->{caseStudyPdf{asset->{url, originalFilename}}, caseStudyPdfPreview{asset->{url}, alt}}, bgImage { asset->{ url }, alt }, images[]{ asset->{ url }, alt } } }
     },
     seoTitle,
     seoDescription
@@ -179,6 +177,7 @@ export const CASE_STUDIES_PAGE_QUERY = defineQuery(
     },
     listingKickerLabel,
     listingCtaLabel,
+    listingViewProjectLabel,
     listingSectionTitle,
     viewMoreLabel,
     listingSectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
@@ -193,12 +192,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     tagline,
     navLinks[]{label, href},
     navCta{label, href},
-    plainLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
-    roundLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
-    iconLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
+    primaryLogo{asset->{url}},
+    invertedLogo{asset->{url}},
     description,
-    footerPlainLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
-    footerRoundLogo{enabled, sizePreset, customSize, logoImage{asset->{url}}},
     footerLinksHeading,
     footerContactHeading,
     footerFollowHeading,
@@ -299,7 +295,9 @@ export const CASE_STUDIES_QUERY = defineQuery(
     year,
     coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
     client->{name},
-    studio->{title, slug}
+    studio->{title, slug},
+    caseStudyPdf{asset->{url, originalFilename}},
+    caseStudyPdfPreview{asset->{url}, alt}
   }`
 );
 
@@ -309,32 +307,6 @@ export const MORE_CASE_STUDIES_QUERY = defineQuery(
     title,
     caseStudyPdf{asset->{url, originalFilename}},
     caseStudyPdfPreview{asset->{url}, alt}
-  }`
-);
-
-export const CASE_STUDY_BY_SLUG_QUERY = defineQuery(
-  `*[_type == "project" && slug.current == $slug][0]{
-    _id,
-    title,
-    slug,
-    summary,
-    description,
-    year,
-    coverImage{asset->{url}, alt},
-    caseStudyOverview,
-    caseStudyChallenge,
-    caseStudyChallengeImage{asset->{url}, alt},
-    caseStudyApproach,
-    caseStudyApproachImage{asset->{url}, alt},
-    caseStudyOutcome,
-    caseStudyOutcomeImage{asset->{url}, alt},
-    deliverables,
-    deliverableImages[]{_key, asset->{url, metadata{dimensions}}, alt, caption},
-    caseStudySliderImages[]{_key, asset->{url, metadata{dimensions}}, alt, caption},
-    client->{name, individual},
-    testimonial->{quote, attribution, role, client->{name}},
-    seoTitle,
-    seoDescription
   }`
 );
 
@@ -358,35 +330,6 @@ export const PROJECT_PAGE_TEMPLATE_QUERY = defineQuery(
     caseStudySectionBg { ${sectionBgFragment} },
     deliverablesLabel,
     viewCaseStudyLabel
-  }`
-)
-
-export const CASE_STUDY_PAGE_TEMPLATE_QUERY = defineQuery(
-  `*[_id == "caseStudyPageTemplate"][0]{
-    backLabel,
-    heroSectionBg { ${sectionBgFragment} },
-    heroShowCoverImage,
-    heroCoverImageOpacity,
-    summarySectionBg { ${sectionBgFragment} },
-    videoSectionBg { ${sectionBgFragment} },
-    videoSectionLabel,
-    imageSectionBg { ${sectionBgFragment} },
-    imageSectionLabel,
-    btsSectionBg { ${sectionBgFragment} },
-    btsSectionLabel,
-    testimonialSectionBg { ${sectionBgFragment} },
-    narrativeSectionBg { ${sectionBgFragment} },
-    narrativeLabel,
-    overviewHeading,
-    deliverablesLabel,
-    challengeLabel,
-    approachLabel,
-    outcomeLabel,
-    ctaSectionBg { ${sectionBgFragment} },
-    ctaHeading,
-    ctaText,
-    ctaButtonLabel,
-    ctaButtonUrl
   }`
 )
 

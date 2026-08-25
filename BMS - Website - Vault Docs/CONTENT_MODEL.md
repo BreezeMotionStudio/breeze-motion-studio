@@ -353,8 +353,12 @@ Standalone documents for the "Example Combinations" section on the services page
 | siteTitle | string | Yes | Site-wide title |
 | tagline | string | No | Global tagline |
 | description | text | Yes | Default meta description (max 160 chars) |
-| logo | image | No | Primary site logo |
-| logoLight | image | No | Logo for dark backgrounds |
+| primaryLogo | image | Yes | The logo used everywhere on the site — nav, footer, favicon, OG/social preview, structured data. Has its own white background, safe on any page background. Update once here and it cascades everywhere automatically (favicon excepted — see note below). |
+| primaryLogoTransparent | image | No | Transparent PNG of the primary (dark ink) logo, no white backdrop. Not wired into anything on the site by default. |
+| invertedLogo | image | No | Transparent PNG, light/inverted logo, no backdrop. Not wired into anything on the site by default. |
+| invertedLogoBlackBg | image | No | The inverted (light ink) logo with a solid black background baked in. Not wired into anything on the site by default — was briefly used as the round-cropped favicon on 2026-08-25, reverted same day back to `primaryLogo`. |
+
+**Favicon note:** `web/src/app/favicon.ico` is a static file, sourced from `primaryLogo` — **not auto-synced**. Whenever `primaryLogo` changes and you want the tab icon to match, regenerate it manually (download, resize to 16/32/48px, save as `.ico`).
 | splashAccentsEnabled | boolean | No | Global toggle — show/hide decorative camera splash graphics in section corners across all pages; defaults to `true` |
 
 **Header & Navigation:**
@@ -363,18 +367,13 @@ Standalone documents for the "Example Combinations" section on the services page
 |-------|------|-------------|
 | navLinks | array of {label, href} | Navigation bar links |
 | navCta | {label, href} | Optional CTA button in nav (right side) |
-| plainLogo | {enabled, logoImage{hotspot}, sizePreset, customSize} | Unaltered logo in nav; enabled by default; `logoImage` uploaded via CMS (falls back to General `logo`) |
-| roundLogo | {enabled, logoImage{hotspot}, sizePreset, customSize} | Logo in circular crop; disabled by default; `logoImage` uploaded via CMS (falls back to General `logo`) |
-| iconLogo | {enabled, logoImage{hotspot}, sizePreset, customSize} | Icon-only logo (no wordmark); disabled by default; `logoImage` uploaded via CMS (falls back to `/public/logo-icon.png`) |
 
-**Note (2026-02-25):** Header & Navigation logos are now managed via manual image upload fields (`logoImage`) directly within each logo option in Sanity, replacing previous hardcoded or file-path-only approaches. All three logo variants (`plainLogo`, `roundLogo`, `iconLogo`) include a `logoImage` field with hotspot support.
+**Note (2026-08-25):** Nav and footer no longer have their own separate logo upload fields. Both always render `siteSettings.primaryLogo` (round-cropped, fixed size in code — 44px nav, 56px footer) — this replaced the old `plainLogo`/`roundLogo`/`iconLogo`/`footerPlainLogo`/`footerRoundLogo` per-shape fields, which had drifted out of sync with each other and with the general `logo`/`logoLight` fields (which weren't even wired into the frontend). Same fix applied to the homepage's `homeAbout` and `homeStudiosOverview` sections, which previously had their own separate `aboutLogo`/`parentLogo` upload fields — both removed, both sections now also source from `primaryLogo`. Updating the logo now requires touching exactly one field, sitewide.
 
 **Footer:**
 
 | Field | Type | Description |
 |-------|------|-------------|
-| footerPlainLogo | {enabled, sizePreset, customSize} | Plain logo in footer brand column |
-| footerRoundLogo | {enabled, sizePreset, customSize} | Round crop logo in footer; prioritised over plain when both enabled |
 | footerTagline | string | Short tagline under logo/studio name in footer brand column |
 | footerLinks | array of {label, href} | Footer navigation column links |
 | footerText | string | Copyright notice (e.g., © 2026 Breeze Motion Studio. All rights reserved.) |
@@ -559,7 +558,9 @@ schemaTypes/
 
 All image fields across all schemas include a `roundCrop` boolean sub-field (default `false`). When enabled in the CMS, the frontend applies `rounded-full overflow-hidden` to the image container. This is a standing rule — all future image fields must include it.
 
-**Affected schemas:** `blockContent.ts`, `aboutPage.ts`, `client.ts`, `project.ts`, `caseStudy.ts`, `homePage.ts`, `studio.ts`, `siteSettings.ts`
+**Affected schemas:** `blockContent.ts`, `aboutPage.ts`, `client.ts`, `project.ts`, `caseStudy.ts`, `homePage.ts`, `studio.ts`
+
+**Exception (2026-08-25):** `siteSettings.primaryLogo`/`invertedLogo` do not have a `roundCrop` sub-field. The logo's crop treatment is fixed in code instead (round in Nav and Footer) rather than CMS-toggleable, since it's the same single image used everywhere and doesn't need per-placement control.
 
 **GROQ query requirement:** `roundCrop` must be explicitly projected in all image field projections, e.g. `image{asset->{url}, alt, roundCrop}`.
 

@@ -190,7 +190,7 @@ export const servicesPage = defineType({
             defineField({name: 'heading', title: 'Section Heading', type: 'simpleRichText'}),
             defineField({name: 'intro', title: 'Intro Text', type: 'simpleRichText'}),
             defineField({name: 'typicallyIncludesLabel', title: '"Typically Includes" Label', type: 'string', description: 'Label above each combination\'s item list. Default: "Typically Includes".', initialValue: 'Typically Includes'}),
-            defineField({name: 'viewCaseStudyLabel', title: '"View Case Study" Button Label', type: 'string', description: 'Text on the button linking to each combination\'s case study. Default: "View Case Study".', initialValue: 'View Case Study'}),
+            defineField({name: 'viewCaseStudyLabel', title: '"View Case Study" Button Label', type: 'string', description: 'Text on the button that opens each combination\'s case study PDF preview. Default: "View Case Study".', initialValue: 'View Case Study'}),
             defineField({name: 'sectionBg', title: 'Section Background', type: 'sectionBackground'}),
             defineField({
               name: 'collageImages',

@@ -14,7 +14,6 @@ import {servicesPage} from './servicesPage'
 import {studiosPage} from './studiosPage'
 import {caseStudiesPage} from './caseStudiesPage'
 import {projectPageTemplate} from './projectPageTemplate'
-import {caseStudyPageTemplate} from './caseStudyPageTemplate'
 import {studioPageTemplate} from './studioPageTemplate'
 import {studio} from './studio'
 import {project} from './project'
@@ -44,7 +43,6 @@ export const schemaTypes = [
   studiosPage,
   caseStudiesPage,
   projectPageTemplate,
-  caseStudyPageTemplate,
   studioPageTemplate,
 
   // Content documents

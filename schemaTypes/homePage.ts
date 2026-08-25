@@ -101,17 +101,6 @@ export const homePage = defineType({
             defineField({name: 'heading', title: 'Heading', type: 'simpleRichText'}),
             defineField({name: 'description', title: 'Description', type: 'simpleRichText', description: 'Short description shown below the section heading.'}),
             defineField({
-              name: 'parentLogo',
-              title: 'Parent Studio Logo',
-              type: 'image',
-              options: {hotspot: true},
-              description: 'Centered logo displayed above the connector tree linking to sub-studios.',
-              fields: [
-                defineField({name: 'alt', type: 'string', title: 'Alt Text'}),
-                defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false}),
-              ],
-            }),
-            defineField({
               name: 'studioCards',
               title: 'Studio Card Media',
               type: 'array',
@@ -240,17 +229,10 @@ export const homePage = defineType({
               of: [defineArrayMember({type: 'ctaButton'})],
             }),
             defineField({
-              name: 'aboutLogo',
-              title: 'About Section Logo',
-              type: 'image',
-              options: {hotspot: true},
-              fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
-            }),
-            defineField({
               name: 'logoMaxWidth',
               title: 'Logo Max Width (px)',
               type: 'number',
-              description: 'Set the maximum width of the logo in pixels, e.g., 150, 250, 400',
+              description: 'Set the maximum width of the site logo shown in this section, in pixels, e.g., 150, 250, 400. The logo image itself always comes from Site Settings → Primary Logo.',
               validation: (rule) => rule.positive(),
             }),
             defineField({name: 'bgVideoUrl', title: 'Background Video URL', type: 'url'}),

@@ -10,14 +10,16 @@ type Props = {
   pdfUrl: string
   filename?: string
   label: string
+  variant?: 'black' | 'white'
+  size?: 'sm' | 'md' | 'lg'
 }
 
-export function CaseStudyPdfButton({ previewUrl, previewAlt, pdfUrl, filename, label }: Props) {
+export function CaseStudyPdfButton({ previewUrl, previewAlt, pdfUrl, filename, label, variant = 'white', size = 'lg' }: Props) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      <Button variant="white" size="lg" onClick={() => setOpen(true)}>
+      <Button variant={variant} size={size} onClick={() => setOpen(true)}>
         {label}
       </Button>
       {open && (

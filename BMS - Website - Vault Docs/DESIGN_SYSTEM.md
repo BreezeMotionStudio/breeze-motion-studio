@@ -332,7 +332,7 @@ Used in two places: `HomeStudiosOverview.tsx` (homepage studios section) and `Se
 
 **Navigation:**
 - `Nav.tsx` — fixed top, black bg, border-bottom `#1a1a1a`
-- Logo: plain / round / icon variants — CMS-controlled per `siteSettings`; size presets (small/medium/large) + custom px override
+- Logo: `siteSettings.primaryLogo`, round-cropped, 44px, fixed size in code
 - Links: Arial uppercase tracking-widest, grey default → white on hover/active (no transition on hover — instant color change per spec)
 - Mobile: hamburger (3 lines → X animation), slide-down nav panel
 - CTA button: white bg, black text, `hover:bg-gray-200 hover:scale-105`
@@ -341,7 +341,7 @@ Used in two places: `HomeStudiosOverview.tsx` (homepage studios section) and `Se
 **Footer:**
 - `Footer.tsx` — dark background, CMS-driven links, social icons
 - Brand column: logo → `siteTitle` → `footerTagline`, center-aligned
-- Logo display priority: `footerRoundLogo` first if enabled, then `footerPlainLogo`
+- Logo: `siteSettings.primaryLogo`, round-cropped, 80px (same source asset as Nav)
 
 **Buttons — `web/src/components/ui/Button.tsx`:**
 - Two variants only: `black` (bg-black text-white) and `white` (bg-white text-black)

@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     settings?.description ||
     'High-end audio-visual content and structured digital solutions for corporate, commercial, industrial, and creative clients.'
-  const logo = settings?.plainLogo?.logoImage?.asset?.url || settings?.iconLogo?.logoImage?.asset?.url
+  const logo = settings?.primaryLogo?.asset?.url
 
   return {
     ...buildMetadata({ title: siteTitle, description, path: '/', imageUrl: logo, imageAlt: siteTitle }),
@@ -43,7 +43,7 @@ export default async function RootLayout({
     name: settings?.siteTitle || "Breeze Motion Studio",
     url: SITE_URL,
     description: settings?.description,
-    logo: settings?.plainLogo?.logoImage?.asset?.url || settings?.iconLogo?.logoImage?.asset?.url,
+    logo: settings?.primaryLogo?.asset?.url,
     email: settings?.contactEmail,
     telephone: settings?.contactPhone,
     sameAs: (settings?.socialLinks || []).map((l: { url?: string }) => l.url).filter(Boolean),
@@ -59,9 +59,7 @@ export default async function RootLayout({
         <Nav
           navLinks={settings?.navLinks}
           navCta={settings?.navCta}
-          plainLogo={settings?.plainLogo}
-          roundLogo={settings?.roundLogo}
-          iconLogo={settings?.iconLogo}
+          logoUrl={settings?.primaryLogo?.asset?.url}
           studios={studios}
         />
         <ScrollObserver />
@@ -74,8 +72,7 @@ export default async function RootLayout({
           phone={settings?.contactPhone}
           footerLinks={settings?.footerLinks}
           socialLinks={settings?.socialLinks}
-          plainLogo={settings?.footerPlainLogo}
-          roundLogo={settings?.footerRoundLogo}
+          logoUrl={settings?.primaryLogo?.asset?.url}
           footerLinksHeading={settings?.footerLinksHeading}
           footerContactHeading={settings?.footerContactHeading}
           footerFollowHeading={settings?.footerFollowHeading}

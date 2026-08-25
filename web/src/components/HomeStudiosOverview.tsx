@@ -68,7 +68,7 @@ function SectionBg({videoUrl, image}: {videoUrl?: string; image?: {asset?: {url:
   return null
 }
 
-export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) {
+export function HomeStudiosOverview({s, studios, logoUrl}: {s: Section; studios: any[]; logoUrl?: string}) {
   const [hovered, setHovered] = useState(false)
 
   const handleEnter = useCallback(() => {
@@ -105,10 +105,10 @@ export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) 
           </p>
         )}
 
-        {s.parentLogo?.asset?.url ? (
+        {logoUrl ? (
           <div className="flex flex-col items-center mt-6">
-            <Link href="/studios" className={`relative block w-40 h-40 overflow-hidden bg-[#111111] border border-white/15 flex items-center justify-center transition-transform duration-300 hover:scale-105${s.parentLogo.roundCrop ? ' rounded-full' : ' rounded-lg'}`}>
-              <Image src={s.parentLogo.asset.url} alt={s.parentLogo.alt || ''} fill className="object-cover" sizes="160px" />
+            <Link href="/studios" className="relative block w-40 h-40 overflow-hidden bg-[#111111] border border-white/15 flex items-center justify-center transition-transform duration-300 hover:scale-105 rounded-lg">
+              <Image src={logoUrl} alt="Breeze Motion Studio" fill className="object-cover" sizes="160px" />
             </Link>
             {/* Connector tree — desktop only */}
             <div className="w-full hidden lg:block">
@@ -136,7 +136,7 @@ export function HomeStudiosOverview({s, studios}: {s: Section; studios: any[]}) 
             </svg>
           </div>
         )}
-        {!s.description && !s.heading && !s.parentLogo?.asset?.url && <div className="mb-12" />}
+        {!s.description && !s.heading && !logoUrl && <div className="mb-12" />}
 
         {studios && studios.length > 0 ? (
           <div className="flex flex-wrap justify-center gap-8">

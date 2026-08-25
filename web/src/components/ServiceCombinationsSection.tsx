@@ -1,10 +1,10 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { SimpleRichText } from '@/components/ui/SimpleRichText'
 import { sectionBgStyle } from '@/lib/sectionBackground'
+import { CaseStudyPdfViewer } from '@/components/CaseStudyPdfViewer'
 
 type CombinationImage = {
   asset?: { url: string }
@@ -17,7 +17,10 @@ type Combination = {
   subtitle?: string
   description?: any
   items?: string[]
-  caseStudy?: { slug?: { current?: string } }
+  caseStudy?: {
+    caseStudyPdf?: { asset?: { url: string; originalFilename?: string } }
+    caseStudyPdfPreview?: { asset?: { url: string }; alt?: string }
+  }
   bgImage?: { asset?: { url: string }; alt?: string }
   images?: CombinationImage[]
 }
@@ -70,8 +73,17 @@ function ImageLightbox({ src, alt, onClose }: { src: string; alt: string; onClos
 
 export function ServiceCombinationsSection({ heading, intro, combinations, collageImages, sectionBg, typicallyIncludesLabel, viewCaseStudyLabel }: Props) {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
+  const [activePdfKey, setActivePdfKey] = useState<string | null>(null)
 
   if (!combinations?.length) return null
+
+  const activeCombo = combinations.find((c) => c._key === activePdfKey)
+  const activePdf = activeCombo?.caseStudy?.caseStudyPdf?.asset?.url
+    ? { url: activeCombo.caseStudy.caseStudyPdf.asset.url, filename: activeCombo.caseStudy.caseStudyPdf.asset.originalFilename }
+    : null
+  const activePreview = activeCombo?.caseStudy?.caseStudyPdfPreview?.asset?.url
+    ? { url: activeCombo.caseStudy.caseStudyPdfPreview.asset.url, alt: activeCombo.caseStudy.caseStudyPdfPreview.alt }
+    : null
 
   return (
     <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden bg-white" style={sectionBgStyle(sectionBg)}>
@@ -202,13 +214,13 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                     </div>
                   )}
                   <div className="mt-auto">
-                    {combo.caseStudy?.slug?.current ? (
-                      <Link
-                        href={`/case-studies/${combo.caseStudy.slug.current}`}
+                    {combo.caseStudy?.caseStudyPdf?.asset?.url && combo.caseStudy?.caseStudyPdfPreview?.asset?.url ? (
+                      <button
+                        onClick={() => setActivePdfKey(combo._key)}
                         className="inline-flex items-center gap-2 font-[family-name:var(--font-functional)] text-xs uppercase tracking-widest bg-[#ffffff] text-black px-5 py-2.5 rounded-md hover:scale-[1.05] transition-transform duration-200 cursor-pointer"
                       >
                         {viewCaseStudyLabel || 'View Case Study'}
-                      </Link>
+                      </button>
                     ) : (
                       <button
                         disabled
@@ -228,6 +240,16 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
 
       {lightbox && (
         <ImageLightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
+      )}
+
+      {activePdf && activePreview && (
+        <CaseStudyPdfViewer
+          previewUrl={activePreview.url}
+          previewAlt={activePreview.alt}
+          pdfUrl={activePdf.url}
+          filename={activePdf.filename}
+          onClose={() => setActivePdfKey(null)}
+        />
       )}
     </section>
   )

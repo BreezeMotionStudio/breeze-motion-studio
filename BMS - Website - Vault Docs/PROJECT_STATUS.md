@@ -6,7 +6,7 @@
 
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-20 (Session 48)
+**Last Updated:** 2026-08-25 (Session 49)
 
 ---
 
@@ -57,10 +57,37 @@
 | Services page — new "Brand Refresh Collection" example | ✅ Done | Session 48 — see below; sits under "Brand Startup Collection"; `caseStudySlug` pending MAVTECH going live |
 | Pilates with Raylene — "Full Brand Startup Collection" project, full text fill | 🔄 Partial | Session 48 — see below; images + `showAsCaseStudy` pending, natural `caseStudySlug` candidate for "Brand Startup Collection" |
 | Sole-operator voice rule refined — "I" now rare, not default | ✅ Done | Session 48 — see below |
+| Dedicated `/case-studies/[slug]` page removed | ✅ Done | Session 49 — see below; listing cards now show "View Case Study" (PDF modal) + "View Project" buttons instead |
+| Logo system consolidated to single source of truth | ✅ Done | Session 49 — see below; `siteSettings.primaryLogo` drives nav/footer/favicon/OG/homepage, replacing 7 drifted duplicate fields |
+| Case study PDF preview modal — full-viewport positioning bug fixed | ✅ Done | Session 49 — see below; portal-based fix, affected any card with a CSS hover-transform ancestor |
 
 ---
 
 ## Development Log
+
+### 2026-08-25 (Session 49) — Case Study Pages Removed, Logo System Consolidated, PDF Modal Bug Fixed
+
+**Case study pages removed — PDF-only from here on:**
+- ✅ Deleted the dedicated `/case-studies/[slug]` page entirely: the route, `CASE_STUDY_BY_SLUG_QUERY`, `CASE_STUDY_PAGE_TEMPLATE_QUERY`, the `caseStudyPageTemplate` Sanity singleton (schema + desk-structure entry), and the now-orphaned `CaseStudyImageSlider` component
+- ✅ Rebekah still writes/maintains all the case study narrative text fields in Sanity (`caseStudyOverview`, `caseStudyChallenge/Approach/Outcome`, etc.) — they're just no longer rendered on the site; she uses them to hand-build her own formatted PDFs, per her explicit instruction
+- ✅ Case Studies listing page cards now show two black/white buttons instead of the old underlined "Read Case Study →" link: **View Case Study** (opens the existing PDF/PNG preview modal, reused unchanged from the project page) and **View Project** (links to `/projects/[slug]`); new `caseStudiesPage.listingViewProjectLabel` field, `listingCtaLabel` repurposed for the new button
+- ✅ `ServiceCombinationsSection.tsx`'s "View Case Study" buttons (Services page) — previously a documented permanent exception linking straight to the now-deleted page — changed to open the same PDF modal instead
+- ✅ Case study Challenge/Approach/Outcome text length standard set: 2 short paragraphs per section, ~20-40 words each, going forward — trialed on the Tinari model portfolio project and confirmed as the new default
+
+**Logo system fully consolidated to a single source of truth:**
+- ✅ Root cause: 7 separate logo image fields across the site had drifted out of sync — `siteSettings.logo`/`logoLight` (general fields, never actually fetched by the frontend query), `plainLogo`/`roundLogo`/`iconLogo` (nav), `footerPlainLogo`/`footerRoundLogo` (footer), plus `homePage`'s own separate `aboutLogo`/`parentLogo` fields — discovered when Rebekah uploaded a new logo and it didn't appear anywhere
+- ✅ All 7 removed. Replaced with `siteSettings.primaryLogo` (required, opaque, white background baked in) driving nav, footer, homepage About badge, homepage Studios Overview mark, browser favicon, OG/social preview image, and JSON-LD structured data — update once, publish, done everywhere
+- ✅ Two additional optional/reserve fields added at Rebekah's request: `invertedLogo` (transparent, light-ink version) and, later, `primaryLogoTransparent` (transparent dark-ink) and `invertedLogoBlackBg` (opaque, black background baked in) — the latter two generated programmatically from the two originals (luminance→alpha extraction for the transparent one, alpha-composite onto black for the other); none of these three are wired into any live component by default
+- ✅ Nav and Footer logos are round-cropped (Footer enlarged twice this session, 56px → 80px → 108px); homepage Studios Overview mark stays square (`rounded-lg`), matching its pre-existing design
+- ✅ Favicon regenerated from `primaryLogo`; briefly swapped to the round-cropped `invertedLogoBlackBg` version to A/B test, then reverted back to `primaryLogo` per Rebekah's preference — favicon is a static file (`web/src/app/favicon.ico`), not auto-synced to Sanity, needs manual regeneration whenever the logo changes
+- ✅ Tried and reverted same day: per-placement CMS "zoom within frame" number fields (4 of them) — added, then immediately disregarded per Rebekah's follow-up; fully removed rather than left dormant
+- ✅ Fixed a real image-quality bug found during this work: the homepage About section's logo looked visibly softer than the Studios Overview one because its `next/image fill` never got an explicit `sizes` prop (silently defaulted to `100vw`, wrong for a ~180px fixed badge) — confirmed via direct Sanity CDN A/B fetch that it was a resolution/DPI issue, not compression; fixed by setting `sizes` to match the actual rendered width
+
+**Case study PDF preview modal — full-viewport positioning bug fixed:**
+- ✅ Rebekah reported the modal "glitching in and out" and not displaying the thumbnail properly on the Case Studies listing page
+- ✅ Root cause: `CaseStudyPdfViewer`'s `position: fixed` overlay was nested inside a card `<div>` with `hover:scale-[1.02]` — a CSS `transform` on an ancestor makes that ancestor the containing block for `position: fixed` descendants (per spec), so while hovering, the modal was trapped and mispositioned inside the small card instead of covering the viewport, which also fed back into the card's hover state flickering
+- ✅ Fixed at the shared component level (`CaseStudyPdfViewer.tsx`) using a `createPortal` render straight to `document.body` — protects every current and future consumer of this component regardless of what transformed ancestor it's triggered from, not just the one broken spot
+- ✅ Verified with a headless-browser click-through (Playwright): confirmed the overlay now measures exactly the full viewport with `BODY` as its direct DOM parent, on both the Case Studies listing page and the Services page combination cards (same nested-in-a-hover-scale-card pattern, same fix)
 
 ### 2026-08-20 (Session 48) — Brand Refresh Services Example, Pilates with Raylene Case Study, Voice Rule Refinement
 

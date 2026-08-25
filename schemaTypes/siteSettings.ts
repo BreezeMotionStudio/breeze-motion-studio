@@ -45,19 +45,37 @@ export const siteSettings = defineType({
       validation: (rule) => rule.required().max(160),
     }),
     defineField({
-      name: 'logo',
-      title: 'Site Logo',
+      name: 'primaryLogo',
+      title: 'Primary Logo',
       type: 'image',
       group: 'general',
-      fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
+      description:
+        'The logo used everywhere on the site: navigation bar, footer, browser tab icon, and social share preview images. Has its own white background built in, so it displays cleanly no matter what page background sits behind it. Update this one field and the new logo appears everywhere automatically (favicon excepted — that\'s a static file and needs a manual regenerate).',
+      validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'logoLight',
-      title: 'Logo (Light / Dark Background Version)',
+      name: 'primaryLogoTransparent',
+      title: 'Primary Logo (Transparent)',
       type: 'image',
       group: 'general',
-      description: 'For use on dark backgrounds',
-      fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
+      description:
+        'Optional. A transparent PNG of the primary (dark ink) logo, with no white backdrop baked in. For placements on a light background where a white box behind the logo isn\'t wanted. Not used anywhere on the site by default.',
+    }),
+    defineField({
+      name: 'invertedLogo',
+      title: 'Inverted Logo (Transparent)',
+      type: 'image',
+      group: 'general',
+      description:
+        'Optional. A transparent PNG of the light/inverted logo version, reserved for future use on dark or black backgrounds where a white backdrop isn\'t wanted. Not used anywhere on the site by default.',
+    }),
+    defineField({
+      name: 'invertedLogoBlackBg',
+      title: 'Inverted Logo (Black Background)',
+      type: 'image',
+      group: 'general',
+      description:
+        'Optional. The inverted (light ink) logo with a solid black background baked in. Not used anywhere on the site by default.',
     }),
 
     // — Header & Navigation —
@@ -102,244 +120,6 @@ export const siteSettings = defineType({
         defineField({name: 'href', title: 'URL Path', type: 'string'}),
       ],
     }),
-
-    // — Logo: Plain —
-    defineField({
-      name: 'plainLogo',
-      title: 'Plain Logo',
-      type: 'object',
-      group: 'header',
-      description: 'Unaltered logo displayed in the navigation bar',
-      fields: [
-        defineField({
-          name: 'enabled',
-          title: 'Show Plain Logo',
-          type: 'boolean',
-          initialValue: true,
-        }),
-        defineField({
-          name: 'logoImage',
-          title: 'Logo Image',
-          type: 'image',
-          description: 'Upload a logo image. Falls back to the Site Logo in General if left blank.',
-          options: {hotspot: true},
-          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
-        }),
-        defineField({
-          name: 'sizePreset',
-          title: 'Size Preset',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Small — 28px', value: 'small'},
-              {title: 'Medium — 44px', value: 'medium'},
-              {title: 'Large — 56px', value: 'large'},
-            ],
-            layout: 'radio',
-            direction: 'horizontal',
-          },
-          initialValue: 'large',
-        }),
-        defineField({
-          name: 'customSize',
-          title: 'Custom Size (px)',
-          type: 'number',
-          description: 'Enter a pixel value to override the preset above (e.g. 38). Leave blank to use the preset.',
-          validation: (rule) => rule.min(16).max(120),
-        }),
-      ],
-    }),
-
-    // — Logo: Round Crop —
-    defineField({
-      name: 'roundLogo',
-      title: 'Round Crop Logo',
-      type: 'object',
-      group: 'header',
-      description: 'Logo displayed inside a circular crop in the navigation bar',
-      fields: [
-        defineField({
-          name: 'enabled',
-          title: 'Show Round Crop Logo',
-          type: 'boolean',
-          initialValue: false,
-        }),
-        defineField({
-          name: 'logoImage',
-          title: 'Logo Image',
-          type: 'image',
-          description: 'Upload a logo image for the round crop. Falls back to the Site Logo in General if left blank.',
-          options: {hotspot: true},
-          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
-        }),
-        defineField({
-          name: 'sizePreset',
-          title: 'Size Preset',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Small — 28px', value: 'small'},
-              {title: 'Medium — 36px', value: 'medium'},
-              {title: 'Large — 48px', value: 'large'},
-            ],
-            layout: 'radio',
-            direction: 'horizontal',
-          },
-          initialValue: 'medium',
-        }),
-        defineField({
-          name: 'customSize',
-          title: 'Custom Size (px)',
-          type: 'number',
-          description: 'Enter a pixel value to override the preset above (e.g. 40). Leave blank to use the preset.',
-          validation: (rule) => rule.min(16).max(120),
-        }),
-      ],
-    }),
-
-    // — Logo: Icon Only —
-    defineField({
-      name: 'iconLogo',
-      title: 'Icon Only — No Wordmark',
-      type: 'object',
-      group: 'header',
-      description: 'Logo icon displayed in the navigation bar without the Breeze Motion Studio wordmark text. Upload an image here or place your icon file at /web/public/logo-icon.png',
-      fields: [
-        defineField({
-          name: 'enabled',
-          title: 'Show Icon Only Logo',
-          type: 'boolean',
-          initialValue: false,
-        }),
-        defineField({
-          name: 'logoImage',
-          title: 'Icon Image',
-          type: 'image',
-          description: 'Upload an icon image (no wordmark). Falls back to /public/logo-icon.png if left blank.',
-          options: {hotspot: true},
-          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', description: 'Display this image with a circular crop', initialValue: false})],
-        }),
-        defineField({
-          name: 'sizePreset',
-          title: 'Size Preset',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Small — 28px', value: 'small'},
-              {title: 'Medium — 36px', value: 'medium'},
-              {title: 'Large — 48px', value: 'large'},
-            ],
-            layout: 'radio',
-            direction: 'horizontal',
-          },
-          initialValue: 'medium',
-        }),
-        defineField({
-          name: 'customSize',
-          title: 'Custom Size (px)',
-          type: 'number',
-          description: 'Enter a pixel value to override the preset above. Leave blank to use the preset.',
-          validation: (rule) => rule.min(16).max(120),
-        }),
-      ],
-    }),
-
-    // — Footer —
-
-    // — Footer Logo: Plain —
-    defineField({
-      name: 'footerPlainLogo',
-      title: 'Plain Logo',
-      type: 'object',
-      group: 'footer',
-      description: 'Unaltered logo displayed in the footer brand column',
-      fields: [
-        defineField({
-          name: 'enabled',
-          title: 'Show Plain Logo',
-          type: 'boolean',
-          initialValue: true,
-        }),
-        defineField({
-          name: 'logoImage',
-          title: 'Logo Image',
-          type: 'image',
-          description: 'Upload a logo for the footer. Falls back to /public/logo.png if left blank.',
-          options: {hotspot: true},
-          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', initialValue: false})],
-        }),
-        defineField({
-          name: 'sizePreset',
-          title: 'Size Preset',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Small — 28px', value: 'small'},
-              {title: 'Medium — 44px', value: 'medium'},
-              {title: 'Large — 56px', value: 'large'},
-            ],
-            layout: 'radio',
-            direction: 'horizontal',
-          },
-          initialValue: 'medium',
-        }),
-        defineField({
-          name: 'customSize',
-          title: 'Custom Size (px)',
-          type: 'number',
-          description: 'Enter a pixel value to override the preset above. Leave blank to use the preset.',
-          validation: (rule) => rule.min(16).max(120),
-        }),
-      ],
-    }),
-
-    // — Footer Logo: Round Crop —
-    defineField({
-      name: 'footerRoundLogo',
-      title: 'Round Crop Logo',
-      type: 'object',
-      group: 'footer',
-      description: 'Logo displayed inside a circular crop in the footer brand column',
-      fields: [
-        defineField({
-          name: 'enabled',
-          title: 'Show Round Crop Logo',
-          type: 'boolean',
-          initialValue: false,
-        }),
-        defineField({
-          name: 'logoImage',
-          title: 'Logo Image',
-          type: 'image',
-          description: 'Upload a round crop logo for the footer. Falls back to /public/logo-roundcrop.png if left blank.',
-          options: {hotspot: true},
-          fields: [defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', initialValue: false})],
-        }),
-        defineField({
-          name: 'sizePreset',
-          title: 'Size Preset',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Small — 28px', value: 'small'},
-              {title: 'Medium — 36px', value: 'medium'},
-              {title: 'Large — 48px', value: 'large'},
-            ],
-            layout: 'radio',
-            direction: 'horizontal',
-          },
-          initialValue: 'medium',
-        }),
-        defineField({
-          name: 'customSize',
-          title: 'Custom Size (px)',
-          type: 'number',
-          description: 'Enter a pixel value to override the preset above. Leave blank to use the preset.',
-          validation: (rule) => rule.min(16).max(120),
-        }),
-      ],
-    }),
-
     defineField({name: 'footerLinksHeading', title: 'Links Column Heading', type: 'string', group: 'footer', description: 'Heading above the quick links column. Default: "Quick Links".', initialValue: 'Quick Links'}),
     defineField({name: 'footerContactHeading', title: 'Contact Column Heading', type: 'string', group: 'footer', description: 'Heading above the contact column. Default: "Get In Touch".', initialValue: 'Get In Touch'}),
     defineField({name: 'footerFollowHeading', title: 'Social Column Heading', type: 'string', group: 'footer', description: 'Heading above the social media column. Default: "Follow".', initialValue: 'Follow'}),

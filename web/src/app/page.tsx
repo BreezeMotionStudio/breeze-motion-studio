@@ -4,6 +4,7 @@ import {
   HOME_PAGE_QUERY,
   FEATURED_PROJECTS_QUERY,
   STUDIOS_QUERY,
+  SITE_SETTINGS_QUERY,
 } from "@/lib/sanity/queries";
 import { StudioCard } from "@/components/StudioCard";
 import { HomeStudiosOverview } from "@/components/HomeStudiosOverview";
@@ -248,7 +249,7 @@ function plainTextFromRichText(value: any): string {
     .trim()
 }
 
-function HomeAbout({ s }: { s: Section }) {
+function HomeAbout({ s, logoUrl }: { s: Section; logoUrl?: string }) {
   const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   const aspectClass = ABOUT_ASPECT_CLASS[s.imageAspectRatio ?? '1:1'] ?? 'aspect-square'
   const headingText = plainTextFromRichText(s.heading)
@@ -278,14 +279,18 @@ function HomeAbout({ s }: { s: Section }) {
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center gap-6 w-full pb-8">
               <hr className="flex-grow border-t border-white/15" />
-              <Image
-                src={s.aboutLogo?.asset?.url ?? '/logo.png'}
-                alt="Breeze Motion Studio"
-                width={s.aboutLogo?.asset?.metadata?.dimensions?.width || 256}
-                height={s.aboutLogo?.asset?.metadata?.dimensions?.height || 256}
-                className={`h-auto shrink-0${s.aboutLogo?.roundCrop ? ' rounded-full overflow-hidden' : ''}`}
+              <div
+                className="relative shrink-0 rounded-full overflow-hidden aspect-square"
                 style={{ width: s.logoMaxWidth ? `${s.logoMaxWidth}px` : '256px' }}
-              />
+              >
+                <Image
+                  src={logoUrl ?? '/logo.png'}
+                  alt="Breeze Motion Studio"
+                  fill
+                  className="object-cover"
+                  sizes={s.logoMaxWidth ? `${s.logoMaxWidth}px` : '256px'}
+                />
+              </div>
               <hr className="flex-grow border-t border-white/15" />
             </div>
 
@@ -354,11 +359,13 @@ function HomeCta({ s }: { s: Section }) {
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [page, featuredProjects, studios] = await Promise.all([
+  const [page, featuredProjects, studios, settings] = await Promise.all([
     fetchSafe(HOME_PAGE_QUERY, {}, null),
     fetchSafe(FEATURED_PROJECTS_QUERY, {}, []),
     fetchSafe(STUDIOS_QUERY, {}, []),
+    fetchSafe(SITE_SETTINGS_QUERY, {}, null),
   ]);
+  const logoUrl = settings?.primaryLogo?.asset?.url;
 
   if (!page?.sections?.length) {
     return (
@@ -388,9 +395,9 @@ export default async function HomePage() {
           case "homeFeaturedWork":
             return <HomeFeaturedWork key={section._key} s={section} projects={featuredProjects} />;
           case "homeAbout":
-            return <HomeAbout key={section._key} s={section} />;
+            return <HomeAbout key={section._key} s={section} logoUrl={logoUrl} />;
           case "homeStudiosOverview":
-            return <HomeStudiosOverview key={section._key} s={section} studios={studios} />;
+            return <HomeStudiosOverview key={section._key} s={section} studios={studios} logoUrl={logoUrl} />;
           case "homeHowWeWork":
             return <HowWeWorkSection key={section._key} s={section as any} />;
           case "homeTestimonials":

@@ -62,8 +62,7 @@ npm run build / lint
 /about                      → About (services + how we work)
 /studios                    → Studios overview
 /studios/[machine|commercial|creative|strategy]
-/case-studies               → Listing
-/case-studies/[slug]        → Detail
+/case-studies               → Listing (case study buttons open a PDF modal, no detail page)
 /contact                    → Contact form
 ```
 
