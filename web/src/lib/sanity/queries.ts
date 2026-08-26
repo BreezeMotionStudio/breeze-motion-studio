@@ -194,6 +194,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(
     navCta{label, href},
     primaryLogo{asset->{url}},
     invertedLogo{asset->{url}},
+    wordmarkBlack{asset->{url}},
+    wordmarkWhite{asset->{url}},
     description,
     footerLinksHeading,
     footerContactHeading,

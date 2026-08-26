@@ -69,6 +69,7 @@ type FooterProps = {
   footerLinks?: FooterLink[];
   socialLinks?: SocialLink[];
   logoUrl?: string;
+  wordmarkUrl?: string;
   footerLinksHeading?: string;
   footerContactHeading?: string;
   footerFollowHeading?: string;
@@ -94,6 +95,7 @@ export default function Footer({
   footerLinks,
   socialLinks,
   logoUrl,
+  wordmarkUrl,
   footerLinksHeading,
   footerContactHeading,
   footerFollowHeading,
@@ -126,9 +128,20 @@ export default function Footer({
               />
             </div>
           </Link>
-          <p className="font-[family-name:var(--font-brand)] text-white uppercase tracking-widest text-sm mb-3">
-            {siteTitle || "Breeze Motion Studio"}
-          </p>
+          {wordmarkUrl ? (
+            <Image
+              src={wordmarkUrl}
+              alt={siteTitle || "Breeze Motion Studio"}
+              width={6973}
+              height={438}
+              className="mb-3"
+              style={{ height: 12, width: "auto", maxWidth: "100%" }}
+            />
+          ) : (
+            <p className="font-[family-name:var(--font-brand)] text-white uppercase tracking-widest text-sm mb-3">
+              {siteTitle || "Breeze Motion Studio"}
+            </p>
+          )}
           {tagline && (
             <p className="font-[family-name:var(--font-body)] text-bms-grey-400 text-xs leading-relaxed">
               {tagline}

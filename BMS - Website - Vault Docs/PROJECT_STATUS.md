@@ -6,7 +6,7 @@
 
 ## Current Phase: Core Implementation (Near Complete)
 
-**Last Updated:** 2026-08-25 (Session 49)
+**Last Updated:** 2026-08-26 (Session 50)
 
 ---
 
@@ -60,10 +60,31 @@
 | Dedicated `/case-studies/[slug]` page removed | ✅ Done | Session 49 — see below; listing cards now show "View Case Study" (PDF modal) + "View Project" buttons instead |
 | Logo system consolidated to single source of truth | ✅ Done | Session 49 — see below; `siteSettings.primaryLogo` drives nav/footer/favicon/OG/homepage, replacing 7 drifted duplicate fields |
 | Case study PDF preview modal — full-viewport positioning bug fixed | ✅ Done | Session 49 — see below; portal-based fix, affected any card with a CSS hover-transform ancestor |
+| New wordmark system added — `siteSettings.wordmarkBlack`/`wordmarkWhite`, placed in homepage hero + site footer | ✅ Done | Session 50 — see below |
 
 ---
 
 ## Development Log
+
+### 2026-08-26 (Session 50) — New Wordmark System, Placed in Hero + Footer
+
+**New Sanity fields — `siteSettings.wordmarkBlack` / `wordmarkWhite`:**
+- ✅ Added two new optional `image` fields to `siteSettings` (General group), alongside the existing `primaryLogo`/`invertedLogo` fields, for Rebekah's new "BREEZE MOTION STUDIO" wordmark lockup (separate from the icon/badge logo) — black variant for light backgrounds, white for dark; both PNG-only via `options: {accept: 'image/png'}`
+- ✅ Schema deployed same session (`npx sanity schema deploy`, Windows SSL workaround per [[feedback_schema_deploy]])
+- 🔁 First upload of the source files rendered far too small once placed — root cause: the exported PNGs had a huge transparent margin baked in (the actual glyph ink only filled ~23% of the canvas height), so any placement sized off the full image height rendered tiny. Fixed by trimming both files to their ink bounding box (plus a small breathing margin) via a one-off Python/Pillow script, re-uploading, and re-patching `siteSettings` — original untrimmed uploads were replaced, not kept as extra assets. This trim requirement is now documented directly on the schema fields and in `CONTENT_MODEL.md`.
+
+**Homepage hero — wordmark replaces the `homeHero.title` text:**
+- ✅ `HomeHero` now renders the white wordmark image (still wrapped in an `<h1>` for SEO/heading-landmark purposes) in place of the text title whenever `siteSettings.wordmarkWhite` is populated, falling back to the original text rendering otherwise
+- 🔁 First sizing attempt matched the container height to the old text's `clamp(1.1rem,6vw,4.5rem)` font-size via a `fill`+`aspect-ratio` CSS box — looked right on desktop but silently overflowed off the right edge on mobile widths. Root cause: the hero section is a flex row, and flex items default to `min-width: auto`, so the wordmark's intrinsic aspect-ratio size was inflating its container past the viewport instead of shrinking. Replaced with a much simpler standard approach: a normal `next/image` (no `fill`) with `width: 100%`, `height: auto`, capped at `max-width: min(100%, 850px)` — verified overflow-free on a real 390px mobile viewport via direct CDP measurement (`document.body.scrollWidth`), not just a screenshot, since the `--window-size` flag on headless Chrome's screenshot mode proved unreliable for this check.
+
+**Site footer — wordmark replaces the `siteTitle` text in the brand column:**
+- ✅ `Footer.tsx` renders the wordmark (via new `wordmarkUrl` prop, threaded from `layout.tsx`) beneath the round logo badge, in place of the `<p>{siteTitle}</p>` text, when `wordmarkWhite` is set
+- Sized by directly measuring the old text's rendered height (17px, via CDP `Range.getBoundingClientRect()`) and matching the image to it exactly — no flex-stretch risk here since the column uses `items-center`, not `stretch`
+- 🔁 Rebekah asked for it smaller after seeing it live; reduced to 12px. No other placements changed.
+
+**Process note:** both placements' sizing work took materially longer than expected due to CSS aspect-ratio/flexbox edge cases and an unreliable headless-Chrome screenshot flag masking the true state of the mobile layout — Rebekah flagged the pace mid-session. Direct CDP viewport measurement (rather than trusting `--window-size` screenshots) is now the more trustworthy verification method for this kind of responsive-sizing check going forward.
+
+---
 
 ### 2026-08-25 (Session 49) — Case Study Pages Removed, Logo System Consolidated, PDF Modal Bug Fixed
 

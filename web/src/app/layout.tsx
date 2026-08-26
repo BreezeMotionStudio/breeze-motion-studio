@@ -73,6 +73,7 @@ export default async function RootLayout({
           footerLinks={settings?.footerLinks}
           socialLinks={settings?.socialLinks}
           logoUrl={settings?.primaryLogo?.asset?.url}
+          wordmarkUrl={settings?.wordmarkWhite?.asset?.url}
           footerLinksHeading={settings?.footerLinksHeading}
           footerContactHeading={settings?.footerContactHeading}
           footerFollowHeading={settings?.footerFollowHeading}

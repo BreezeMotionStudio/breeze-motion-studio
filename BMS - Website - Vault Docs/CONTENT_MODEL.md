@@ -357,6 +357,8 @@ Standalone documents for the "Example Combinations" section on the services page
 | primaryLogoTransparent | image | No | Transparent PNG of the primary (dark ink) logo, no white backdrop. Not wired into anything on the site by default. |
 | invertedLogo | image | No | Transparent PNG, light/inverted logo, no backdrop. Not wired into anything on the site by default. |
 | invertedLogoBlackBg | image | No | The inverted (light ink) logo with a solid black background baked in. Not wired into anything on the site by default — was briefly used as the round-cropped favicon on 2026-08-25, reverted same day back to `primaryLogo`. |
+| wordmarkBlack | image | No | Transparent PNG of the "BREEZE MOTION STUDIO" wordmark lockup in black, for light backgrounds. Source files ship with a huge transparent margin around the glyphs — always trim tight to the ink bounding box (plus a small breathing margin) before uploading, or the wordmark renders far smaller than intended wherever it's placed. |
+| wordmarkWhite | image | No | Same wordmark lockup in white, for dark backgrounds. Same trim requirement as `wordmarkBlack`. Live as of 2026-08-26: homepage hero (replaces the `homeHero.title` text when set) and site footer brand column (replaces the `siteTitle` text when set), both sized to visually match what the text they replaced looked like. |
 
 **Favicon note:** `web/src/app/favicon.ico` is a static file, sourced from `primaryLogo` — **not auto-synced**. Whenever `primaryLogo` changes and you want the tab icon to match, regenerate it manually (download, resize to 16/32/48px, save as `.ico`).
 | splashAccentsEnabled | boolean | No | Global toggle — show/hide decorative camera splash graphics in section corners across all pages; defaults to `true` |

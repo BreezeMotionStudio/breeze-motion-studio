@@ -77,6 +77,24 @@ export const siteSettings = defineType({
       description:
         'Optional. The inverted (light ink) logo with a solid black background baked in. Not used anywhere on the site by default.',
     }),
+    defineField({
+      name: 'wordmarkBlack',
+      title: 'Wordmark (Black)',
+      type: 'image',
+      group: 'general',
+      description:
+        'Transparent PNG of the "BREEZE MOTION STUDIO" wordmark in black, for placement on light backgrounds. Not used anywhere on the site by default until placements are specified.',
+      options: {accept: 'image/png'},
+    }),
+    defineField({
+      name: 'wordmarkWhite',
+      title: 'Wordmark (White)',
+      type: 'image',
+      group: 'general',
+      description:
+        'Transparent PNG of the "BREEZE MOTION STUDIO" wordmark in white, for placement on dark backgrounds. Not used anywhere on the site by default until placements are specified.',
+      options: {accept: 'image/png'},
+    }),
 
     // — Header & Navigation —
     defineField({

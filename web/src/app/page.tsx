@@ -103,7 +103,7 @@ function SectionBg({ videoUrl, image, priority = false }: { videoUrl?: string; i
   return null;
 }
 
-function HomeHero({ s }: { s: Section }) {
+function HomeHero({ s, wordmarkUrl }: { s: Section; wordmarkUrl?: string }) {
   const onDark = !resolveIsLight(s.sectionBg, s.bgColor)
   return (
     <section
@@ -112,11 +112,26 @@ function HomeHero({ s }: { s: Section }) {
     >
       <SectionBg videoUrl={s.bgVideoUrl} image={s.bgImage} priority />
       {(s.title || s.subtitle || s.buttons?.length > 0) && (
-        <div className="hero-catchup relative z-10 text-center max-w-4xl px-6">
+        <div className="hero-catchup relative z-10 text-center max-w-4xl min-w-0 px-6">
           {s.title && (
-            <h1 className="font-[family-name:var(--font-brand)] text-[clamp(1.1rem,6vw,4.5rem)] uppercase tracking-wide whitespace-nowrap mb-10">
-              <SimpleRichText value={s.title} />
-            </h1>
+            wordmarkUrl ? (
+              <h1 className="mb-10 flex justify-center">
+                <Image
+                  src={wordmarkUrl}
+                  alt="Breeze Motion Studio"
+                  width={6973}
+                  height={438}
+                  className="w-full h-auto"
+                  style={{ maxWidth: "min(100%, 850px)" }}
+                  sizes="(min-width: 1024px) 850px, 90vw"
+                  priority
+                />
+              </h1>
+            ) : (
+              <h1 className="font-[family-name:var(--font-brand)] text-[clamp(1.1rem,6vw,4.5rem)] uppercase tracking-wide whitespace-nowrap mb-10">
+                <SimpleRichText value={s.title} />
+              </h1>
+            )
           )}
           {s.subtitle && !s.subtitleDisabled && (
             <div className="relative mb-10">
@@ -366,6 +381,7 @@ export default async function HomePage() {
     fetchSafe(SITE_SETTINGS_QUERY, {}, null),
   ]);
   const logoUrl = settings?.primaryLogo?.asset?.url;
+  const wordmarkWhiteUrl = settings?.wordmarkWhite?.asset?.url;
 
   if (!page?.sections?.length) {
     return (
@@ -391,7 +407,7 @@ export default async function HomePage() {
       {page.sections.map((section: Section) => {
         switch (section._type) {
           case "homeHero":
-            return <HomeHero key={section._key} s={section} />;
+            return <HomeHero key={section._key} s={section} wordmarkUrl={wordmarkWhiteUrl} />;
           case "homeFeaturedWork":
             return <HomeFeaturedWork key={section._key} s={section} projects={featuredProjects} />;
           case "homeAbout":
