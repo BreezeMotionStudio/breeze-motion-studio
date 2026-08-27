@@ -287,13 +287,15 @@
 
 ---
 
-### 23. Contact Form — Resend, Temporarily Force-Routed Pending Domain Verification (Session 36)
+### 23. Contact Form — Resend, Now Sending From the Verified Domain (Session 36; resolved Session 51, 2026-08-27)
 
-**Decision:** The contact form (previously a static `<form>` with no submit handler at all) now POSTs to a Route Handler (`web/src/app/api/contact/route.ts`) which sends via Resend. The destination address is `process.env.CONTACT_TO_EMAIL_OVERRIDE || settings.contactEmail` — currently set to `rebekah@breezemotionstudio.com` in `.env.local`, not the real configured `info@breezemotionstudio.com`.
+**Decision:** The contact form (previously a static `<form>` with no submit handler at all) now POSTs to a Route Handler (`web/src/app/api/contact/route.ts`) which sends via Resend. The destination address is `settings.contactEmail` (`info@breezemotionstudio.com`), and outgoing mail is sent `from` `noreply@breezemotionstudio.com`.
 
-**Rationale:** Resend's free/unverified tier only allows delivery to the account's own signup email until a sending domain is verified. Rebekah's Resend account is signed up with `rebekah@`; sending straight to `info@` returned a 403. Rather than block on DNS work now, routing overrides to a known-working address unblocks the feature immediately.
+**Rationale:** Resend's free/unverified tier only allows delivery to the account's own signup email until a sending domain is verified. Rebekah's Resend account is signed up with `rebekah@`; sending straight to `info@` returned a 403 while unverified. The initial fix (Session 36) routed around this with a `CONTACT_TO_EMAIL_OVERRIDE` env var pointed at `rebekah@`, as a temporary unblock.
 
-**Where used / how to extend:** Remove `CONTACT_TO_EMAIL_OVERRIDE` from `.env.local` (and Vercel, once deployed) once `breezemotionstudio.com` is verified as a sending domain in Resend — do this at the same time as the domain/Vercel migration (Decision pending — see Domain/DNS row in `PROJECT_STATUS.md`), since it's a few DNS records added at the same time, not a separate task. Also swap the `from` address in `route.ts` from Resend's sandbox `onboarding@resend.dev` to a proper `noreply@breezemotionstudio.com` address once verified.
+**Resolved Session 51:** `breezemotionstudio.com` was verified as a sending domain in Resend as part of the domain-to-Vercel migration (DNS records added at Namecheap: `resend._domainkey` TXT for DKIM, and an MX + TXT pair on the `send` subdomain for SPF/bounce handling — none of these touch the root domain's existing Google Workspace MX/SPF/DMARC/DKIM records, so there was no conflict to resolve). `CONTACT_TO_EMAIL_OVERRIDE` removed from `.env.local`; `to` now falls back straight to `settings.contactEmail`. `from` address changed from Resend's sandbox `onboarding@resend.dev` to `noreply@breezemotionstudio.com`.
+
+**Where used / how to extend:** `CONTACT_TO_EMAIL_OVERRIDE` must also be removed from the Vercel project's Environment Variables (Settings → Environment Variables) and a new deployment triggered — the env var isn't referenced in code anymore, so leaving it set in Vercel is harmless but pointless; remove it for cleanliness.
 
 ---
 

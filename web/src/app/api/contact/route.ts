@@ -22,18 +22,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Email service is not configured" }, { status: 500 });
   }
 
-  // TEMPORARY: Resend's sandbox mode (no verified sending domain yet) only allows
-  // delivery to the account's own signup address. Once breezemotionstudio.com is
-  // verified as a sending domain in Resend, remove CONTACT_TO_EMAIL_OVERRIDE from
-  // .env.local (and Vercel) so this falls back to the real configured contact email.
   const settings = await fetchSafe(SITE_SETTINGS_QUERY, {}, null);
-  const to = process.env.CONTACT_TO_EMAIL_OVERRIDE || settings?.contactEmail || FALLBACK_TO_EMAIL;
+  const to = settings?.contactEmail || FALLBACK_TO_EMAIL;
 
   const resend = new Resend(apiKey);
 
   try {
     const { error } = await resend.emails.send({
-      from: "Breeze Motion Studio Website <onboarding@resend.dev>",
+      from: "Breeze Motion Studio Website <noreply@breezemotionstudio.com>",
       to,
       replyTo: email,
       subject: `New enquiry from ${name}`,
