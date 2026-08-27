@@ -308,13 +308,17 @@ Standalone documents for the "Example Combinations" section on the services page
 | subtitle | string | No | Short descriptor line below the title |
 | description | simpleRichText | No | Paragraph description shown on the card |
 | items | array of string | No | "Typically Includes" list — shown as bullet points |
-| caseStudySlug | string | No | Slug of a linked case study — activates "View Case Study" button |
+| caseStudy | reference (`project`) | No | Linked case study project — activates "View Case Study" button; filtered to `showAsCaseStudy == true` |
 | bgImage | image | No | Per-card background image; `bg-black/70` overlay applied |
-| images | array of image | No | Up to 3 thumbnail images shown on the card; click to open lightbox |
+| thumbnailOverride1 | image | No | Slot 1 thumbnail. Default (if left blank): the linked case study's first Behind the Scenes image |
+| thumbnailOverride2 | image | No | Slot 2 thumbnail. Default (if left blank): the linked case study's first Deliverable image |
+| thumbnailOverride3 | image | No | Slot 3 thumbnail. Default (if left blank): the linked case study's second Deliverable image |
 
 **Published combinations (6, in order):** Brand Startup Collection, Brand Refresh Collection, Media Overhaul, Industrial/Technical Showcase, System Diagnosis, Private Creative Collection
 
 **Note:** The order on the services page is controlled by the `combinations[]` reference array in `servicesPage.serviceCombinations` — drag to reorder there, not in the document list itself.
+
+**Thumbnail auto-pull (Session 51, 2026-08-27):** the 3 card thumbnails default to images pulled live from the linked `caseStudy` project (1st Behind the Scenes image, then 1st and 2nd Deliverable images) — no manual upload needed for a typical combination. Populating any of the 3 `thumbnailOverride` fields replaces just that one slot; leaving all 3 blank means the card is fully auto-driven and stays in sync if the linked project's images change. If the linked project has no Behind the Scenes images (or no `caseStudy` is linked at all), that slot shows a placeholder unless overridden — pick any of that project's own images via the field's native "Select" browser, or upload a new one.
 
 ---
 
