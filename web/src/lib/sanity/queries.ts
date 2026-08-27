@@ -71,7 +71,20 @@ export const SERVICES_PAGE_QUERY = defineQuery(
       sectionBg { bgType, bgColor, gradientFrom, gradientTo, gradientDirection, gradientStop, bgImage { asset->{ url }, alt } },
       collageImages[]{ image { asset->{ url }, alt } },
       orderedCategories[]->{ _id, title, shortDescription, services, serviceGroups[]{ _key, subheading, description, items }, image { asset->{ url }, alt } },
-      combinations[]{ _key, ...@->{ _id, title, subtitle, description, items, caseStudy->{caseStudyPdf{asset->{url, originalFilename}}, caseStudyPdfPreview{asset->{url}, alt}}, bgImage { asset->{ url }, alt }, images[]{ asset->{ url }, alt } } }
+      combinations[]{ _key, ...@->{
+        _id, title, subtitle, description, items,
+        caseStudy->{
+          caseStudyPdf{asset->{url, originalFilename}},
+          caseStudyPdfPreview{asset->{url}, alt},
+          "autoThumb1": btsImages[defined(asset)][0]{asset->{url}, alt},
+          "autoThumb2": deliverableImages[defined(asset)][0]{asset->{url}, alt},
+          "autoThumb3": deliverableImages[defined(asset)][1]{asset->{url}, alt}
+        },
+        bgImage { asset->{ url }, alt },
+        thumbnailOverride1{asset->{url}, alt},
+        thumbnailOverride2{asset->{url}, alt},
+        thumbnailOverride3{asset->{url}, alt}
+      } }
     },
     seoTitle,
     seoDescription

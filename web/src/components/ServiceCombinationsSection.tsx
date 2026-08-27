@@ -20,9 +20,14 @@ type Combination = {
   caseStudy?: {
     caseStudyPdf?: { asset?: { url: string; originalFilename?: string } }
     caseStudyPdfPreview?: { asset?: { url: string }; alt?: string }
+    autoThumb1?: CombinationImage
+    autoThumb2?: CombinationImage
+    autoThumb3?: CombinationImage
   }
   bgImage?: { asset?: { url: string }; alt?: string }
-  images?: CombinationImage[]
+  thumbnailOverride1?: CombinationImage
+  thumbnailOverride2?: CombinationImage
+  thumbnailOverride3?: CombinationImage
 }
 
 type Props = {
@@ -167,10 +172,13 @@ export function ServiceCombinationsSection({ heading, intro, combinations, colla
                       <SimpleRichText value={combo.description} />
                     </p>
                   )}
-                  {/* Small image row */}
+                  {/* Small image row — override wins, else auto-pulled from the linked case study (1 BTS + 2 deliverables) */}
                   <div className="flex gap-2 mt-auto">
-                    {[0, 1, 2].map((i) => {
-                      const img = combo.images?.[i]
+                    {[
+                      combo.thumbnailOverride1?.asset?.url ? combo.thumbnailOverride1 : combo.caseStudy?.autoThumb1,
+                      combo.thumbnailOverride2?.asset?.url ? combo.thumbnailOverride2 : combo.caseStudy?.autoThumb2,
+                      combo.thumbnailOverride3?.asset?.url ? combo.thumbnailOverride3 : combo.caseStudy?.autoThumb3,
+                    ].map((img, i) => {
                       return img?.asset?.url ? (
                         <button
                           key={i}
