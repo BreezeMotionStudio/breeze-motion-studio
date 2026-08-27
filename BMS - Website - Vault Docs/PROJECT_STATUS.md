@@ -62,6 +62,9 @@
 | Case study PDF preview modal — full-viewport positioning bug fixed | ✅ Done | Session 49 — see below; portal-based fix, affected any card with a CSS hover-transform ancestor |
 | New wordmark system added — `siteSettings.wordmarkBlack`/`wordmarkWhite`, placed in homepage hero + site footer | ✅ Done | Session 50 — see below |
 | **Site is live** — domain migrated to Vercel, contact form fully verified | ✅ Done | Session 51 — see below and `ARCHITECTURE.md` decision 30 |
+| Em-dashes removed sitewide (code + Sanity content) | ✅ Done | Session 51 — new hard rule, hyphen by default, comma for the contact form success message |
+| Sanity CDN caching bug fixed (production reads were stacking two caches) | ✅ Done | Session 51 — see `ARCHITECTURE.md` decision 31 |
+| Service Combination thumbnails auto-pull from linked case study + scoped picker | ✅ Done | Session 51 — see `ARCHITECTURE.md` decision 31 |
 
 ---
 
@@ -83,6 +86,14 @@
 **Account hygiene (not code):** GitHub and Vercel login emails switched to `breezemotionstudio@gmail.com` as primary (kept `rebekah@breezemotionstudio.com` as a secondary, not removed) — so account recovery for either platform no longer depends on the domain they help operate.
 
 **Deliberately left open:** old website host still active/not cancelled (safe to cancel whenever Rebekah's ready); Vercel's free Hobby plan is being used as-is (its terms are technically scoped to non-commercial use — surfaced to Rebekah, not resolved either way, her call whenever it matters); the AI Usage Policy document (drafted Session 50/51, see separate memory) remains paused until she asks to pick it back up.
+
+**Same-session follow-up work, after the site went live:**
+
+- **Em-dashes removed sitewide, new hard rule:** Rebekah asked for every em-dash (—) removed from visitor-facing text, hyphen by default, except the contact form's success message ("Thanks for reaching out, I'll get back to you shortly") which reads better with a comma per her explicit instruction. Fixed 7 hardcoded strings in `web/src/` and 2 live Sanity content fields (an "Industrial Showcase" service combination description, and the Studios page SEO description) — both patched and published. Reinforces the pre-existing [[feedback_writing_style]] rule.
+- **Sanity CDN caching bug found while verifying the em-dash fix went live** — see `ARCHITECTURE.md` decision 31. `useCdn: false` now in `web/src/lib/sanity/client.ts`; content edits should reliably show up within ~60s without a redeploy going forward.
+- **Service Combination card thumbnails now auto-pull from the linked case study** (1 Behind the Scenes + 2 Deliverable images) instead of the old always-empty manual `images[]` field — see `ARCHITECTURE.md` decision 31. Each of the 3 slots can still be overridden per-combination.
+- **Built a proper scoped image picker** for those override fields — a custom Sanity Form API asset source (dialog with search, opened via the field's own "Select" button) limited to the linked project's own images, after an initial always-visible-thumbnail-row version was tried and explicitly rejected by Rebekah as not the wanted UX. See `ARCHITECTURE.md` decision 31 and `schemaTypes/components/ProjectImageAssetSource.tsx`.
+- Filled the one gap this surfaced (Industrial Showcase/TRIHEDRON has no Behind the Scenes images) using an existing TRIHEDRON deliverable image as a manual override — Rebekah can swap it for a different one anytime via the new picker.
 
 ---
 

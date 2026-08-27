@@ -386,6 +386,18 @@ All three Studios-page strips (`StudiosHighlights.tsx`, `StudiosLatestProjects.t
 
 ---
 
+### 31. Sanity CDN Reads Disabled in Production; Service Combination Thumbnails Auto-Pull + Scoped Asset Source (Session 51, 2026-08-27)
+
+**Sanity CDN caching bug found and fixed:** `web/src/lib/sanity/client.ts` had `useCdn: !isDev` — every production content read went through Sanity's own CDN cache stacked on top of this site's `revalidate = 60` page-level cache. Two independent caching layers meant content edits (an em-dash text fix, then a thumbnail image swap) sat stale for longer than 60 seconds unpredictably — sometimes clearing on their own, sometimes not until a full redeploy forced both caches cold. Fixed by setting `useCdn: false` unconditionally. Next's own revalidation is now the only cache in play; content edits should reliably appear live within ~60 seconds with no redeploy needed. If this regresses, check this file first before assuming a new bug.
+
+**`serviceCombination` thumbnails now auto-pull from the linked case study:** the 3 card thumbnails (`web/src/components/ServiceCombinationsSection.tsx`) default to the linked `caseStudy` project's first Behind the Scenes image (slot 1) and first two Deliverable images (slots 2-3), via `autoThumb1/2/3` added to `STUDIOS`... no, `SERVICES_PAGE_QUERY`'s `combinations[]` projection in `web/src/lib/sanity/queries.ts`. The old free-form `images[]` array (never populated on any of the 6 combination documents) was replaced with 3 named fields — `thumbnailOverride1/2/3` on `serviceCombination` — each overriding just its own slot when populated, leaving the others auto-driven. If a linked project has no Behind the Scenes images (e.g. TRIHEDRON), that slot falls back to a placeholder unless manually overridden — this is expected, not a bug.
+
+**Custom scoped asset source for those override fields (`schemaTypes/components/ProjectImageAssetSource.tsx`):** Sanity's default image-field "Select" browses the whole dataset's asset library, which isn't useful when the intent is "pick one of *this* project's own images." Built a proper Form API asset source (`options.sources` on the field, not a wrapped input component — an earlier always-visible-thumbnail-row version was tried first and rejected as visual clutter, not the wanted UX) that opens a dialog scoped to the linked case study's Behind the Scenes + Deliverable images, with a search box and an upload option alongside it. Uses `@sanity/ui` directly (a transitive dependency already present, not previously imported by name elsewhere in this codebase's custom components) since the Asset Source API expects a `Dialog`-based component. Reference for extending this pattern to any future "pick from a specific linked document's own array field" need — see the Sanity docs `Custom asset sources` / `Asset Source API Reference` pages.
+
+**Reminder for any future session (Rebekah's explicit instruction, 2026-08-27): the auto-pull formula is exactly one Behind the Scenes image plus two Deliverable images. Do not change this formula without asking.**
+
+---
+
 ## Data Flow
 
 ### Content Creation Flow
