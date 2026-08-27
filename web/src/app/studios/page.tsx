@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: page?.seoTitle || 'Studios',
     description:
       page?.seoDescription ||
-      'Explore our specialized studios — Machine Studio, Commercial Studio, Creative Studio, and Strategy Studio.',
+      'Explore our specialized studios - Machine Studio, Commercial Studio, Creative Studio, and Strategy Studio.',
     path: '/studios',
     imageUrl: hero?.heroImage?.asset?.url,
     imageAlt: hero?.heroImage?.alt,

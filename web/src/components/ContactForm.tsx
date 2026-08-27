@@ -49,7 +49,7 @@ export function ContactForm({
   if (status === 'success') {
     return (
       <p className="font-[family-name:var(--font-body)] text-white text-base leading-relaxed">
-        Thanks for reaching out — I&apos;ll get back to you shortly.
+        Thanks for reaching out, I&apos;ll get back to you shortly.
       </p>
     )
   }
@@ -80,7 +80,7 @@ export function ContactForm({
         </Button>
         {status === 'error' && (
           <p className="mt-3 text-sm text-red-400 font-[family-name:var(--font-body)]">
-            Something went wrong — please try again, or email directly instead.
+            Something went wrong - please try again, or email directly instead.
           </p>
         )}
       </div>

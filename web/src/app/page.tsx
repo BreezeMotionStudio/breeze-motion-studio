@@ -220,7 +220,7 @@ function HomeFeaturedWork({ s, projects }: { s: Section; projects: any[] }) {
                 </h3>
                 <p className="text-sm text-bms-grey-400">
                   {project.client?.name}{" "}
-                  {project.studio?.title && `— ${project.studio.title}`}
+                  {project.studio?.title && `- ${project.studio.title}`}
                 </p>
               </a>
             ))}

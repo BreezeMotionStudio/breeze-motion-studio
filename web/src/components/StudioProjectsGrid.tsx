@@ -61,7 +61,7 @@ function ProjectCard({ project }: { project: Project }) {
       </h3>
       <p className="font-[family-name:var(--font-body)] text-xs text-bms-grey-400">
         {project.client?.name}
-        {project.year && ` — ${project.year}`}
+        {project.year && ` - ${project.year}`}
       </p>
     </Link>
   )

@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       text: [
         `Name: ${name}`,
         `Email: ${email}`,
-        `Company: ${company || "—"}`,
+        `Company: ${company || "-"}`,
         "",
         message,
       ].join("\n"),

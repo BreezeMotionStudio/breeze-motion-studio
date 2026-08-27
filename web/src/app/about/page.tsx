@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: page?.seoTitle || "About",
     description:
       page?.seoDescription ||
-      "Learn about Breeze Motion Studio — a fully remote, founder-led multi-media production and digital systems studio.",
+      "Learn about Breeze Motion Studio - a fully remote, founder-led multi-media production and digital systems studio.",
     path: "/about",
     imageUrl: hero?.heroImage?.asset?.url,
     imageAlt: hero?.heroImage?.alt,
