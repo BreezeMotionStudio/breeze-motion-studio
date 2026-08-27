@@ -1,5 +1,6 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ComponentIcon} from '@sanity/icons'
+import {ThumbnailOverrideInput} from './components/ThumbnailOverrideInput'
 
 export const serviceCombination = defineType({
   name: 'serviceCombination',
@@ -39,24 +40,27 @@ export const serviceCombination = defineType({
       title: 'Thumbnail 1 Override',
       type: 'image',
       options: {hotspot: true},
+      components: {input: ThumbnailOverrideInput},
       fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-      description: 'Leave blank to auto-pull the linked case study\'s first Behind the Scenes image. Click "Select" to reuse one of that project\'s own images instead, or upload a new one.',
+      description: 'Leave blank to auto-pull the linked case study\'s first Behind the Scenes image. Pick from that project\'s own images below, or upload a new one.',
     }),
     defineField({
       name: 'thumbnailOverride2',
       title: 'Thumbnail 2 Override',
       type: 'image',
       options: {hotspot: true},
+      components: {input: ThumbnailOverrideInput},
       fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-      description: 'Leave blank to auto-pull the linked case study\'s first Deliverable image. Click "Select" to reuse one of that project\'s own images instead, or upload a new one.',
+      description: 'Leave blank to auto-pull the linked case study\'s first Deliverable image. Pick from that project\'s own images below, or upload a new one.',
     }),
     defineField({
       name: 'thumbnailOverride3',
       title: 'Thumbnail 3 Override',
       type: 'image',
       options: {hotspot: true},
+      components: {input: ThumbnailOverrideInput},
       fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
-      description: 'Leave blank to auto-pull the linked case study\'s second Deliverable image. Click "Select" to reuse one of that project\'s own images instead, or upload a new one.',
+      description: 'Leave blank to auto-pull the linked case study\'s second Deliverable image. Pick from that project\'s own images below, or upload a new one.',
     }),
   ],
   preview: {
