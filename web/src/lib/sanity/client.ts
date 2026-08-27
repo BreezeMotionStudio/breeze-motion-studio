@@ -7,7 +7,11 @@ export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
-  useCdn: !isDev,
+  // CDN reads add an extra caching layer on top of this site's own revalidate=60
+  // window, which made recent content edits unpredictably slow to appear live.
+  // This site's traffic doesn't need Sanity's CDN for performance, so read
+  // straight from the API and let Next's own revalidation be the only cache.
+  useCdn: false,
   // In dev, use the token to read draft content instantly
   ...(isDev && token ? { token, perspective: "drafts" as const } : {}),
 });
