@@ -137,7 +137,7 @@ export const studiosPage = defineType({
             prepare({heading, disabled}) {
               return {
                 title: disabled ? '[HIDDEN] Highlights Strip' : 'Highlights Strip',
-                subtitle: 'Auto-pulls projects marked as highlights — light strip',
+                subtitle: 'Curated list below, plus any project marked "Show in Highlights Strip" not yet added here',
               }
             },
           },

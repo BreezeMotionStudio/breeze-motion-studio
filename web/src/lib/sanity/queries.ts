@@ -98,6 +98,11 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
         enabled,
         project->{ _id, title, slug, tagline, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug} }
       },
+      _type == "studiosHighlights" => {
+        "allHighlights": *[_type == "project" && isHighlight == true] | order(highlightOrder asc){
+          _id, title, slug, tagline, coverImage{asset->{url}, alt}, client->{name}, studio->{title, slug}
+        }
+      },
       btsImages[]{
         _type,
         _key,
@@ -130,18 +135,6 @@ export const STUDIOS_PAGE_QUERY = defineQuery(
     },
     seoTitle,
     seoDescription
-  }`
-);
-
-export const STUDIOS_HIGHLIGHTS_QUERY = defineQuery(
-  `*[_type == "project" && isHighlight == true] | order(highlightOrder asc){
-    _id,
-    title,
-    slug,
-    tagline,
-    coverImage{asset->{url}, alt},
-    client->{name},
-    studio->{title, slug}
   }`
 );
 

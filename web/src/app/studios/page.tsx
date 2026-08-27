@@ -224,11 +224,20 @@ export default async function StudiosPage() {
   const latestSection = sections.find((s) => s._type === 'studiosLatestProjects')
   const ctaSection = sections.find((s) => s._type === 'studiosCta')
 
-  // Extract highlights from section array (enabled entries only)
+  // Highlights: managed entries (in curated order) + any other project marked
+  // isHighlight on its own document but not yet added to the curated list —
+  // same managed-plus-auto-fallback pattern used for BTS and Latest Projects.
   const highlights = (() => {
-    const arr = highlightsSection?.highlights as any[] | undefined
-    if (!arr?.length) return []
-    return arr.filter((h) => h.enabled !== false).map((h) => h.project).filter(Boolean)
+    const managed = ((highlightsSection?.highlights as any[] | undefined) ?? [])
+      .filter((h) => h.enabled !== false)
+      .map((h) => h.project)
+      .filter(Boolean)
+
+    const managedProjectIds = new Set<string>(managed.map((p: any) => p._id))
+    const allHighlights = (highlightsSection?.allHighlights as any[] | undefined) ?? []
+    const unmanaged = allHighlights.filter((p: any) => !managedProjectIds.has(p._id))
+
+    return [...managed, ...unmanaged]
   })()
 
   // Build BTS images: managed entries (in array order) + unmanaged project BTS images appended
