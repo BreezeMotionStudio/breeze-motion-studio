@@ -40,8 +40,8 @@
 | SEO implementation | ✅ Done | Session 36 — per-page meta tags (earlier session) + sitemap.xml, robots.txt, Organization JSON-LD, and Open Graph/Twitter card previews with page-specific images (this session) |
 | Contact form integration | ✅ Done | Session 36 — Resend-powered; temporarily force-routed to rebekah@ pending domain verification, see decision 22 in `ARCHITECTURE.md` |
 | Performance optimization | ✅ Done | Session 36 — every `<img>` migrated to `next/image` via a custom Sanity CDN loader (3 deliberate lightbox exceptions); see decision 23 in `ARCHITECTURE.md` |
-| Deployment pipeline | Partial | Vercel linked, needs frontend config |
-| Domain / DNS | Not Started | Namecheap domain → Vercel — deliberately deferred until all client projects are uploaded to Sanity |
+| Deployment pipeline | ✅ Done | Session 51 — fresh Vercel project created (old documented project ID was stale/inaccessible), connected to GitHub, Root Directory `web`, all env vars set |
+| Domain / DNS | ✅ Done | Session 51 — `breezemotionstudio.com` live on Vercel via Namecheap DNS (registrar/DNS host unchanged); see `ARCHITECTURE.md` decision 30 |
 | Console error cleanup | ✅ Done | Session 37 — null hero alt, deprecated Sanity import, logo loader warning all fixed |
 | Case study fields visible for all projects | ✅ Done | Session 38 — Rebekah can now write case study copy ahead of featuring a project |
 | Individual-client hero toggle | ✅ Done | Session 39, redesigned Session 43 — see `ARCHITECTURE.md` decision 26 |
@@ -61,10 +61,30 @@
 | Logo system consolidated to single source of truth | ✅ Done | Session 49 — see below; `siteSettings.primaryLogo` drives nav/footer/favicon/OG/homepage, replacing 7 drifted duplicate fields |
 | Case study PDF preview modal — full-viewport positioning bug fixed | ✅ Done | Session 49 — see below; portal-based fix, affected any card with a CSS hover-transform ancestor |
 | New wordmark system added — `siteSettings.wordmarkBlack`/`wordmarkWhite`, placed in homepage hero + site footer | ✅ Done | Session 50 — see below |
+| **Site is live** — domain migrated to Vercel, contact form fully verified | ✅ Done | Session 51 — see below and `ARCHITECTURE.md` decision 30 |
 
 ---
 
 ## Development Log
+
+### 2026-08-27 (Session 51) — Site Goes Live: Domain Migrated to Vercel, Contact Form Fully Verified
+
+**Pre-launch readiness audit (before touching anything):** ran a full build/lint/typecheck sweep, a live Sanity content audit (orphan drafts, missing images, true status of every previously-flagged pending item), and a headless console-error + broken-link + mobile-overflow sweep across every route. Everything came back clean — no launch-blocking issues found anywhere in the app or content. One small fix made along the way: fixed the Studios page Highlights strip silently ignoring `project.isHighlight` (see session memory `project_studios_highlights_fix.md` for the separate write-up).
+
+**Domain migrated from the old host to Vercel — see `ARCHITECTURE.md` decision 30 for full technical detail:**
+- Created a fresh Vercel project (the previously-documented Vercel project ID/org ID turned out to be stale — that project didn't exist under any account Rebekah could access, so this replaces it with a real, verified setup)
+- Root Directory set to `web` (monorepo gotcha — Vercel's auto-detect defaults to repo root and misidentifies the project as a Sanity app otherwise)
+- Namecheap DNS updated: `A @` → Vercel's IP, `www` converted from an `A` record to a `CNAME` pointing at Vercel — Namecheap remains both registrar and DNS host, nothing moved to Vercel's nameservers
+- All Google Workspace mail records (5 `MX`, SPF, DMARC, DKIM) confirmed untouched and working (verified with a real test email) before and after the change
+- Apex domain is canonical; `www` redirects to it
+
+**Contact form's temporary workaround (Decision 23, open since Session 36) fully resolved:** `breezemotionstudio.com` verified as a Resend sending domain in the same session (separate DNS records, no conflict with mail). Removed `CONTACT_TO_EMAIL_OVERRIDE` from `.env.local` and Vercel; contact form now sends **to** `info@breezemotionstudio.com` and **from** `noreply@breezemotionstudio.com`. Verified with a real end-to-end form submission.
+
+**Account hygiene (not code):** GitHub and Vercel login emails switched to `breezemotionstudio@gmail.com` as primary (kept `rebekah@breezemotionstudio.com` as a secondary, not removed) — so account recovery for either platform no longer depends on the domain they help operate.
+
+**Deliberately left open:** old website host still active/not cancelled (safe to cancel whenever Rebekah's ready); Vercel's free Hobby plan is being used as-is (its terms are technically scoped to non-commercial use — surfaced to Rebekah, not resolved either way, her call whenever it matters); the AI Usage Policy document (drafted Session 50/51, see separate memory) remains paused until she asks to pick it back up.
+
+---
 
 ### 2026-08-26 (Session 50) — New Wordmark System, Placed in Hero + Footer
 

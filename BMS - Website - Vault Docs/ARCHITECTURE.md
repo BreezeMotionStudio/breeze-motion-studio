@@ -367,6 +367,25 @@ All three Studios-page strips (`StudiosHighlights.tsx`, `StudiosLatestProjects.t
 
 ---
 
+### 30. Site Goes Live — Domain Migrated to Vercel, Contact Form Fully Verified (Session 51, 2026-08-27)
+
+**Decision:** `breezemotionstudio.com` now points at this Vercel deployment. A fresh Vercel project (`breeze-motion-studio`, under Rebekah's personal Hobby-plan account) was created and connected to the `BreezeMotionStudio/breeze-motion-studio` GitHub repo — the project ID/org ID previously documented in this file were stale (that Vercel project didn't actually exist under any account Rebekah could access), so this is a clean, verified-real setup replacing that old reference. Root Directory is set to `web` (this is a monorepo — the Sanity Studio lives at repo root, the Next.js site lives in `web/` — easy to get wrong, since Vercel's auto-detection defaults to the repo root and mis-identifies the project as a Sanity app if left there).
+
+**DNS setup (at Namecheap, which remains both registrar and DNS host — nothing moved to Vercel's nameservers):**
+- `A` record `@` → `216.198.79.1` (was the old host's IP)
+- `CNAME` record `www` → `0d78f5fe11844977.vercel-dns-017.com.` (was an `A` record to the old host; had to be deleted and re-added as CNAME, not edited in place)
+- Apex (`breezemotionstudio.com`) is the canonical domain; `www` redirects to it (the "redirect apex to www" option was deliberately left unchecked, opposite of Vercel's own default suggestion, to match how the domain is used everywhere else in this project's branding/docs)
+- All pre-existing Google Workspace records (5 `MX`, SPF `TXT @`, DMARC `TXT _dmarc`, DKIM `TXT google._domainkey`) were left untouched and confirmed intact after the change — mail was never at risk since none of the new/changed records shared a host name with any mail record
+- One pre-existing, unrelated `TXT _portfolio` record (a leftover verification token from the old host) was noticed but deliberately left alone — harmless, not cleaned up this session
+
+**Contact form fully resolved (closes out Decision 23's temporary state):** `breezemotionstudio.com` was also verified as a Resend sending domain in the same session, using its own separate DNS records (`TXT resend._domainkey` for DKIM on the root domain, plus an `MX` + `TXT` pair on a `send` subdomain for SPF/bounce handling — scoped to different host names than the Google Workspace records, so no conflict/merge was needed). With that verified, `CONTACT_TO_EMAIL_OVERRIDE` was removed from both `.env.local` and Vercel's Environment Variables, and `route.ts`'s `to` now resolves straight to `settings.contactEmail` (`info@breezemotionstudio.com`); the `from` address changed from Resend's sandbox `onboarding@resend.dev` to `noreply@breezemotionstudio.com`. Verified end-to-end with a real form submission received at `info@`.
+
+**Account hygiene done in the same session (not code, but worth recording):** GitHub and Vercel login emails both switched from `rebekah@breezemotionstudio.com` to `breezemotionstudio@gmail.com` as primary, with the `.com` address kept as a secondary/backup rather than removed — deliberately so neither account's recoverability depends on the domain those same accounts help operate.
+
+**Left deliberately for later, not blocking:** the old website host is still an active account (untouched/not cancelled) — safe to cancel whenever Rebekah is ready, now that DNS no longer points at it. Vercel's Hobby (free) plan is being used; its terms are technically scoped to non-commercial use, which was surfaced to Rebekah as a judgment call, not resolved either way.
+
+---
+
 ## Data Flow
 
 ### Content Creation Flow
