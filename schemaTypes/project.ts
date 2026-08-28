@@ -2,6 +2,7 @@ import {defineField, defineType, defineArrayMember} from 'sanity'
 import {ImageIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 import {DeliverablesInput} from './components/DeliverablesInput'
+import {CoverImageFocalYInput} from './components/CoverImageFocalYInput'
 
 export const project = defineType({
   name: 'project',
@@ -110,6 +111,16 @@ export const project = defineType({
           title: 'Alt Text',
         }),
         defineField({name: 'roundCrop', type: 'boolean', title: 'Round Crop', initialValue: false}),
+        defineField({
+          name: 'focalY',
+          type: 'number',
+          title: 'Vertical Crop Position',
+          description:
+            'Drag to control what part of the image shows in the thumbnail container. Use this if a crop is cutting off a head or feet.',
+          initialValue: 50,
+          validation: (rule) => rule.min(0).max(100),
+          components: {input: CoverImageFocalYInput},
+        }),
       ],
     }),
 

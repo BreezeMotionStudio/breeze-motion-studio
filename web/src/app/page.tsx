@@ -115,15 +115,16 @@ function HomeHero({ s, wordmarkUrl }: { s: Section; wordmarkUrl?: string }) {
         <div className="hero-catchup relative z-10 text-center max-w-4xl min-w-0 px-6">
           {s.title && (
             wordmarkUrl ? (
-              <h1 className="mb-10 flex justify-center">
+              <h1 className="mb-10 flex justify-center -mt-6 sm:-mt-10">
                 <Image
                   src={wordmarkUrl}
                   alt="Breeze Motion Studio"
                   width={6973}
                   height={438}
                   className="w-full h-auto"
-                  style={{ maxWidth: "min(100%, 850px)" }}
-                  sizes="(min-width: 1024px) 850px, 90vw"
+                  style={{ maxWidth: "min(100%, 1150px)" }}
+                  sizes="(min-width: 1024px) 1150px, 95vw"
+                  quality={100}
                   priority
                 />
               </h1>

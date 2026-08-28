@@ -301,7 +301,7 @@ export const CASE_STUDIES_QUERY = defineQuery(
     slug,
     summary,
     year,
-    coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt},
+    coverImage{asset->{_id, url, metadata{lqip, dimensions}}, alt, focalY},
     client->{name},
     studio->{title, slug},
     caseStudyPdf{asset->{url, originalFilename}},

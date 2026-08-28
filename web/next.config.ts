@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     loader: "custom",
     loaderFile: "./src/lib/sanity/imageLoader.ts",
+    qualities: [75, 100],
     remotePatterns: [
       {
         protocol: "https",

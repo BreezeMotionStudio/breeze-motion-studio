@@ -10,6 +10,7 @@ import { HeroImageFrame } from "@/components/HeroImageFrame";
 import { MoreCaseStudies } from "@/components/MoreCaseStudies";
 import { CaseStudyPdfButton } from "@/components/CaseStudyPdfButton";
 import { buildMetadata } from "@/lib/openGraph";
+import { focalYToObjectPosition } from "@/lib/sanity/image";
 
 export const revalidate = 60;
 
@@ -21,7 +22,7 @@ type CaseStudy = {
   slug: { current: string };
   summary?: string;
   year?: string;
-  coverImage?: { asset?: { url: string }; alt?: string };
+  coverImage?: { asset?: { url: string }; alt?: string; focalY?: number };
   client?: { name: string };
   studio?: { title: string; slug: { current: string } };
   caseStudyPdf?: { asset?: { url: string; originalFilename?: string } };
@@ -133,6 +134,7 @@ function CaseStudiesListings({ caseStudies, listingKickerLabel, listingCtaLabel,
                           alt={cs.coverImage.alt || cs.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          style={{ objectPosition: focalYToObjectPosition(cs.coverImage.focalY) }}
                           sizes="(min-width: 768px) 66vw, 100vw"
                         />
                       </div>
