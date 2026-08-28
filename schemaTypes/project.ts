@@ -3,6 +3,7 @@ import {ImageIcon} from '@sanity/icons'
 import {seoFields} from './shared/seoFields'
 import {DeliverablesInput} from './components/DeliverablesInput'
 import {CoverImageFocalYInput} from './components/CoverImageFocalYInput'
+import {ShuffleArrayInput} from './components/ShuffleArrayInput'
 
 export const project = defineType({
   name: 'project',
@@ -132,6 +133,7 @@ export const project = defineType({
       group: 'deliverables',
       description: 'Drag and drop your final finished images. Displayed as the main portfolio gallery on the project page.',
       options: {layout: 'grid'},
+      components: {input: ShuffleArrayInput},
       of: [
         defineArrayMember({
           type: 'image',
