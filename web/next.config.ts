@@ -16,6 +16,15 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  async redirects() {
+    return [
+      {
+        source: "/case-studies/:slug",
+        destination: "/projects/:slug",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
