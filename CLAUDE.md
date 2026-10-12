@@ -105,3 +105,5 @@ npm run build / lint
 - `docs/DESIGN_SYSTEM.md` — Colors, typography, spacing, components, animation rules
 
 5. **Sanity CLI: BMS-only login.** Never run bare `npx sanity@latest ...` here (it uses the machine-wide login, which belongs to another company). Always use `node scripts/sanity-bms.mjs <args>` (e.g. `schema deploy`, `login`), which keeps its login in the git-ignored `.sanity-home/`.
+
+6. **Sanity content changes go through scripts, not the MCP.** The Sanity MCP is retired (Claude Code builds a broken OAuth URL for it; Archaic hit the same). Use `node scripts/sanity-api.mjs query '<GROQ>'` and `node scripts/sanity-api.mjs mutate file.json [--dry-run]`, which use `SANITY_API_WRITE_TOKEN` (Editor role, git-ignored `web/.env.local`). Never print the token.
