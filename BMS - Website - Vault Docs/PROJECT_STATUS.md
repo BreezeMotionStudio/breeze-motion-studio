@@ -70,6 +70,24 @@
 
 ## Development Log
 
+### 2026-10-12 (Session 52) - Sanity Access Recovered and Hardened, Hosted Studio, SOGA Video + Product Shoot Gallery
+
+**What broke:** Sanity login stopped working a few days earlier. The saved session token behind the old MCP/CLI died ("Session not found"); the machine-wide Sanity CLI login had also become another company's account; and browser sign-ins with GitHub/Google/gmail each created separate EMPTY Sanity users (Sanity treats every provider+email as its own user), so Rebekah kept landing on "create a new project" / "Request access". The website itself never went down (it reads via the public API + read token).
+
+**Root fix:** the project owner was the Google login rebekah@breezemotionstudio.com (user p96A9lsQn), with no password, which is why password reset never sent. Recovered via CLI Google login, then:
+- Added **breezemotionstudio@gmail.com** (native Sanity email/password account) as Administrator on project ce9w3sdr and on org otIAhfvSr. The Google login stays as permanent backup admin. Nothing was removed.
+- **Studio hosted** at https://breezemotionstudio.sanity.studio (studioHost + appId in sanity.cli.ts), matching AI-Free and Archaic. Rebekah can now edit from any computer.
+- **Zero cross-company:** new launcher scripts/sanity-bms.mjs gives the BMS CLI its own git-ignored .sanity-home login (never the machine-wide one, which belongs to another company). CLAUDE.md rules 5 and 6 document it.
+- **Sanity MCP retired** (Claude Code builds a broken OAuth URL, mcp.sanity.io.well-known/..., Archaic hit the same). Replaced by scripts/sanity-api.mjs (query / mutate with --dry-run) using an Editor token labelled bms-agent-write in git-ignored web/.env.local. Removed the shared user-level MCP entry and stale permissions.
+- Content backup before any change: backups/bms-production-2026-10-12.tar.gz (git-ignored).
+
+**Content work:**
+- SOGA Brand Advertisement Video created (project 95e31b09-...), Rebekah added media and published. Spelling pass done (video title typo, SOGA Organic capitalisation). Alt text written for cover + 81 deliverables + 4 BTS images (one-off for this project only, see the no-alt-text preference). 4 BTS images linked from the Product Photoshoot (same assets). showAsCaseStudy deliberately OFF; case study to be built later.
+- Compressed 158 SOGA framegrabs (1.2 GB to 179 MB, JPEG q92, 2 transparent end cards kept as PNG) into a Compressed folder after the Studio froze on 4K PNG uploads; orphaned uploads deleted.
+- Product Photoshoot gallery (52 images, published) regrouped by product range with fruit shots mixed into their product groups and the four big group shots last. Earlier orders saved in backups/.
+
+**Open:** MAVTECH client has an unpublished draft with a different logo (Rebekah says sorted, left untouched). Two empty duplicate Sanity users and the unused dc2hdif6 project are harmless and can be removed from Sanity's settings. Turn on 2-step verification for the gmail Sanity account. Decide after ~2 weeks whether to keep the .com Google backup admin (recommended: keep).
+
 ### 2026-08-27 (Session 51) — Site Goes Live: Domain Migrated to Vercel, Contact Form Fully Verified
 
 **Pre-launch readiness audit (before touching anything):** ran a full build/lint/typecheck sweep, a live Sanity content audit (orphan drafts, missing images, true status of every previously-flagged pending item), and a headless console-error + broken-link + mobile-overflow sweep across every route. Everything came back clean — no launch-blocking issues found anywhere in the app or content. One small fix made along the way: fixed the Studios page Highlights strip silently ignoring `project.isHighlight` (see session memory `project_studios_highlights_fix.md` for the separate write-up).
