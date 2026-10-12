@@ -5,11 +5,13 @@ export default defineCliConfig({
     projectId: 'ce9w3sdr',
     dataset: 'production'
   },
+  studioHost: 'breezemotionstudio',
   deployment: {
     /**
      * Enable auto-updates for studios.
      * Learn more at https://www.sanity.io/docs/studio/latest-version-of-sanity#k47faf43faf56
      */
     autoUpdates: true,
+    appId: 'rpjposbm4mh6in64da3dp9mt',
   }
 })

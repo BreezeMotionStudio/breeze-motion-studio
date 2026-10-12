@@ -39,3 +39,6 @@ sync.ffs_db
 
 .vercel
 .env*.local
+.tmp-soga/
+.sanity-home/
+backups/
