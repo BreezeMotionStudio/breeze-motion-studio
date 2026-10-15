@@ -70,6 +70,28 @@
 
 ## Development Log
 
+### 2026-10-15 (Session 53) - SOGA Projects in Sanity: Brand Guidelines, System Cleanout, History Board (held back)
+
+**Created (SOGA Organic client, Commercial Studio):**
+- **Brand Guidelines** (d598762c-...): cover + 2 deliverable collages uploaded by Rebekah, alt text/captions/SEO filled by script, PUBLISHED, marked complete by Rebekah.
+- **System Cleanout** (978007c8-...): rewritten as workflow design (not just file organisation), cover + 4 deliverable images (2 vertical, 2 square) uploaded, PUBLISHED. Text rules for this project: NO specific software names (Drive, Canva, Adobe, ChatGPT, Windows), NO first person "I", AI not featured (side item). Images themselves still show real tool names.
+- **History Board** (6be45033-...): created as an UNPUBLISHED draft only, status In Progress. Rebekah does not want it displayed yet (work only just begun). Do not publish.
+- Label Wraparound is deliberately excluded. Product Photoshoot and Brand Advertisement Video already existed.
+
+**Method:** all content via scripts/sanity-api.mjs (query/mutate) plus the assets upload endpoint with the git-ignored write token. Drafts stay unpublished until Rebekah adds media and publishes.
+
+**Image rules agreed this session (apply to every future portfolio thumbnail/deliverable image):**
+- Project cover collage 3840x2160, 300ppi, sRGB. Cover JPEG also exported small (1920x1080).
+- **Deliverable VERTICALS default to 2480x3161 px at 300ppi (the MAVTECH Website Revamp Project Thumbnail size).** Rebekah stated this as the standing default on 2026-10-15. The SOGA System Cleanout verticals are 2400x4802 (made before the rule); offer to rebuild if wanted. Squares are 3000x3000.
+- Both verticals in a set must be exactly the same size.
+- No Mac/Windows window chrome on screenshots (no traffic-light dots).
+- File names short; JPEG exports must say "JPEG" in the name; only the final project files (PSD) kept, no stray copies; screenshots in a "Screenshots" subfolder.
+- Every image in a set needs clear captions so the project scope is understandable at a glance.
+
+**Accuracy check vs the signed-off package (22-23 Jan 2026):** the final Google script v3.3 names a folder 09_CLIENT_PACKS ("FIXED NAME") while the documents, .bat and masterfile all say 10_CLIENT_PACKS. Images use 10. OPEN: confirm what SOGA's live Drive has.
+
+**Tooling saved:** production-assistant clients/SOGA/Portfolio_Thumbnails/ (README + tools/). The scripts render folder-tree, code and platform graphics from the real structure files and build the collages through the Photoshop COM interface.
+
 ### 2026-10-12 (Session 52) - Sanity Access Recovered and Hardened, Hosted Studio, SOGA Video + Product Shoot Gallery
 
 **What broke:** Sanity login stopped working a few days earlier. The saved session token behind the old MCP/CLI died ("Session not found"); the machine-wide Sanity CLI login had also become another company's account; and browser sign-ins with GitHub/Google/gmail each created separate EMPTY Sanity users (Sanity treats every provider+email as its own user), so Rebekah kept landing on "create a new project" / "Request access". The website itself never went down (it reads via the public API + read token).
